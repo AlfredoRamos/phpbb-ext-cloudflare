@@ -44,6 +44,6 @@ $lang = array_merge($lang, [
 	'TURNSTILE_LOGIN_ERROR_ATTEMPTS' => 'Sie haben die maximal zulässige Anzahl an Anmeldeversuchen überschritten.<br>Zusätzlich zu Ihrem Benutzernamen und Passwort wird Turnstile zur Authentifizierung Ihrer Sitzung verwendet.',
 	'TURNSTILE_REQUEST_EXCEPTION' => 'Turnstile Anforderungsfehler: %s',
 
-	'ACP_TURNSTILE_TOGGLE_SECRET' => '%s umschalten',
-	'ACP_TURNSTILE_VALIDATE_INVALID_FIELDS' => 'Ungültige Werte für Felder: <samp>%s</samp>'
+	'ACP_CLOUDFLARE_TOGGLE_SECRET' => '%s umschalten',
+	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Ungültige Werte für Felder: <samp>%s</samp>'
 ]);

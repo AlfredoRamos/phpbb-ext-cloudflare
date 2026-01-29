@@ -7,7 +7,7 @@
 .turnstile-container {
 	margin: 1em auto;
 }
-.cloudflare-error,
+.turnstile-error,
 .section-app\/contactadmin .turnstile-container .cf-turnstile,
 #register .turnstile-container .cf-turnstile {
 	text-align: center;

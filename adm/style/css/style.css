@@ -4,15 +4,16 @@
  * @copyright 2021 Alfredo Ramos
  * @license GPL-2.0-only
  */
-#acp-cloudflare input[type=text],
-#acp-cloudflare input[type=password] {
-  font-family: Consolas, monaco, monospace;
+#acp-cloudflare input[type='text'],
+#acp-cloudflare input[type='password'] {
+	font-family: Consolas, monaco, monospace;
 }
 
-#toggle-cloudflare-secret {
-  vertical-align: middle;
-  cursor: pointer;
+.toggle-cloudflare-secret {
+	vertical-align: middle;
+	cursor: pointer;
 }
-#toggle-cloudflare-secret, #toggle-cloudflare-secret .icon {
-  display: inline-block;
+.toggle-cloudflare-secret,
+.toggle-cloudflare-secret .icon {
+	display: inline-block;
 }
