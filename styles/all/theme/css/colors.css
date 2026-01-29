@@ -4,7 +4,7 @@
  * @copyright 2021 Alfredo Ramos
  * @license GPL-2.0-only
  */
-.cloudflare-error {
-  background-color: #f3cbca;
-  color: #d9534f;
+.turnstile-error {
+	background-color: #f3cbca;
+	color: #d9534f;
 }

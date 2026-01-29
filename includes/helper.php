@@ -65,7 +65,7 @@ class helper
 		if (!empty($invalid))
 		{
 			$errors[]['message'] = $this->language->lang(
-				'ACP_TURNSTILE_VALIDATE_INVALID_FIELDS',
+				'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS',
 				implode($this->language->lang('COMMA_SEPARATOR'), $invalid)
 			);
 		}

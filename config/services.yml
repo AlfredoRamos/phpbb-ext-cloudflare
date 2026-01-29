@@ -1,4 +1,11 @@
 services:
+    alfredoramos.cloudflare.listener:
+        class: alfredoramos\cloudflare\event\listener
+        arguments:
+            - '@request'
+        tags:
+            - { name: event.listener }
+
     alfredoramos.cloudflare.helper:
         class: alfredoramos\cloudflare\includes\helper
         arguments:

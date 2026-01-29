@@ -5,14 +5,14 @@
  * @license GPL-2.0-only
  */
 .turnstile-container,
-.cloudflare-error {
+.turnstile-error {
 	margin: 1rem auto;
 }
 .turnstile-container .cf-turnstile,
-.cloudflare-error {
+.turnstile-error {
 	text-align: center;
 }
-.cloudflare-error {
+.turnstile-error {
 	font-weight: bold;
 	padding: 1rem;
 }
