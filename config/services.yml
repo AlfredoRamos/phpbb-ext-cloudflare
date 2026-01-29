@@ -1,0 +1,22 @@
+services:
+    alfredoramos.cloudflare.helper:
+        class: alfredoramos\cloudflare\includes\helper
+        arguments:
+            - '@language'
+
+    alfredoramos.cloudflare.captcha.turnstile:
+        class: alfredoramos\cloudflare\captcha\plugins\turnstile
+        arguments:
+            - '@config'
+            - '@user'
+            - '@request'
+            - '@template'
+            - '@language'
+            - '@log'
+            - '@alfredoramos.cloudflare.helper'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+        calls:
+            - ['set_name', ['alfredoramos.cloudflare.captcha.turnstile']]
+        tags:
+            - { name: captcha.plugins }

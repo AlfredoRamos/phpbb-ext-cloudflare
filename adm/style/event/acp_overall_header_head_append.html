@@ -1,0 +1,4 @@
+{% if S_TURNSTILE_SETTINGS and not INCLUDED_TURNSTILE_ACP_CSS %}
+{% INCLUDECSS '@alfredoramos_cloudflare/css/style.css' %}
+{%- set INCLUDED_TURNSTILE_ACP_CSS = true -%}
+{% endif %}

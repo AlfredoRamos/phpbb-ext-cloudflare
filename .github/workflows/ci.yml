@@ -1,0 +1,345 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request: {}
+
+env:
+  EXTNAME: 'alfredoramos/cloudflare'
+  SNIFF: 1
+  IMAGE_ICC: 1
+  EPV: 1
+  EXECUTABLE_FILES: 1
+  PHPBB_BRANCH: 3.3.x
+
+jobs:
+  basic-tests:
+    if: ${{ !contains(github.event.head_commit.message, 'skip ci') }}
+    name: php ${{ matrix.php-version }}, none none
+    runs-on: ubuntu-22.04
+    env:
+      PHP_VERSION: ${{ matrix.php-version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.1']
+    steps:
+      - name: Checkout phpBB
+        uses: actions/checkout@v6
+        with:
+          repository: phpbb/phpbb
+          ref: ${{ env.PHPBB_BRANCH }}
+          path: phpBB3
+
+      - name: Checkout extension
+        uses: actions/checkout@v6
+        with:
+          path: extension
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, mysqli, intl, gd, exif, iconv, pgsql
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup Composer
+        id: setup-composer
+        working-directory: phpBB3/phpBB
+        run: echo "cache-dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Setup cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.setup-composer.outputs.cache-dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock', '**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Setup environment for phpBB
+        working-directory: phpBB3
+        run: .github/setup-phpbb.sh $DB $PHP_VERSION $NOTESTS
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: 'extension/.tool-versions'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Node dependencies
+        working-directory: extension
+        run: npm ci
+
+      - name: Setup extension
+        working-directory: extension
+        run: |
+          chmod +x .github/setup-extension.sh
+          .github/setup-extension.sh $EXTNAME $NOTESTS
+
+      - name: Setup EPV
+        if: ${{ env.EPV == 1 }}
+        working-directory: phpBB3/phpBB
+        run: composer require -n --prefer-dist --no-progress phpbb/epv:dev-master
+
+      - name: Run code sniffer
+        if: ${{ env.SNIFF == 1 }}
+        working-directory: phpBB3
+        run: .github/ext-sniff.sh $EXTNAME $NOTESTS
+
+      - name: Check image ICC profiles
+        if: ${{ env.IMAGE_ICC == 1 }}
+        working-directory: phpBB3
+        run: .github/check-image-icc-profiles.sh
+
+      - name: Check executable files
+        if: ${{ env.EXECUTABLE_FILES == 1 }}
+        working-directory: phpBB3
+        run: .github/ext-check-executable-files.sh ./ $EXTNAME
+
+      - name: Run EPV
+        if: ${{ env.EPV == 1 }}
+        working-directory: phpBB3
+        run: phpBB/vendor/bin/EPV.php run --dir="phpBB/ext/$EXTNAME"
+
+  mysql-tests:
+    if: ${{ !contains(github.event.head_commit.message, 'skip ci') }}
+    name: php ${{ matrix.php-version }}, ${{ matrix.db-type }} ${{ matrix.db-version }}
+    runs-on: ubuntu-22.04
+    services:
+      mysql:
+        image: ${{ (matrix.db-type == 'mysql' || matrix.db-type == 'mariadb') && matrix.db-type || 'mariadb' }}:${{ (matrix.db-type == 'mysql' || matrix.db-type == 'mariadb' && matrix.db-version != 'none') && matrix.db-version || 'latest' }}
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: phpbb_tests
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      DB: ${{ matrix.db-type }}
+      MYISAM: 0
+      PHP_VERSION: ${{ matrix.php-version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php-version: '8.1'
+            db-type: 'mysql'
+            db-version: '5.7'
+          - php-version: '8.1'
+            db-type: 'mariadb'
+            db-version: '10.6'
+          - php-version: '8.2'
+            db-type: 'mariadb'
+            db-version: '10.6'
+          - php-version: '8.3'
+            db-type: 'mariadb'
+            db-version: '10.11'
+          - php-version: '8.4'
+            db-type: 'mariadb'
+            db-version: '10.11'
+          - php-version: '8.5'
+            db-type: 'mariadb'
+            db-version: '10.11'
+    steps:
+      - name: Checkout phpBB
+        uses: actions/checkout@v6
+        with:
+          repository: phpbb/phpbb
+          ref: ${{ env.PHPBB_BRANCH }}
+          path: phpBB3
+
+      - name: Checkout extension
+        uses: actions/checkout@v6
+        with:
+          path: extension
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, mysqli, intl, gd, exif, iconv, pgsql
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup Composer
+        id: setup-composer
+        working-directory: phpBB3/phpBB
+        run: echo "cache-dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Setup cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.setup-composer.outputs.cache-dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock', '**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Setup environment for phpBB
+        working-directory: phpBB3
+        run: .github/setup-phpbb.sh $DB $PHP_VERSION $NOTESTS
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: 'extension/.tool-versions'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Node dependencies
+        working-directory: extension
+        run: npm ci
+
+      - name: Setup extension
+        working-directory: extension
+        run: |
+          chmod +x .github/setup-extension.sh
+          .github/setup-extension.sh $EXTNAME $NOTESTS
+
+      - name: Setup database
+        working-directory: phpBB3
+        run: .github/setup-database.sh $DB $MYISAM
+
+      - name: Setup PHPUnit files
+        working-directory: phpBB3
+        run: |
+          mkdir -p phpBB/ext/$EXTNAME/ci
+          cp -a .github/phpunit* phpBB/ext/$EXTNAME/ci/
+
+      - name: Run unit tests
+        working-directory: phpBB3
+        run: phpBB/vendor/bin/phpunit --configuration phpBB/ext/$EXTNAME/ci/phpunit-$DB-github.xml --bootstrap tests/bootstrap.php
+
+  postgresql-tests:
+    if: ${{ !contains(github.event.head_commit.message, 'skip ci') }}
+    name: php ${{ matrix.php-version }}, ${{ matrix.db-type }} ${{ matrix.db-version }}
+    runs-on: ubuntu-22.04
+    services:
+      postgres:
+        image: ${{ (matrix.db-type == 'postgres') && matrix.db-type || 'postgres' }}:${{ (matrix.db-type == 'postgres' && matrix.db-version != 'none') && matrix.db-version || 'alpine' }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          -v /var/run/postgresql:/var/run/postgresql
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      DB: ${{ matrix.db-type }}
+      MYISAM: 0
+      PHP_VERSION: ${{ matrix.php-version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php-version: '8.1'
+            db-type: 'postgres'
+            db-version: '17-alpine'
+          - php-version: '8.4'
+            db-type: 'postgres'
+            db-version: '18-alpine'
+          - php-version: '8.5'
+            db-type: 'postgres'
+            db-version: '18-alpine'
+    steps:
+      - name: Checkout phpBB
+        uses: actions/checkout@v6
+        with:
+          repository: phpbb/phpbb
+          ref: ${{ env.PHPBB_BRANCH }}
+          path: phpBB3
+
+      - name: Checkout extension
+        uses: actions/checkout@v6
+        with:
+          path: extension
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, mysqli, intl, gd, exif, iconv, pgsql
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup Composer
+        id: setup-composer
+        working-directory: phpBB3/phpBB
+        run: echo "cache-dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Setup cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.setup-composer.outputs.cache-dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock', '**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Setup environment for phpBB
+        working-directory: phpBB3
+        run: .github/setup-phpbb.sh $DB $PHP_VERSION $NOTESTS
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: 'extension/.tool-versions'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Node dependencies
+        working-directory: extension
+        run: npm ci
+
+      - name: Setup extension
+        working-directory: extension
+        run: |
+          chmod +x .github/setup-extension.sh
+          .github/setup-extension.sh $EXTNAME $NOTESTS
+
+      - name: Setup database
+        working-directory: phpBB3
+        run: .github/setup-database.sh $DB $MYISAM
+
+      - name: Setup PHPUnit files
+        working-directory: phpBB3
+        run: |
+          mkdir -p phpBB/ext/$EXTNAME/ci
+          cp -a .github/phpunit* phpBB/ext/$EXTNAME/ci/
+
+      - name: Run unit tests
+        working-directory: phpBB3
+        run: phpBB/vendor/bin/phpunit --configuration phpBB/ext/$EXTNAME/ci/phpunit-$DB-github.xml --bootstrap tests/bootstrap.php
+
+  lint:
+    if: ${{ !contains(github.event.head_commit.message, 'skip lint') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout extension
+        uses: actions/checkout@v6
+        with:
+          path: extension
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: 'extension/.tool-versions'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Node dependencies
+        working-directory: extension
+        run: npm ci
+
+      - name: Test SCSS
+        working-directory: extension
+        run: npm run lint-scss

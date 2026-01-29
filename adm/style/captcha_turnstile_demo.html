@@ -1,0 +1,13 @@
+{% if S_TURNSTILE_AVAILABLE %}
+	<noscript>
+		<div class="errorbox"><p>{{ lang('TURNSTILE_NOSCRIPT') }}</p></div>
+	</noscript>
+	<dl>
+		<dt>{{ lang('CAPTCHA_PREVIEW_EXPLAIN') }}</dt>
+		<dd>
+			<div id="cf-turnstile-preview" class="cf-turnstile" data-sitekey="{{ TURNSTILE_KEY }}"{% if TURNSTILE_THEME %} data-theme="{{ TURNSTILE_THEME }}"{% endif %}{% if TURNSTILE_SIZE %} data-size="{{ TURNSTILE_SIZE }}"{% endif %}{% if TURNSTILE_APPEARANCE %} data-appearance="{{ TURNSTILE_APPEARANCE }}"{% endif %}></div>
+		</dd>
+	</dl>
+{% else %}
+	<div class="errorbox notice"><p>{{ lang('TURNSTILE_NOT_AVAILABLE') }}</p></div>
+{% endif %}

@@ -1,0 +1,9 @@
+{% if S_TURNSTILE_SETTINGS and not INCLUDED_TURNSTILE_ACP_JS %}
+{% INCLUDEJS '@alfredoramos_cloudflare/js/settings.js' %}
+{%- set INCLUDED_TURNSTILE_ACP_JS = true -%}
+{% endif %}
+
+{% if S_TURNSTILE_AVAILABLE and U_TURNSTILE_SCRIPT and not INCLUDED_TURNSTILE_JS %}
+	{% INCLUDEJS U_TURNSTILE_SCRIPT %}
+	{%- set INCLUDED_TURNSTILE_JS = true -%}
+{% endif %}

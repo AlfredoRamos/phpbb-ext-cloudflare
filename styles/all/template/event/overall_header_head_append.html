@@ -1,0 +1,5 @@
+{% if S_TURNSTILE_AVAILABLE and not INCLUDED_TURNSTILE_CSS %}
+{% INCLUDECSS '@alfredoramos_cloudflare/css/style.css' %}
+{% INCLUDECSS '@alfredoramos_cloudflare/css/colors.css' %}
+{%- set INCLUDED_TURNSTILE_CSS = true -%}
+{% endif %}

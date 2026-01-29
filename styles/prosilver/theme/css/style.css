@@ -1,0 +1,23 @@
+/**
+ * Cloudflare extension for phpBB.
+ * @author Alfredo Ramos <alfredo.ramos@proton.me>
+ * @copyright 2021 Alfredo Ramos
+ * @license GPL-2.0-only
+ */
+.turnstile-container {
+	margin: 1em auto;
+}
+.cloudflare-error,
+.section-app\/contactadmin .turnstile-container .cf-turnstile,
+#register .turnstile-container .cf-turnstile {
+	text-align: center;
+}
+#login .turnstile-container .cf-turnstile {
+	margin-left: 16em;
+}
+#postform .turnstile-container .cf-turnstile {
+	margin-left: 15em;
+}
+.section-app\/contactadmin #postform .turnstile-container .cf-turnstile {
+	margin: 0;
+}

@@ -1,0 +1,10 @@
+<div class="turnstile-container">
+	{% if S_TURNSTILE_AVAILABLE %}
+		<noscript>
+			<div class="turnstile-error">{{ lang('TURNSTILE_NOSCRIPT') }}</div>
+		</noscript>
+		<div class="cf-turnstile" data-sitekey="{{ TURNSTILE_KEY }}"{% if TURNSTILE_THEME %} data-theme="{{ TURNSTILE_THEME }}"{% endif %}{% if TURNSTILE_SIZE %} data-size="{{ TURNSTILE_SIZE }}"{% endif %}{% if TURNSTILE_APPEARANCE %} data-appearance="{{ TURNSTILE_APPEARANCE }}"{% endif %}></div>
+	{% else %}
+		<div class="turnstile-error">{{ lang('TURNSTILE_NOT_AVAILABLE') }}</div>
+	{% endif %}
+</div>

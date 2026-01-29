@@ -1,0 +1,109 @@
+{% include 'overall_header.html' %}
+
+<a id="maincontent"></a>
+
+<h1>{{ lang('ACP_VC_SETTINGS') }}</h1>
+<p>{{ lang('ACP_VC_SETTINGS_EXPLAIN') }}</p>
+<p>{{ lang('CAPTCHA_TURNSTILE_EXPLAIN') }}</p>
+
+{% if VALIDATION_ERRORS %}
+<div class="errorbox">
+	{% for ERROR in VALIDATION_ERRORS %}
+	<p>{{ ERROR.MESSAGE }}</p>
+	{% endfor %}
+</div>
+{% endif %}
+
+<form id="acp-turnstile" method="post" action="{{ U_ACTION }}">
+	<fieldset>
+		<legend>{{ lang('GENERAL_OPTIONS') }}</legend>
+		<dl>
+			<dt>
+				<label for="turnstile-key">{{ lang('TURNSTILE_KEY') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('TURNSTILE_KEY_EXPLAIN') }}</span>
+			</dt>
+			<dd>
+				<input type="text" id="turnstile-key" name="turnstile_key" value="{{ TURNSTILE_KEY }}" required="required" autocomplete="off" class="medium">
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				<label for="turnstile-secret">{{ lang('TURNSTILE_SECRET') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('TURNSTILE_SECRET_EXPLAIN') }}</span>
+			</dt>
+			<dd>
+				<input type="password" id="turnstile-secret" name="turnstile_secret" value="{{ TURNSTILE_SECRET }}" required="required" autocomplete="off" class="medium cloudflare-secret">
+				<span class="toggle-cloudflare-secret" title="{{ lang('ACP_TURNSTILE_TOGGLE_SECRET', lang('TURNSTILE_SECRET'))|striptags|escape('html_attr') }}">
+					<i class="icon acp-icon acp-icon-resync fa-eye fa-fw" aria-hidden="true"></i>
+				</span>
+			</dd>
+		</dl>
+		{% if TURNSTILE_THEME_LIST %}
+		<dl>
+			<dt>
+				<label for="turnstile-theme">{{ lang('TURNSTILE_THEME') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('TURNSTILE_THEME_EXPLAIN') }}</span>
+			</dt>
+			<dd>
+				<select id="turnstile-theme" name="turnstile_theme">
+					{% for THEME in TURNSTILE_THEME_LIST %}
+					<option value="{{ THEME.KEY }}"{% if THEME.ENABLED %} selected{% endif %}>{{ THEME.NAME }}</option>
+					{% endfor %}
+				</select>
+			</dd>
+		</dl>
+		{% endif %}
+		{% if TURNSTILE_SIZE_LIST %}
+		<dl>
+			<dt>
+				<label for="turnstile-size">{{ lang('TURNSTILE_SIZE') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('TURNSTILE_SIZE_EXPLAIN') }}</span>
+			</dt>
+			<dd>
+				<select id="turnstile-size" name="turnstile_size">
+					{% for SIZE in TURNSTILE_SIZE_LIST %}
+					<option value="{{ SIZE.KEY }}"{% if SIZE.ENABLED %} selected{% endif %}>{{ SIZE.NAME }}</option>
+					{% endfor %}
+				</select>
+			</dd>
+		</dl>
+		{% endif %}
+		{% if TURNSTILE_APPEARANCE_LIST %}
+		<dl>
+			<dt>
+				<label for="turnstile-appearance">{{ lang('TURNSTILE_APPEARANCE') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('TURNSTILE_SIZE_EXPLAIN') }}</span>
+			</dt>
+			<dd>
+				<select id="turnstile-appearance" name="turnstile_appearance" readonly disabled>
+					{% for APPEARANCE in TURNSTILE_APPEARANCE_LIST %}
+					<option value="{{ APPEARANCE.KEY }}"{% if APPEARANCE.ENABLED %} selected{% endif %}>{{ APPEARANCE.NAME }}</option>
+					{% endfor %}
+				</select>
+			</dd>
+		</dl>
+		{% endif %}
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('PREVIEW') }}</legend>
+		{% if S_TURNSTILE_AVAILABLE %}
+		<div class="warningbox hidden"><strong>{{ lang('WARNING') }}</strong> {{ lang('CAPTCHA_PREVIEW_MSG') }}</div>
+		{% endif %}
+
+		{% include CAPTCHA_PREVIEW %}
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_SUBMIT_CHANGES') }}</legend>
+		<p class="submit-buttons">
+			<input class="button1" id="submit" name="submit" type="submit" value="{{ lang('SUBMIT') }}">
+			<input class="button2" id="reset" name="reset" type="reset" value="{{ lang('RESET') }}">
+			<input name="select_captcha" type="hidden" value="{{ CAPTCHA_NAME }}">
+			<input name="configure" type="hidden" value="1">
+			{{ S_FORM_TOKEN }}
+		</p>
+	</fieldset>
+</form>
+
+{% include 'overall_footer.html' %}
