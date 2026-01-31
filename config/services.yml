@@ -2,14 +2,55 @@ services:
     alfredoramos.cloudflare.listener:
         class: alfredoramos\cloudflare\event\listener
         arguments:
-            - '@request'
+            - '@alfredoramos.cloudflare.helper'
         tags:
             - { name: event.listener }
 
     alfredoramos.cloudflare.helper:
         class: alfredoramos\cloudflare\includes\helper
         arguments:
+            - '@config'
+            - '@request'
             - '@language'
+            - '@template'
+            - '@routing.helper'
+            - '@alfredoramos.cloudflare.client'
+
+    alfredoramos.cloudflare.client:
+        class: alfredoramos\cloudflare\includes\cloudflare
+        arguments:
+            - '@dbal.conn'
+            - '@auth'
+            - '@config'
+            - '@request'
+            - '@language'
+            - '@content.visibility'
+            - '%tables.users%'
+            - '%tables.posts%'
+
+    alfredoramos.cloudflare.controller.acp:
+        class: alfredoramos\cloudflare\controller\acp
+        arguments:
+            - '@config'
+            - '@template'
+            - '@request'
+            - '@language'
+            - '@user'
+            - '@log'
+            - '@alfredoramos.cloudflare.helper'
+
+    alfredoramos.cloudflare.controller.cloudflare:
+        class: alfredoramos\cloudflare\controller\cloudflare
+        arguments:
+            - '@auth'
+            - '@config'
+            - '@request'
+            - '@controller.helper'
+            - '@language'
+            - '@user'
+            - '@log'
+            - '@alfredoramos.cloudflare.client'
+            - '@alfredoramos.cloudflare.helper'
 
     alfredoramos.cloudflare.captcha.turnstile:
         class: alfredoramos\cloudflare\captcha\plugins\turnstile

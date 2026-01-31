@@ -1,0 +1,32 @@
+{% if S_FOUNDER %}
+{%- set S_CLOUDFLARE_SETTINGS = true -%}
+{% if S_CLOUDFLARE_SETTINGS and not INCLUDED_CLOUDFLARE_ACP_CSS %}
+{% INCLUDECSS '@alfredoramos_cloudflare/css/style.css' %}
+{%- set INCLUDED_CLOUDFLARE_ACP_CSS = true -%}
+{% endif %}
+
+<form id="cloudflare_purge_cache_form" method="post" action="{{ CLOUDFLARE_PURGE_CACHE_URL }}">
+	<dl>
+		<dt><label for="cloudflare_purge_cache">{{ lang('CLOUDFLARE_PURGE_CACHE') }}</label><br /><span>{{ lang('CLOUDFLARE_PURGE_CACHE_EXPLAIN') }}</span></dt>
+		<dd>
+			{% if CLOUDFLARE_PURGE_CACHE_TYPES %}
+			<select id="cloudflare_purge_cache_type" name="cloudflare_purge_cache_type">
+				{% for TYPE in CLOUDFLARE_PURGE_CACHE_TYPES %}
+				<option value="{{ TYPE.VALUE }}"{% if TYPE.SELECTED %} selected="selected"{% endif %}>{{ TYPE.NAME }}</option>
+				{% endfor %}
+			</select>
+			<details class="cloudflare-value-container" style="display: none">
+				<summary>{{ lang('EDIT') }}</summary>
+				<textarea id="cloudflare_purge_cadlche_value" name="cloudflare_purge_cache_value"></textarea>
+			</details>
+			{% endif %}
+			<button type="submit" class="cloudflare-button">{{ lang('RUN') }}</button>
+		</dd>
+	</dl>
+</form>
+
+{% if S_CLOUDFLARE_SETTINGS and not INCLUDED_CLOUDFLARE_ACP_JS %}
+{% INCLUDEJS '@alfredoramos_cloudflare/js/settings.js' %}
+{%- set INCLUDED_CLOUDFLARE_ACP_JS = true -%}
+{% endif %}
+{% endif %}

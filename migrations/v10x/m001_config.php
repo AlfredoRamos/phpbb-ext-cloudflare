@@ -21,6 +21,17 @@ class m001_config extends migration
 	public function update_data()
 	{
 		return [
+			// Cloudflare
+			[
+				'config.add',
+				['cloudflare_api_token', '']
+			],
+			[
+				'config.add',
+				['cloudflare_zone_id', '']
+			],
+
+			// Turnstile
 			[
 				'config.add',
 				['turnstile_key', '']

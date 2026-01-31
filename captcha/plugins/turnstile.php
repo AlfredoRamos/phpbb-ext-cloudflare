@@ -17,11 +17,13 @@ use phpbb\template\template;
 use phpbb\language\language;
 use phpbb\log\log_interface;
 use alfredoramos\cloudflare\includes\helper;
-use GuzzleHttp\Client as GuzzleClient;
+use alfredoramos\cloudflare\includes\http_trait;
 use GuzzleHttp\Exception\GuzzleException;
 
 class turnstile extends captcha_abstract
 {
+	use http_trait;
+
 	/** @var string */
 	private const SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
 
@@ -48,9 +50,6 @@ class turnstile extends captcha_abstract
 
 	/** @var helper */
 	protected $helper;
-
-	/** @var GuzzleClient */
-	protected $client;
 
 	/** @var string */
 	protected $root_path;
@@ -166,7 +165,7 @@ class turnstile extends captcha_abstract
 		$module->tpl_name = '@alfredoramos_cloudflare/acp_captcha_turnstile';
 		$module->page_title = 'ACP_VC_SETTINGS';
 
-		$form_key = 'acp_captcha';
+		$form_key = 'alfredoramos_cloudflare_turnstile';
 		add_form_key($form_key);
 
 		// Validation errors
@@ -232,6 +231,16 @@ class turnstile extends captcha_abstract
 					$this->config->set($key, $value);
 				}
 
+				// Admin log
+				$this->log->add(
+					'admin',
+					$this->user->data['user_id'],
+					$this->user->ip,
+					'LOG_CLOUDFLARE_DATA',
+					false,
+					[$this->language->lang('CAPTCHA_TURNSTILE')]
+				);
+
 				// Confirm dialog
 				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONFIG_VISUAL');
 				trigger_error($this->language->lang('CONFIG_UPDATED') . adm_back_link($module->u_action));
@@ -248,7 +257,7 @@ class turnstile extends captcha_abstract
 			'CAPTCHA_NAME'		=> $this->get_service_name(),
 			'CAPTCHA_PREVIEW'	=> $this->get_demo_template($id),
 
-			'S_TURNSTILE_SETTINGS'	=> true
+			'S_CLOUDFLARE_SETTINGS'	=> true
 		]);
 
 		// Assign allowed values
@@ -324,21 +333,6 @@ class turnstile extends captcha_abstract
 	}
 
 	/**
-	 * Get Guzzle client
-	 *
-	 * @return GuzzleClient
-	 */
-	protected function get_client()
-	{
-		if (!isset($this->client))
-		{
-			$this->client = new GuzzleClient(['allow_redirects' => false]);
-		}
-
-		return $this->client;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	public function validate()
@@ -355,32 +349,43 @@ class turnstile extends captcha_abstract
 			return $this->language->lang('TURNSTILE_INCORRECT');
 		}
 
+		$idempotency_key = $this->helper->uuid_v4();
+		$max_attempts = 3;
+
 		// Verify Turnstile token
-		try
+		for ($attempt = 0; $attempt < $max_attempts; $attempt++)
 		{
-			$client = $this->get_client();
-
-			$response = $client->request('POST', self::VERIFY_ENDPOINT, [
-				'form_params' => [
-					'secret'	=> $this->config->offsetGet('turnstile_secret'),
-					'response'	=> $result,
-					'remoteip'	=> $this->user->ip,
-					// TODO: idempotency_key
-				]
-			]);
-
-			$data = json_decode($response->getBody()->getContents());
-
-			if ($data->success === true)
+			try
 			{
-				$this->solved = true;
-				return false;
+				$client = $this->get_client();
+
+				$response = $client->request('POST', self::VERIFY_ENDPOINT, [
+					'form_params' => [
+						'secret' => $this->config->offsetGet('turnstile_secret'),
+						'response' => $result,
+						'remoteip' => $this->user->ip,
+						'idempotency_key' => $idempotency_key
+					]
+				]);
+
+				$data = json_decode($response->getBody()->getContents(), null, 512, JSON_THROW_ON_ERROR);
+
+				if ($data->success === true)
+				{
+					$this->solved = true;
+					return false;
+				}
 			}
+			catch (GuzzleException | JsonException $ex)
+			{
+				if (!$attempt === ($max_attempts - 1))
+				{
+					return $this->language->lang('CLOUDFLARE_REQUEST_EXCEPTION', $ex->getMessage());
+				}
+
+				$this->helper->backoff_delay($attempt);
+			};
 		}
-		catch (GuzzleException $ex)
-		{
-			return $this->language->lang('TURNSTILE_REQUEST_EXCEPTION', $ex->getMessage());
-		};
 
 		return $this->language->lang('TURNSTILE_INCORRECT');
 	}

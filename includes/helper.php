@@ -9,23 +9,53 @@
 
 namespace alfredoramos\cloudflare\includes;
 
+use phpbb\config\config;
+use phpbb\request\request;
 use phpbb\language\language;
+use phpbb\template\template;
+use phpbb\routing\helper as routing_helper;
+use alfredoramos\cloudflare\includes\cloudflare as cloudflare_client;
 
 class helper
 {
+	/** @var config */
+	protected $config;
+
+	/** @var request */
+	protected $request;
+
 	/** @var language */
 	protected $language;
+
+	/** @var template */
+	protected $template;
+
+	/** @var routing_helper */
+	protected $routing_helper;
+
+	/** @var cloudflare_client */
+	protected $cloudflare_client;
 
 	/**
 	 * Helper constructor.
 	 *
-	 * @param language $language
+	 * @param config				$config
+	 * @param request				$request
+	 * @param language				$language
+	 * @param template				$template
+	 * @param routing_helper		$routing_helper
+	 * @param cloudflare_client		$cloudflare_client
 	 *
 	 * @param void
 	 */
-	public function __construct(language $language)
+	public function __construct(config $config, request $request, language $language, template $template, routing_helper $routing_helper, cloudflare_client $cloudflare_client)
 	{
+		$this->config = $config;
+		$this->request = $request;
 		$this->language = $language;
+		$this->template = $template;
+		$this->routing_helper = $routing_helper;
+		$this->cloudflare_client = $cloudflare_client;
 	}
 
 	/**
@@ -72,5 +102,85 @@ class helper
 
 		// Validation check
 		return empty($errors);
+	}
+
+	public function original_visitor_ip(): string|null
+	{
+		$ip = null;
+
+		if (!empty($this->request->server('HTTP_CF_CONNECTING_IP')))
+		{
+			$ip = htmlspecialchars_decode($this->request->server('HTTP_CF_CONNECTING_IP'));
+		}
+
+		return $ip;
+	}
+
+	public function sanitize_string_list(array $list = []): array
+	{
+		$ary = [];
+
+		foreach ($list as $item)
+		{
+			if (!is_string($item))
+			{
+				continue;
+			}
+
+			$item = filter_var(trim($item), FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_EMPTY_STRING_NULL|FILTER_FLAG_STRIP_BACKTICK);
+
+			if (empty($item) || in_array($item, $ary))
+			{
+				continue;
+			}
+
+			$ary[] = $item;
+		}
+
+		return $ary;
+	}
+
+	public function uuid_v4(): string
+	{
+		$data = random_bytes(16);
+
+		// Set version to 0100
+		$data[6] = chr((ord($data[6]) & 0x0f) | 0x40);
+
+		// Set variant to 10
+		$data[8] = chr((ord($data[8]) & 0x3f) | 0x80);
+
+		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+	}
+
+	// * delay = base_delay × 2^(attempt − 1) + jitter
+	public function backoff_delay(int $attempt, int $base_ms = 250, int $max_ms = 2500): void {
+		// Exponential backoff
+		$delay_ms = min($base_ms * (2 ** ($attempt - 1)), $max_ms);
+
+		// Add jitter (±25%)
+		$jitter = random_int((int) ($delay_ms * -0.25), (int) ($delay_ms *  0.25));
+
+		usleep(($delay_ms + $jitter) * 1000);
+	}
+
+	public function acp_assign_template_variables()
+	{
+		$this->language->add_lang(['acp/settings'], 'alfredoramos/cloudflare');
+
+		$this->template->assign_vars([
+			'BOARD_URL' => generate_board_url(),
+			'CLOUDFLARE_PURGE_CACHE_URL' => $this->routing_helper->route('alfredoramos_cloudflare_purge_cache', [
+				'hash' => generate_link_hash('cloudflare_purge_cache')
+			])
+		]);
+
+		foreach ($this->cloudflare_client::PURGE_CACHE_TYPES as $key => $value)
+		{
+			$this->template->assign_block_vars('CLOUDFLARE_PURGE_CACHE_TYPES', [
+				'NAME' => $this->language->lang(sprintf('CLOUDFLARE_PURGE_CACHE_TYPE_%s', strtoupper($value))),
+				'VALUE' => $value,
+			]);
+		}
 	}
 }
