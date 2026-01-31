@@ -38,6 +38,7 @@ class listener implements EventSubscriberInterface
 	{
 		return [
 			'core.session_ip_after' => 'restore_original_ip',
+			'core.download_file_send_to_browser_before' => 'cache_attachments',
 			'core.adm_page_header_after' => 'acp_global_template_variables'
 		];
 	}
@@ -50,6 +51,34 @@ class listener implements EventSubscriberInterface
 		{
 			$event['ip'] = $ip;
 		}
+	}
+
+	public function cache_attachments($event)
+	{
+		if (!$this->helper->is_public_attachment($event['attachment']))
+		{
+			return;
+		}
+
+		$tags = ['attachment'];
+		$category = null;
+
+		switch($event['display_cat'])
+		{
+			case ATTACHMENT_CATEGORY_IMAGE:
+				$category = 'image';
+				break;
+			case ATTACHMENT_CATEGORY_THUMB:
+				$category = 'thumbnail';
+				break;
+		}
+
+		if (!empty($category))
+		{
+			$tags[] = $category;
+		}
+
+		$this->helper->cache_headers($event['attachment'], $tags);
 	}
 
 	public function acp_global_template_variables($event)

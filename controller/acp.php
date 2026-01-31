@@ -94,7 +94,20 @@ class acp
 				'options' => [
 					'regexp' => '#^\w{32}$#'
 				]
-			]
+			],
+			'cloudflare_cache_time' => [
+				'filter' => FILTER_VALIDATE_INT,
+				'options' => [
+					'min_range' => $this->helper::MIN_CACHE_TIME,
+					'max_range' => $this->helper::MAX_CACHE_TIME
+				]
+			],
+			'cloudflare_cache_type' => [
+				'filter' => FILTER_VALIDATE_REGEXP,
+				'options' => [
+					'regexp' => '#^(?:' . implode('|', $this->helper::SUPPORTED_CACHE_UNITS) . ')$#'
+				]
+			],
 		];
 
 		// Request form data
@@ -113,6 +126,8 @@ class acp
 			$fields = [
 				'cloudflare_api_token' => $this->request->variable('cloudflare_api_token', ''),
 				'cloudflare_zone_id' => $this->request->variable('cloudflare_zone_id', ''),
+				'cloudflare_cache_time' => $this->request->variable('cloudflare_cache_time', 7),
+				'cloudflare_cache_type' => $this->request->variable('cloudflare_cache_type', $this->helper::SUPPORTED_CACHE_UNITS[1]),
 			];
 
 			// Validation check
@@ -149,7 +164,33 @@ class acp
 			),
 			'CLOUDFLARE_API_TOKEN' => $this->config->offsetGet('cloudflare_api_token'),
 			'CLOUDFLARE_ZONE_ID' => $this->config->offsetGet('cloudflare_zone_id'),
+			'CLOUDFLARE_CACHE_TIME' => (int) $this->config->offsetGet('cloudflare_cache_time'),
+			'CLOUDFLARE_MIN_CACHE_TIME' => $this->helper::MIN_CACHE_TIME,
+			'CLOUDFLARE_MAX_CACHE_TIME' => $this->helper::MAX_CACHE_TIME,
+			'CLOUDFLARE_CACHE_TYPE' => $this->config->offsetGet('cloudflare_cache_type')
 		]);
+
+		// Cloudflare cache types
+		foreach ($this->helper::SUPPORTED_CACHE_UNITS as $key => $value)
+		{
+			$unit_key = '';
+
+			switch($value) {
+				case 'h':
+					$unit_key = 'HOURS';
+					break;
+
+				case 'd':
+					$unit_key = 'DAYS';
+					break;
+			}
+
+			$this->template->assign_block_vars('CLOUDFLARE_CACHE_UNITS', [
+				'NAME' => $this->language->lang($unit_key),
+				'VALUE' => $value,
+				'SELECTED' => ($value === $this->config->offsetGet('cloudflare_cache_type'))
+			]);
+		}
 
 		// Validation errors
 		foreach ($errors as $key => $value)

@@ -42,6 +42,26 @@
 	</fieldset>
 
 	<fieldset>
+		<legend>{{ lang('ATTACHMENTS') }}</legend>
+		<dl>
+			<dt>
+				<label for="cloudflare_cache_time">{{ lang('ACP_CLOUDFLARE_CACHE_TIME') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('ACP_CLOUDFLARE_CACHE_TIME_EXPLAIN') }}</span>
+			</dt>
+			<dd>
+				<input type="number" id="cloudflare_cache_time" name="cloudflare_cache_time" min="{{ CLOUDFLARE_MIN_CACHE_TIME }}" max="{{ CLOUDFLARE_MAX_CACHE_TIME }}" value="{{ CLOUDFLARE_CACHE_TIME }}">
+				{% if CLOUDFLARE_CACHE_UNITS %}
+				<select id="cloudflare_cache_type" name="cloudflare_cache_type">
+					{% for UNIT in CLOUDFLARE_CACHE_UNITS %}
+					<option value="{{ UNIT.VALUE }}"{% if UNIT.SELECTED %} selected="selected"{% endif %}>{{ UNIT.NAME }}</option>
+					{% endfor %}
+				</select>
+				{% endif %}
+			</dd>
+		</dl>
+	</fieldset>
+
+	<fieldset>
 		<legend>{{ lang('ACP_SUBMIT_CHANGES') }}</legend>
 		<p class="submit-buttons">
 			<input type="reset" class="button2" value="{{ lang('RESET') }}">
