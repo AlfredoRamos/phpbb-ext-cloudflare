@@ -9,13 +9,18 @@ services:
     alfredoramos.cloudflare.helper:
         class: alfredoramos\cloudflare\includes\helper
         arguments:
+            - '@dbal.conn'
+            - '@auth'
             - '@config'
             - '@request'
             - '@language'
             - '@template'
+            - '@content.visibility'
             - '@routing.helper'
             - '@captcha.factory'
             - '@alfredoramos.cloudflare.client'
+            - '%tables.users%'
+            - '%tables.posts%'
 
     alfredoramos.cloudflare.client:
         class: alfredoramos\cloudflare\includes\cloudflare

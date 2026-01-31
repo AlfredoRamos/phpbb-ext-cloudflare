@@ -46,6 +46,14 @@ class m001_config extends migration
 				'config.add',
 				['cloudflare_cache_ruleset_rules_id', '']
 			],
+			[
+				'config.add',
+				['cloudflare_cache_time', 7]
+			],
+			[
+				'config.add',
+				['cloudflare_cache_type', 'd']
+			],
 
 			// Turnstile
 			[

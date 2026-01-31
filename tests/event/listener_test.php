@@ -41,7 +41,8 @@ class listener_test extends \phpbb_test_case
 			[
 				'core.session_ip_after',
 				'core.adm_page_header_after',
-				'core.login_box_before'
+				'core.login_box_before',
+				'core.download_file_send_to_browser_before'
 			],
 			array_keys(listener::getSubscribedEvents())
 		);

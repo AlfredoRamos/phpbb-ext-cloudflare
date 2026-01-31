@@ -39,7 +39,8 @@ class listener implements EventSubscriberInterface
 		return [
 			'core.session_ip_after' => 'restore_original_ip',
 			'core.adm_page_header_after' => 'acp_global_template_variables',
-			'core.login_box_before' => 'login_captcha'
+			'core.login_box_before' => 'login_captcha',
+			'core.download_file_send_to_browser_before' => 'cache_attachments'
 		];
 	}
 
@@ -77,5 +78,33 @@ class listener implements EventSubscriberInterface
 		}
 
 		$this->helper->setup_login_captcha();
+	}
+
+	public function cache_attachments($event)
+	{
+		if (!$this->helper->is_public_attachment($event['attachment']))
+		{
+			return;
+		}
+
+		$tags = ['attachment'];
+		$category = null;
+
+		switch($event['display_cat'])
+		{
+			case ATTACHMENT_CATEGORY_IMAGE:
+				$category = 'image';
+				break;
+			case ATTACHMENT_CATEGORY_THUMB:
+				$category = 'thumbnail';
+				break;
+		}
+
+		if (!empty($category))
+		{
+			$tags[] = $category;
+		}
+
+		$this->helper->cache_headers($event['attachment'], $tags);
 	}
 }

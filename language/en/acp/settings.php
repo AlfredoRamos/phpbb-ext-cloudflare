@@ -36,6 +36,9 @@ $lang = array_merge($lang, [
 	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Toggle %s',
 	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Invalid values for fields: <samp>%s</samp>',
 
+	'ACP_CLOUDFLARE_CACHE_TIME' => 'Cache time',
+	'ACP_CLOUDFLARE_CACHE_TIME_EXPLAIN' => 'Default time to store attachments in Cloudflare cache.',
+
 	'CLOUDFLARE_PURGE_CACHE' => 'Purge the Cloudflare cache',
 	'CLOUDFLARE_PURGE_CACHE_EXPLAIN' => 'Purge Cloudflare cache by type. Note that Cloudflare impose a limit of request per seconds.',
 	'CLOUDFLARE_PURGE_CACHE_TYPE_PURGE_EVERYTHING' => 'Purge everything',
