@@ -42,7 +42,8 @@ $lang = array_merge($lang, [
 	'TURNSTILE_INCORRECT' => 'Вы указали неправильное решение.',
 	'TURNSTILE_NOSCRIPT' => 'Для загрузки включите JavaScript в вашем браузере.',
 	'TURNSTILE_LOGIN_ERROR_ATTEMPTS' => 'Вы превысили максимально допустимое количество попыток входа.<br>В дополнение к вашему логину и паролю будет использоваться Turnstile.',
-	'TURNSTILE_REQUEST_EXCEPTION' => 'Ошибка запроса Turnstile: %s',
+
+	'CLOUDFLARE_REQUEST_EXCEPTION' => 'Ошибка запроса Cloudflare: %s',
 
 	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Переключатель %s',
 	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Недопустимые значения для полей: <samp>%s</samp>'

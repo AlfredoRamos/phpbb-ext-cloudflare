@@ -9,8 +9,8 @@
 
 namespace alfredoramos\cloudflare\tests\event;
 
-use phpbb\request\request;
 use alfredoramos\cloudflare\event\listener;
+use alfredoramos\cloudflare\includes\helper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -18,12 +18,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class listener_test extends \phpbb_test_case
 {
-	protected $request;
+	protected $helper;
 
 	protected function setUp(): void
 	{
 		parent::setUp();
-		$this->request = $this->getMockBuilder(request::class)
+		$this->helper = $this->getMockBuilder(helper::class)
 			->disableOriginalConstructor()->getMock();
 	}
 
@@ -31,14 +31,17 @@ class listener_test extends \phpbb_test_case
 	{
 		$this->assertInstanceOf(
 			EventSubscriberInterface::class,
-			new listener($this->request)
+			new listener($this->helper)
 		);
 	}
 
 	public function test_subscribed_events()
 	{
 		$this->assertSame(
-			['core.session_ip_after'],
+			[
+				'core.session_ip_after',
+				'core.adm_page_header_after'
+			],
 			array_keys(listener::getSubscribedEvents())
 		);
 	}

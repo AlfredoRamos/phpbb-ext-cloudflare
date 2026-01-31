@@ -1,0 +1,3 @@
+alfredoramos_cloudflare_purge_cache:
+    path: /cloudflare/purge_cache/{hash}
+    defaults: { _controller: alfredoramos.cloudflare.controller.cloudflare:purge_cache, hash: '' }

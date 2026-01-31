@@ -1,4 +1,4 @@
-{% if S_TURNSTILE_SETTINGS and not INCLUDED_TURNSTILE_ACP_CSS %}
+{% if S_CLOUDFLARE_SETTINGS and not INCLUDED_CLOUDFLARE_ACP_CSS %}
 {% INCLUDECSS '@alfredoramos_cloudflare/css/style.css' %}
-{%- set INCLUDED_TURNSTILE_ACP_CSS = true -%}
+{%- set INCLUDED_CLOUDFLARE_ACP_CSS = true -%}
 {% endif %}

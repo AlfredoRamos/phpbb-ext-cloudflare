@@ -32,7 +32,7 @@
 				<br><span>{{ lang('TURNSTILE_SECRET_EXPLAIN') }}</span>
 			</dt>
 			<dd>
-				<input type="password" id="turnstile-secret" name="turnstile_secret" value="{{ TURNSTILE_SECRET }}" required="required" autocomplete="off" class="medium cloudflare-secret">
+				<input type="password" id="turnstile-secret" name="turnstile_secret" value="{{ TURNSTILE_SECRET }}" required="required" autocomplete="off" class="medium tw-font-mono tw-text-xs cloudflare-secret">
 				<span class="toggle-cloudflare-secret" title="{{ lang('ACP_CLOUDFLARE_TOGGLE_SECRET', lang('TURNSTILE_SECRET'))|striptags|escape('html_attr') }}">
 					<i class="icon acp-icon acp-icon-resync fa-eye fa-fw" aria-hidden="true"></i>
 				</span>

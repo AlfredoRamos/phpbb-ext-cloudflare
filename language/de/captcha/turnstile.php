@@ -42,7 +42,8 @@ $lang = array_merge($lang, [
 	'TURNSTILE_INCORRECT' => 'Die von Ihnen eingegebene Lösung war falsch.',
 	'TURNSTILE_NOSCRIPT' => 'Bitte aktivieren Sie JavaScript in Ihrem Browser, um die Challenge zu laden.',
 	'TURNSTILE_LOGIN_ERROR_ATTEMPTS' => 'Sie haben die maximal zulässige Anzahl an Anmeldeversuchen überschritten.<br>Zusätzlich zu Ihrem Benutzernamen und Passwort wird Turnstile zur Authentifizierung Ihrer Sitzung verwendet.',
-	'TURNSTILE_REQUEST_EXCEPTION' => 'Turnstile Anforderungsfehler: %s',
+
+	'CLOUDFLARE_REQUEST_EXCEPTION' => 'Cloudflare Anforderungsfehler: %s',
 
 	'ACP_CLOUDFLARE_TOGGLE_SECRET' => '%s umschalten',
 	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Ungültige Werte für Felder: <samp>%s</samp>'

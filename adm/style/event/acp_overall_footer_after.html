@@ -1,6 +1,21 @@
-{% if S_TURNSTILE_SETTINGS and not INCLUDED_TURNSTILE_ACP_JS %}
+{% if not INCLUDED_CLOUDFLARE_ACP_CONFIG %}
+<script>
+	var cloudflareCfg = {
+		config: {
+			baseURL: '{{ BOARD_URL|escape("js") }}'
+		},
+		lang: {
+			successTitle: '{{ lang("CLOUDFLARE_PURGE_CACHE_SUCCESS_TITLE")|escape("js") }}',
+			successBody: '{{ lang("CLOUDFLARE_PURGE_CACHE_SUCCESS_BODY")|escape("js") }}'
+		}
+	};
+</script>
+{%- set INCLUDED_CLOUDFLARE_ACP_CONFIG = true -%}
+{% endif %}
+
+{% if S_CLOUDFLARE_SETTINGS and not INCLUDED_CLOUDFLARE_ACP_JS %}
 {% INCLUDEJS '@alfredoramos_cloudflare/js/settings.js' %}
-{%- set INCLUDED_TURNSTILE_ACP_JS = true -%}
+{%- set INCLUDED_CLOUDFLARE_ACP_JS = true -%}
 {% endif %}
 
 {% if S_TURNSTILE_AVAILABLE and U_TURNSTILE_SCRIPT and not INCLUDED_TURNSTILE_JS %}

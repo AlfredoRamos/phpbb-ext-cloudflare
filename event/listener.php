@@ -10,23 +10,23 @@
 namespace alfredoramos\cloudflare\event;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use phpbb\request\request;
+use alfredoramos\cloudflare\includes\helper;
 
 class listener implements EventSubscriberInterface
 {
-	/** @var request */
-	protected $request;
+	/** @var helper */
+	protected $helper;
 
 	/**
 	 * Listener constructor.
 	 *
-	 * @param request $request
+	 * @param helper $helper
 	 *
 	 * @return void
 	 */
-	public function __construct(request $request)
+	public function __construct(helper $helper)
 	{
-		$this->request = $request;
+		$this->helper = $helper;
 	}
 
 	/**
@@ -37,15 +37,23 @@ class listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return [
-			'core.session_ip_after' => 'restore_original_ip'
+			'core.session_ip_after' => 'restore_original_ip',
+			'core.adm_page_header_after' => 'acp_global_template_variables'
 		];
 	}
 
 	public function restore_original_ip($event): void
 	{
-		if (!empty($this->request->server('HTTP_CF_CONNECTING_IP')))
+		$ip = $this->helper->original_visitor_ip();
+
+		if (!empty($ip))
 		{
-			$event['ip'] = htmlspecialchars_decode($this->request->server('HTTP_CF_CONNECTING_IP'));
+			$event['ip'] = $ip;
 		}
+	}
+
+	public function acp_global_template_variables($event)
+	{
+		$this->helper->acp_assign_template_variables();
 	}
 }

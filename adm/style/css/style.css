@@ -13,7 +13,49 @@
 	vertical-align: middle;
 	cursor: pointer;
 }
+
 .toggle-cloudflare-secret,
 .toggle-cloudflare-secret .icon {
 	display: inline-block;
+}
+
+.cloudflare-button {
+	border-radius: 3px;
+	border: 1px solid #e58737;
+	padding: 3px 6px;
+	background-color: #fff;
+	color: #555;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.cloudflare-button:hover {
+	color: #fff;
+	background-color: #f68e35;
+}
+
+[name='cloudflare_purge_cache_type']:disabled,
+[name='cloudflare_purge_cache_value']:disabled {
+	cursor: not-allowed;
+}
+
+.cloudflare-button:disabled {
+	cursor: wait;
+}
+
+[name='cloudflare_purge_cache_value'] {
+	resize: vertical;
+	min-height: 60px;
+	max-height: 150px;
+}
+
+#cloudflare_purge_cache_form details > summary {
+	cursor: pointer;
+}
+
+#cloudflare_purge_cache_type,
+.cloudflare-value-container,
+.cloudflare-button {
+	display: block;
+	margin: 10px 0;
 }

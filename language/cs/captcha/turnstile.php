@@ -42,7 +42,8 @@ $lang = array_merge($lang, [
 	'TURNSTILE_INCORRECT' => 'Zadali jste nesprávné řešení.',
 	'TURNSTILE_NOSCRIPT' => 'Povolte ve svém prohlížeči JavaScript pro načtení Turnstile.',
 	'TURNSTILE_LOGIN_ERROR_ATTEMPTS' => 'Překročili jste maximální počet pokusů o přihlášení.<br>Pro ověření vaší relace vyplňte kromě svého uživatelského jména a hesla také Turnstile.',
-	'TURNSTILE_REQUEST_EXCEPTION' => 'Chyba požadavku Turnstile: %s',
+
+	'CLOUDFLARE_REQUEST_EXCEPTION' => 'Chyba požadavku Cloudflare: %s',
 
 	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Přepnout zobrazení %s',
 	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Neplatné hodnoty pro pole: <samp>%s</samp>'
