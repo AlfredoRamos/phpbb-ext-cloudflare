@@ -25,7 +25,7 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, [
 	'CAPTCHA_TURNSTILE' => 'Cloudflare Turnstile',
-	'CAPTCHA_TURNSTILE_EXPLAIN' => 'Consult the <a href="https://www.phpbb.com/customise/db/extension/cloudflare/faq" rel="external nofollow noreferrer noopener" target="_blank"><strong>FAQ</strong></a> for more information. If you require assistance, please visit the <a href="https://www.phpbb.com/customise/db/extension/cloudflare/support" rel="external nofollow noreferrer noopener" target="_blank"><strong>Support</strong></a> section.',
+	'CAPTCHA_TURNSTILE_EXPLAIN' => '<p>Consult the <a href="%1$s" rel="external nofollow noreferrer noopener" target="_blank"><strong>FAQ</strong></a> for more information. If you require assistance, please visit the <a href="%2$s" rel="external nofollow noreferrer noopener" target="_blank"><strong>Support</strong></a> section.</p><p>If you like or found this extension useful and want to show some appreciation, you can consider supporting its development by <a href="%3$s" rel="external nofollow noreferrer noopener" target="_blank"><strong>giving a donation</strong></a>.</p>',
 	'TURNSTILE_KEY' => 'Site key',
 	'TURNSTILE_KEY_EXPLAIN' => 'The site key generated on Turnstile for your domain.',
 	'TURNSTILE_SECRET' => 'Secret key',
@@ -43,6 +43,7 @@ $lang = array_merge($lang, [
 	'TURNSTILE_APPEARANCE' => 'Appearance',
 	'TURNSTILE_APPEARANCE_EXPLAIN' => 'The visibility of the Turnstile widget.',
 	'TURNSTILE_APPEARANCE_ALWAYS' => 'Always',
+	'TURNSTILE_APPEARANCE_INTERACTION_ONLY' => 'Invisible',
 	'TURNSTILE_NOT_AVAILABLE' => 'In order to use Turnstile, you must create an account on <a href="https://dash.cloudflare.com/?to=/:account/turnstile" rel="external nofollow noreferrer noopener" target="_blank">www.cloudflare.com</a>.',
 	'TURNSTILE_INCORRECT' => 'The solution you provided was incorrect.',
 	'TURNSTILE_NOSCRIPT' => 'Please enable JavaScript in your browser to load the challenge.',

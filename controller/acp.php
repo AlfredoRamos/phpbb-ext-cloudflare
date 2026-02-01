@@ -94,6 +94,13 @@ class acp
 				'options' => [
 					'regexp' => '#^\w{32}$#'
 				]
+			],
+			'turnstile_force_login' => [
+				'filter' => FILTER_VALIDATE_INT,
+				'options' => [
+					'min_range' => 0,
+					'max_range' => 1
+				]
 			]
 		];
 
@@ -113,6 +120,7 @@ class acp
 			$fields = [
 				'cloudflare_api_token' => $this->request->variable('cloudflare_api_token', ''),
 				'cloudflare_zone_id' => $this->request->variable('cloudflare_zone_id', ''),
+				'turnstile_force_login' => $this->request->variable('turnstile_force_login', 1)
 			];
 
 			// Validation check
@@ -143,9 +151,9 @@ class acp
 		$this->template->assign_vars([
 			'ACP_CLOUDFLARE_SETTINGS_EXPLAIN' => $this->language->lang(
 				'ACP_CLOUDFLARE_SETTINGS_EXPLAIN',
-				'https://www.phpbb.com/customise/db/extension/cloudflare/faq',
-				'https://www.phpbb.com/customise/db/extension/cloudflare/support',
-				'https://alfredoramos.mx/donate/'
+				$this->helper::SUPPORT_FAQ,
+				$this->helper::SUPPORT_URL,
+				$this->helper::VENDOR_DONATE,
 			),
 			'CLOUDFLARE_API_TOKEN' => $this->config->offsetGet('cloudflare_api_token'),
 			'CLOUDFLARE_ZONE_ID' => $this->config->offsetGet('cloudflare_zone_id'),

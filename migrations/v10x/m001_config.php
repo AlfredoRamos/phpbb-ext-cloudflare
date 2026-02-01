@@ -42,15 +42,19 @@ class m001_config extends migration
 			],
 			[
 				'config.add',
-				['turnstile_theme', '']
+				['turnstile_theme', 'auto']
 			],
 			[
 				'config.add',
-				['turnstile_size', '']
+				['turnstile_size', 'normal']
 			],
 			[
 				'config.add',
-				['turnstile_appearance', '']
+				['turnstile_appearance', 'always']
+			],
+			[
+				'config.add',
+				['turnstile_force_login', 1]
 			]
 		];
 	}
