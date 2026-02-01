@@ -54,7 +54,7 @@ class main_module
 	public function main($id, $mode)
 	{
 		// Load translations
-		$this->language->add_lang(['acp/settings', 'captcha/turnstile'], 'alfredoramos/cloudflare');
+		$this->language->add_lang(['acp/settings'], 'alfredoramos/cloudflare');
 
 		// Form token
 		add_form_key('alfredoramos_cloudflare');

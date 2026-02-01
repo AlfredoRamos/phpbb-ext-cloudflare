@@ -25,7 +25,8 @@ trait functional_test_case_trait
 			// Turnstile
 			'captcha_plugin' => 'alfredoramos.cloudflare.captcha.turnstile',
 			'turnstile_key' => '1x00000000000000000000AA',
-			'turnstile_secret' => '1x0000000000000000000000000000000AA'
+			'turnstile_secret' => '1x0000000000000000000000000000000AA',
+			'turnstile_force_login' => '1'
 		];
 
 		foreach ($config_ary as $key => $value)

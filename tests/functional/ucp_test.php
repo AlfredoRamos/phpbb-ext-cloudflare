@@ -23,6 +23,39 @@ class ucp_test extends \phpbb_functional_test_case
 		$this->init_turnstile();
 	}
 
+	public function test_login_captcha()
+	{
+		$crawler = self::request('GET', 'ucp.php?mode=login');
+
+		$container = $crawler->filter('.turnstile-container');
+		$this->assertSame(1, $container->count());
+
+		$widget = $container->filter('.cf-turnstile');
+		$this->assertSame(1, $widget->count());
+		$this->assertSame(
+			'1x00000000000000000000AA',
+			$widget->attr('data-sitekey')
+		);
+		$this->assertSame(
+			1,
+			preg_match(
+				'#^\dx[\w\-]{22}$#',
+				$widget->attr('data-sitekey')
+			)
+		);
+
+		$script = $crawler->filterXPath('//script[contains(@src, "cloudflare.com")]');
+		$this->assertSame(1, $script->count());
+		$this->assertSame('https://challenges.cloudflare.com/turnstile/v0/api.js', $script->attr('src'));
+
+		$noscript = $container->filter('noscript');
+		$this->assertSame(1, $noscript->count());
+		$this->assertSame(
+			$this->lang('TURNSTILE_NOSCRIPT'),
+			$noscript->filter('div')->text()
+		);
+	}
+
 	public function test_register_captcha()
 	{
 		$crawler = self::request('GET', 'ucp.php?mode=register');

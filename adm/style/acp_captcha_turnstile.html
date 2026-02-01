@@ -83,6 +83,16 @@
 			</dd>
 		</dl>
 		{% endif %}
+		<dl>
+			<dt>
+				<label for="turnstile_force_login">{{ lang('TURNSTILE_FORCE_LOGIN') ~ lang('COLON') }}</label>
+				<br><span>{{ lang('TURNSTILE_FORCE_LOGIN_EXPLAIN') }}</span>
+			</dt>
+			<dd>
+				<label><input type="radio" id="turnstile_force_login" name="turnstile_force_login" value="1"{% if TURNSTILE_FORCE_LOGIN %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" name="turnstile_force_login" value="0"{% if not TURNSTILE_FORCE_LOGIN %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
 	</fieldset>
 
 	<fieldset>
