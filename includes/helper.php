@@ -14,6 +14,8 @@ use phpbb\request\request;
 use phpbb\language\language;
 use phpbb\template\template;
 use phpbb\routing\helper as routing_helper;
+use phpbb\captcha\factory as captcha_factory;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use alfredoramos\cloudflare\includes\cloudflare as cloudflare_client;
 
 class helper
@@ -33,8 +35,20 @@ class helper
 	/** @var routing_helper */
 	protected $routing_helper;
 
+	/** @var captcha_factory */
+	protected $captcha_factory;
+
 	/** @var cloudflare_client */
 	protected $cloudflare_client;
+
+	/** @var string */
+	public const SUPPORT_FAQ = 'https://www.phpbb.com/customise/db/extension/cloudflare/faq';
+
+	/** @var string */
+	public const SUPPORT_URL = 'https://www.phpbb.com/customise/db/extension/cloudflare/support';
+
+	/** @var string */
+	public const VENDOR_DONATE = 'https://alfredoramos.mx/donate/';
 
 	/**
 	 * Helper constructor.
@@ -44,17 +58,19 @@ class helper
 	 * @param language				$language
 	 * @param template				$template
 	 * @param routing_helper		$routing_helper
+	 * @param captcha_factory		$captcha_factory
 	 * @param cloudflare_client		$cloudflare_client
 	 *
 	 * @param void
 	 */
-	public function __construct(config $config, request $request, language $language, template $template, routing_helper $routing_helper, cloudflare_client $cloudflare_client)
+	public function __construct(config $config, request $request, language $language, template $template, routing_helper $routing_helper, captcha_factory $captcha_factory, cloudflare_client $cloudflare_client)
 	{
 		$this->config = $config;
 		$this->request = $request;
 		$this->language = $language;
 		$this->template = $template;
 		$this->routing_helper = $routing_helper;
+		$this->captcha_factory = $captcha_factory;
 		$this->cloudflare_client = $cloudflare_client;
 	}
 
@@ -181,6 +197,31 @@ class helper
 				'NAME' => $this->language->lang(sprintf('CLOUDFLARE_PURGE_CACHE_TYPE_%s', strtoupper($value))),
 				'VALUE' => $value,
 			]);
+		}
+	}
+
+	public function setup_login_captcha(): void
+	{
+		if ((int) $this->config->offsetGet('turnstile_force_login') !== 1)
+		{
+			return;
+		}
+
+		try
+		{
+			$captcha = $this->captcha_factory->get_instance('alfredoramos.cloudflare.captcha.turnstile');
+
+			if (empty($captcha) || !$captcha->is_available())
+			{
+				return;
+			}
+
+			$captcha->init(CONFIRM_LOGIN);
+			$this->template->assign_vars(['CAPTCHA_TEMPLATE' => $captcha->get_template()]);
+		}
+		catch(ServiceNotFoundException $ex) // Just in case, must not get here
+		{
+			return;
 		}
 	}
 }

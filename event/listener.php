@@ -38,7 +38,8 @@ class listener implements EventSubscriberInterface
 	{
 		return [
 			'core.session_ip_after' => 'restore_original_ip',
-			'core.adm_page_header_after' => 'acp_global_template_variables'
+			'core.adm_page_header_after' => 'acp_global_template_variables',
+			'core.login_box_before' => 'login_captcha'
 		];
 	}
 
@@ -52,8 +53,18 @@ class listener implements EventSubscriberInterface
 		}
 	}
 
-	public function acp_global_template_variables($event)
+	public function acp_global_template_variables($event): void
 	{
 		$this->helper->acp_assign_template_variables();
+	}
+
+	public function login_captcha($event): void
+	{
+		if ($event['admin'])
+		{
+			return;
+		}
+
+		$this->helper->setup_login_captcha();
 	}
 }

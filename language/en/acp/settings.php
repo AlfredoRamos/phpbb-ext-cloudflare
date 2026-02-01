@@ -35,4 +35,7 @@ $lang = array_merge($lang, [
 	'CLOUDFLARE_PURGE_CACHE_TYPE_HOSTS' => 'Hosts',
 	'CLOUDFLARE_PURGE_CACHE_SUCCESS_TITLE' => 'Cache purged',
 	'CLOUDFLARE_PURGE_CACHE_SUCCESS_BODY' => 'The Cloudflare cache has been successfully purged.',
+
+	'TURNSTILE_FORCE_LOGIN' => 'Force spambot countermeasures in logins',
+	'TURNSTILE_FORCE_LOGIN_EXPLAIN' => 'Requires users to always pass the anti-spambot task to help prevent automated logins.'
 ]);

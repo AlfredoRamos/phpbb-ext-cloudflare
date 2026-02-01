@@ -4,7 +4,7 @@
 
 <h1>{{ lang('ACP_VC_SETTINGS') }}</h1>
 <p>{{ lang('ACP_VC_SETTINGS_EXPLAIN') }}</p>
-<p>{{ lang('CAPTCHA_TURNSTILE_EXPLAIN') }}</p>
+{{ CAPTCHA_TURNSTILE_EXPLAIN }}
 
 {% if VALIDATION_ERRORS %}
 <div class="errorbox">
@@ -72,10 +72,10 @@
 		<dl>
 			<dt>
 				<label for="turnstile-appearance">{{ lang('TURNSTILE_APPEARANCE') ~ lang('COLON') }}</label>
-				<br><span>{{ lang('TURNSTILE_SIZE_EXPLAIN') }}</span>
+				<br><span>{{ lang('TURNSTILE_APPEARANCE_EXPLAIN') }}</span>
 			</dt>
 			<dd>
-				<select id="turnstile-appearance" name="turnstile_appearance" readonly disabled>
+				<select id="turnstile-appearance" name="turnstile_appearance">
 					{% for APPEARANCE in TURNSTILE_APPEARANCE_LIST %}
 					<option value="{{ APPEARANCE.KEY }}"{% if APPEARANCE.ENABLED %} selected{% endif %}>{{ APPEARANCE.NAME }}</option>
 					{% endfor %}

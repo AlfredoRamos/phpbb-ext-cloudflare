@@ -40,7 +40,8 @@ class listener_test extends \phpbb_test_case
 		$this->assertSame(
 			[
 				'core.session_ip_after',
-				'core.adm_page_header_after'
+				'core.adm_page_header_after',
+				'core.login_box_before'
 			],
 			array_keys(listener::getSubscribedEvents())
 		);

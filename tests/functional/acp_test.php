@@ -62,7 +62,7 @@ class acp_test extends \phpbb_functional_test_case
 		$this->assertTrue($form->has('turnstile_appearance'));
 		$this->assertSame('always', $form->get('turnstile_appearance')->getValue());
 		$this->assertSame(
-			['always'],
+			['always', 'interaction-only'],
 			$form->get('turnstile_appearance')->availableOptionValues()
 		);
 
@@ -70,7 +70,8 @@ class acp_test extends \phpbb_functional_test_case
 			'turnstile_key' => '1x00000000000000000000AA',
 			'turnstile_secret' => '1x0000000000000000000000000000000AA',
 			'turnstile_theme' => 'dark',
-			'turnstile_size' => 'compact'
+			'turnstile_size' => 'compact',
+			'turnstile_appearance' => 'interaction-only'
 		]);
 
 		$this->assertSame(1, $crawler->filter('.successbox')->count());
@@ -95,7 +96,7 @@ class acp_test extends \phpbb_functional_test_case
 		));
 		$this->assertSame('dark', $widget->attr('data-theme'));
 		$this->assertSame('compact', $widget->attr('data-size'));
-		$this->assertSame('always', $widget->attr('data-appearance'));
+		$this->assertSame('interaction-only', $widget->attr('data-appearance'));
 
 		$container = $crawler->filterXPath('//div[contains(@class, "cf-turnstile")]/ancestor::fieldset');
 		$script = $crawler->filterXPath('//script[contains(@src, "cloudflare.com")]');

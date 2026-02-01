@@ -61,7 +61,7 @@ class turnstile extends captcha_abstract
 	protected $supported_values = [
 		'theme' => ['auto', 'light', 'dark'],
 		'size' => ['normal', 'flexible', 'compact'],
-		'appearance' => ['always'] // Not yet implemented: execute, interaction-only
+		'appearance' => ['always', 'interaction-only'] // Not yet implemented: execute
 	];
 
 	/**
@@ -98,7 +98,7 @@ class turnstile extends captcha_abstract
 	public function init($type)
 	{
 		parent::init($type);
-		$this->language->add_lang('captcha/turnstile', 'alfredoramos/cloudflare');
+		$this->language->add_lang(['captcha/turnstile'], 'alfredoramos/cloudflare');
 	}
 
 	/**
@@ -136,7 +136,7 @@ class turnstile extends captcha_abstract
 	 */
 	public function is_available()
 	{
-		$this->language->add_lang('captcha/turnstile', 'alfredoramos/cloudflare');
+		$this->language->add_lang(['captcha/turnstile'], 'alfredoramos/cloudflare');
 		return !empty($this->config->offsetGet('turnstile_key'))
 			&& !empty($this->config->offsetGet('turnstile_secret'));
 	}
@@ -257,6 +257,12 @@ class turnstile extends captcha_abstract
 			'CAPTCHA_NAME'		=> $this->get_service_name(),
 			'CAPTCHA_PREVIEW'	=> $this->get_demo_template($id),
 
+			'CAPTCHA_TURNSTILE_EXPLAIN' => $this->language->lang(
+				'CAPTCHA_TURNSTILE_EXPLAIN',
+				$this->helper::SUPPORT_FAQ,
+				$this->helper::SUPPORT_URL,
+				$this->helper::VENDOR_DONATE
+			),
 			'S_CLOUDFLARE_SETTINGS'	=> true
 		]);
 
@@ -272,7 +278,7 @@ class turnstile extends captcha_abstract
 					'NAME' => $this->language->lang(sprintf(
 						'TURNSTILE_%1$s_%2$s',
 						strtoupper($key),
-						strtoupper($val)
+						strtoupper(str_replace('-', '_', $val))
 					)),
 					'ENABLED' => ($this->config->offsetGet(sprintf('turnstile_%s', $key)) === $val)
 				]);
@@ -305,8 +311,8 @@ class turnstile extends captcha_abstract
 			'CONFIRM_EXPLAIN'		=> $this->language->lang($explain, '<a href="' . $contact . '">', '</a>'),
 			'TURNSTILE_KEY'			=> $this->config->offsetGet('turnstile_key'),
 			'TURNSTILE_THEME'		=> $this->config->offsetGet('turnstile_theme'),
-			'TURNSTILE_SIZE'			=> $this->config->offsetGet('turnstile_size'),
-			'U_TURNSTILE_SCRIPT'		=> self::SCRIPT_URL,
+			'TURNSTILE_SIZE'		=> $this->config->offsetGet('turnstile_size'),
+			'U_TURNSTILE_SCRIPT'	=> self::SCRIPT_URL,
 			'S_TURNSTILE_AVAILABLE'	=> $this->is_available(),
 			'S_CONFIRM_CODE'		=> true,
 			'S_TYPE'				=> $this->type
@@ -395,7 +401,7 @@ class turnstile extends captcha_abstract
 	 */
 	public function get_login_error_attempts(): string
 	{
-		$this->language->add_lang('captcha/turnstile', 'alfredoramos/cloudflare');
+		$this->language->add_lang(['captcha/turnstile'], 'alfredoramos/cloudflare');
 		return 'TURNSTILE_LOGIN_ERROR_ATTEMPTS';
 	}
 }
