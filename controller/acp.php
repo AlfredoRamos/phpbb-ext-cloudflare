@@ -157,6 +157,7 @@ class acp
 			),
 			'CLOUDFLARE_API_TOKEN' => $this->config->offsetGet('cloudflare_api_token'),
 			'CLOUDFLARE_ZONE_ID' => $this->config->offsetGet('cloudflare_zone_id'),
+			'TURNSTILE_FORCE_LOGIN' => $this->config->offsetGet('turnstile_force_login'),
 		]);
 
 		// Validation errors
