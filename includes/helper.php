@@ -188,7 +188,9 @@ class helper
 			'BOARD_URL' => generate_board_url(),
 			'CLOUDFLARE_PURGE_CACHE_URL' => $this->routing_helper->route('alfredoramos_cloudflare_purge_cache', [
 				'hash' => generate_link_hash('cloudflare_purge_cache')
-			])
+			]),
+			'S_CLOUDFLARE_API' => !empty($this->config->offsetGet('cloudflare_api_token')) &&
+				!empty($this->config->offsetGet('cloudflare_zone_id'))
 		]);
 
 		foreach ($this->cloudflare_client::PURGE_CACHE_TYPES as $key => $value)
