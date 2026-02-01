@@ -94,13 +94,6 @@ class acp
 				'options' => [
 					'regexp' => '#^\w{32}$#'
 				]
-			],
-			'turnstile_force_login' => [
-				'filter' => FILTER_VALIDATE_INT,
-				'options' => [
-					'min_range' => 0,
-					'max_range' => 1
-				]
 			]
 		];
 
@@ -119,8 +112,7 @@ class acp
 			// Form data
 			$fields = [
 				'cloudflare_api_token' => $this->request->variable('cloudflare_api_token', ''),
-				'cloudflare_zone_id' => $this->request->variable('cloudflare_zone_id', ''),
-				'turnstile_force_login' => $this->request->variable('turnstile_force_login', 1)
+				'cloudflare_zone_id' => $this->request->variable('cloudflare_zone_id', '')
 			];
 
 			// Validation check
@@ -156,8 +148,7 @@ class acp
 				$this->helper::VENDOR_DONATE,
 			),
 			'CLOUDFLARE_API_TOKEN' => $this->config->offsetGet('cloudflare_api_token'),
-			'CLOUDFLARE_ZONE_ID' => $this->config->offsetGet('cloudflare_zone_id'),
-			'TURNSTILE_FORCE_LOGIN' => $this->config->offsetGet('turnstile_force_login'),
+			'CLOUDFLARE_ZONE_ID' => $this->config->offsetGet('cloudflare_zone_id')
 		]);
 
 		// Validation errors

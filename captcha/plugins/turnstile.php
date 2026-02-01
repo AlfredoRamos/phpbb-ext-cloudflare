@@ -202,6 +202,13 @@ class turnstile extends captcha_abstract
 				'options' => [
 					'regexp' => '#^(?:' . implode('|', $this->supported_values['appearance']) . ')?$#'
 				]
+			],
+			'turnstile_force_login' => [
+				'filter' => FILTER_VALIDATE_INT,
+				'options' => [
+					'min_range' => 0,
+					'max_range' => 1
+				]
 			]
 		];
 
@@ -219,7 +226,8 @@ class turnstile extends captcha_abstract
 				'turnstile_secret' => $this->request->variable('turnstile_secret', ''),
 				'turnstile_theme' => $this->request->variable('turnstile_theme', $this->supported_values['theme'][0]),
 				'turnstile_size' => $this->request->variable('turnstile_size', $this->supported_values['size'][0]),
-				'turnstile_appearance' => $this->request->variable('turnstile_appearance', $this->supported_values['appearance'][0])
+				'turnstile_appearance' => $this->request->variable('turnstile_appearance', $this->supported_values['appearance'][0]),
+				'turnstile_force_login' => $this->request->variable('turnstile_force_login', 1)
 			];
 
 			// Validation check
@@ -253,6 +261,7 @@ class turnstile extends captcha_abstract
 
 			'TURNSTILE_KEY'		=> $this->config->offsetGet('turnstile_key'),
 			'TURNSTILE_SECRET'	=> $this->config->offsetGet('turnstile_secret'),
+			'TURNSTILE_FORCE_LOGIN' => (int) $this->config->offsetGet('turnstile_force_login') === 1,
 
 			'CAPTCHA_NAME'		=> $this->get_service_name(),
 			'CAPTCHA_PREVIEW'	=> $this->get_demo_template($id),
@@ -326,11 +335,16 @@ class turnstile extends captcha_abstract
 	 */
 	public function get_demo_template($id)
 	{
+		// Use test keys in demo
+		// https://developers.cloudflare.com/turnstile/troubleshooting/testing/#test-sitekeys
+		$appearance = $this->config->offsetGet('turnstile_appearance');
+		$site_key = ($appearance === 'interaction-only') ? '1x00000000000000000000BB' : '3x00000000000000000000FF';
+
 		$this->template->assign_vars([
-			'TURNSTILE_KEY'			=> $this->config->offsetGet('turnstile_key'),
+			'TURNSTILE_KEY'			=> $site_key,
 			'TURNSTILE_THEME'		=> $this->config->offsetGet('turnstile_theme'),
 			'TURNSTILE_SIZE'		=> $this->config->offsetGet('turnstile_size'),
-			'TURNSTILE_APPEARANCE'	=> $this->config->offsetGet('turnstile_appearance'),
+			'TURNSTILE_APPEARANCE'	=> $appearance,
 			'U_TURNSTILE_SCRIPT'	=> self::SCRIPT_URL,
 			'S_TURNSTILE_AVAILABLE'	=> $this->is_available(),
 		]);

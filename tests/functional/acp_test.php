@@ -86,8 +86,10 @@ class acp_test extends \phpbb_functional_test_case
 
 		$widget = $crawler->filter('.cf-turnstile');
 		$this->assertSame(1, $widget->count());
+
+		// ACP demo always uses test keys
 		$this->assertSame(
-			'1x00000000000000000000AA',
+			($widget->attr('data-appearance') === 'interaction-only') ? '1x00000000000000000000BB' : '3x00000000000000000000FF',
 			$widget->attr('data-sitekey')
 		);
 		$this->assertSame(1, preg_match(
