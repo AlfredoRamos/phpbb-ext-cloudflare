@@ -43,6 +43,7 @@ $lang = array_merge($lang, [
 	'TURNSTILE_APPEARANCE' => 'Apariencia',
 	'TURNSTILE_APPEARANCE_EXPLAIN' => 'La visibilidad del widget de Turnstile.',
 	'TURNSTILE_APPEARANCE_ALWAYS' => 'Siempre',
+	'TURNSTILE_APPEARANCE_INTERACTION_ONLY' => 'Invisible',
 	'TURNSTILE_NOT_AVAILABLE' => 'Para poder utilizar Turnstile, debes crear una cuenta en <a href="https://dash.cloudflare.com/?to=/:account/turnstile" rel="external nofollow noreferrer noopener" target="_blank">www.cloudflare.com</a>.',
 	'TURNSTILE_INCORRECT' => 'La solución que proporcionaste es incorrecta.',
 	'TURNSTILE_NOSCRIPT' => 'Por favor, habilita JavaScript en tu navegador web para cargar el desafío.',
