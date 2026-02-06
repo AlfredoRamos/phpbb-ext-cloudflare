@@ -194,7 +194,9 @@ class acp
 			'CLOUDFLARE_API_TOKEN' => $this->config->offsetGet('cloudflare_api_token'),
 			'CLOUDFLARE_ZONE_ID' => $this->config->offsetGet('cloudflare_zone_id'),
 			'CLOUDFLARE_FIREWALL_RULESET_ID' => $this->config->offsetGet('cloudflare_firewall_ruleset_id'),
-			'CLOUDFLARE_CACHE_RULESET_ID' => $this->config->offsetGet('cloudflare_cache_ruleset_id')
+			'CLOUDFLARE_FIREWALL_RULESET_RULES_ID' => $this->config->offsetGet('cloudflare_firewall_ruleset_rules_id'),
+			'CLOUDFLARE_CACHE_RULESET_ID' => $this->config->offsetGet('cloudflare_cache_ruleset_id'),
+			'CLOUDFLARE_CACHE_RULESET_RULES_ID' => $this->config->offsetGet('cloudflare_cache_ruleset_rules_id')
 		];
 
 		if (!empty($this->config->offsetGet('cloudflare_api_token')) && !empty($this->config->offsetGet('cloudflare_zone_id')))

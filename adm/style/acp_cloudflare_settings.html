@@ -45,7 +45,8 @@
 				<br><span>{{ lang('ACP_CLOUDFLARE_FIREWALL_RULESET_ID_EXPLAIN', lang('RESYNC')) }}</span>
 			</dt>
 			<dd>
-				<input type="text" id="cloudflare_firewall_ruleset_id" name="cloudflare_firewall_ruleset_id"{% if CLOUDFLARE_FIREWALL_RULESET_ID %} value="{{ CLOUDFLARE_FIREWALL_RULESET_ID }}"{% endif %} autocomplete="off" class="medium tw-font-mono tw-text-xs">
+				<input type="text" id="cloudflare_firewall_ruleset_id" name="cloudflare_firewall_ruleset_id"{% if CLOUDFLARE_FIREWALL_RULESET_ID %} value="{{ CLOUDFLARE_FIREWALL_RULESET_ID }}"{% endif %} autocomplete="off" class="cf-ruleset-id medium tw-font-mono tw-text-xs">
+				<input type="hidden" id="cloudflare_firewall_ruleset_rules_id" name="cloudflare_firewall_ruleset_rules_id"{% if CLOUDFLARE_FIREWALL_RULESET_RULES_ID %} value="{{ CLOUDFLARE_FIREWALL_RULESET_RULES_ID }}"{% endif %} autocomplete="off" class="cf-ruleset-rules-id medium tw-font-mono tw-text-xs">
 				{% if CLOUDFLARE_FIREWALL_RULESET_RULES_SYNC_URL %}
 				<span class="cf-btn cf-btn-icon cf-rules-sync" data-url="{{ CLOUDFLARE_FIREWALL_RULESET_RULES_SYNC_URL }}" title="{{ lang('RESYNC')|striptags|escape('html_attr') }}">
 					<i class="icon acp-icon acp-icon-resync fa-refresh fa-fw" aria-hidden="true"></i>
@@ -59,7 +60,8 @@
 				<br><span>{{ lang('ACP_CLOUDFLARE_CACHE_RULESET_ID_EXPLAIN', lang('RESYNC')) }}</span>
 			</dt>
 			<dd>
-				<input type="text" id="cloudflare_cache_ruleset_id" name="cloudflare_cache_ruleset_id"{% if CLOUDFLARE_CACHE_RULESET_ID %} value="{{ CLOUDFLARE_CACHE_RULESET_ID }}"{% endif %} autocomplete="off" class="medium tw-font-mono tw-text-xs">
+				<input type="text" id="cloudflare_cache_ruleset_id" name="cloudflare_cache_ruleset_id"{% if CLOUDFLARE_CACHE_RULESET_ID %} value="{{ CLOUDFLARE_CACHE_RULESET_ID }}"{% endif %} autocomplete="off" class="cf-ruleset-id medium tw-font-mono tw-text-xs">
+				<input type="hidden" id="cloudflare_cache_ruleset_rules_id" name="cloudflare_cache_ruleset_rules_id"{% if CLOUDFLARE_CACHE_RULESET_RULES_ID %} value="{{ CLOUDFLARE_CACHE_RULESET_RULES_ID }}"{% endif %} autocomplete="off" class="cf-ruleset-rules-id medium tw-font-mono tw-text-xs">
 				{% if CLOUDFLARE_CACHE_RULESET_RULES_SYNC_URL %}
 				<span class="cf-btn cf-btn-icon cf-rules-sync" data-url="{{ CLOUDFLARE_CACHE_RULESET_RULES_SYNC_URL }}" title="{{ lang('RESYNC')|striptags|escape('html_attr') }}">
 					<i class="icon acp-icon acp-icon-resync fa-refresh fa-fw" aria-hidden="true"></i>

@@ -86,13 +86,15 @@ class cloudflare
 		}
 	}
 
-	protected function make_request(string $method = 'GET', string $endpoint = '', ?array $payload = null): ?array
+	protected function make_request(string $method = 'GET', string $endpoint = '', ?array $payload = null): array
 	{
 		$allowed = ['method' => ['GET', 'POST', 'PUT', 'PATCH']];
 
 		if (empty($method) || !in_array($method, $allowed['method'], true) || empty($endpoint))
 		{
-			return null;
+			return [
+				'errors' => [['message' => 'Empty required data.']]
+			];
 		}
 
 		$params = [
@@ -119,7 +121,9 @@ class cloudflare
 		}
 		catch (GuzzleException | JsonException $ex)
 		{
-			return null;
+			return [
+				'errors' => [['message' => $ex->getMessage()]]
+			];
 		};
 	}
 
@@ -166,18 +170,22 @@ class cloudflare
 		return $this->make_request('POST', sprintf('zones/%s/purge_cache', $this->zone_id), $payload);
 	}
 
-	public function find_ruleset(array $opts = [], bool $match_all = false): ?array
+	public function find_ruleset(array $opts = [], bool $match_all = false): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id) || empty($opts))
 		{
-			return null;
+			return [
+				'errors' => [['message' => 'Empty required data.']]
+			];
 		}
 
 		$rulesets = $this->get_rulesets();
 
 		if (empty($rulesets['result']) || !is_array($rulesets['result']))
 		{
-			return null;
+			return [
+				'errors' => [['message' => 'Empty rulesets data.']]
+			];
 		}
 
 		$allowed_fields = ['kind', 'phase'];
@@ -186,7 +194,9 @@ class cloudflare
 
 		if (empty($filtered))
 		{
-			return null;
+			return [
+				'errors' => [['message' => 'Empty ruleset filters.']]
+			];
 		}
 
 		foreach($rulesets['result'] as $ruleset)
@@ -207,26 +217,32 @@ class cloudflare
 
 				if (($match_all && $matches === count($filtered)) || (!$match_all && $matches > 0))
 				{
-					return $ruleset;
+					return ['result' => [$ruleset]];
 				}
 			}
 		}
 
-		return null;
+		return [
+			'errors' => [['message' => 'Internal error.']]
+		];
 	}
 
 	public function find_ruleset_rules(string $ruleset_id = null, array $opts = [], bool $match_all = false): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id) || empty($ruleset_id) || empty($opts))
 		{
-			return [];
+			return [
+				'errors' => [['message' => 'Empty required data.']]
+			];
 		}
 
 		$ruleset_info = $this->get_ruleset($ruleset_id);
 
-		if (empty($ruleset_info) || empty($ruleset_info['rules']))
+		if (empty($ruleset_info) || empty($ruleset_info['result']['rules']))
 		{
-			return [];
+			return [
+				'errors' => [['message' => 'Empty ruleset data.']]
+			];
 		}
 
 		$allowed_fields = ['action', 'description'];
@@ -235,10 +251,12 @@ class cloudflare
 
 		if (empty($filtered))
 		{
-			return [];
+			return [
+				'errors' => [['message' => 'Empty ruleset filters.']]
+			];
 		}
 
-		foreach($ruleset_info['rules'] as $rule)
+		foreach($ruleset_info['result']['rules'] as $rule)
 		{
 			if (!is_array($rule) || !array_intersect_key($rule, $filteded_fields))
 			{
@@ -256,12 +274,14 @@ class cloudflare
 
 				if (($match_all && $matches === count($filtered)) || (!$match_all && $matches > 0))
 				{
-					return $rule;
+					return ['result' => ['rules' => [$rule]]];
 				}
 			}
 		}
 
-		return [];
+		return [
+			'errors' => [['message' => 'Internal error.']]
+		];
 	}
 
 	public function get_rulesets(): ?array

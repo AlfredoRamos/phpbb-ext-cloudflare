@@ -136,7 +136,7 @@ class cloudflare
 		}
 
 		if (!empty($errors)) {
-			return new JsonResponse($errors, 400);
+			return new JsonResponse(['errors' => $errors], 400);
 		}
 
 		$data = [];
@@ -173,7 +173,7 @@ class cloudflare
 		}
 
 		if (!empty($errors)) {
-			return new JsonResponse($errors, 400);
+			return new JsonResponse(['errors' => $errors], 400);
 		}
 
 		// Admin log
@@ -228,12 +228,12 @@ class cloudflare
 		}
 
 		if (!empty($errors)) {
-			return new JsonResponse($errors, 400);
+			return new JsonResponse(['errors' => $errors], 400);
 		}
 
 		$fields = [
-			'ruleset_id' => $this->config->offsetGet(sprintf('cloudflare_%s_ruleset_id', $type)) ?? '',
-			'ruleset_rules_id' => $this->config->offsetGet(sprintf('cloudflare_%s_ruleset_rules_id', $type)) ?? ''
+			'ruleset_id' => $this->request->variable(sprintf('cloudflare_%s_ruleset_id', $type), ''),
+			'ruleset_rules_id' => $this->request->variable(sprintf('cloudflare_%s_ruleset_rules_id', $type), '')
 		];
 
 		$payload = [];
@@ -242,11 +242,12 @@ class cloudflare
 		{
 			$ruleset = null;
 			$data = [];
+			$filters = [];
 
 			switch($type)
 			{
 				case 'firewall':
-					$ruleset = $this->client->find_ruleset(['phase' => 'http_request_firewall_custom']);
+					$filters = ['phase' => 'http_request_firewall_custom'];
 
 					$data = [
 						'name' => 'Firewall ruleset',
@@ -257,7 +258,7 @@ class cloudflare
 					break;
 
 				case 'cache':
-					$ruleset = $this->client->find_ruleset(['phase' => 'http_request_cache_settings']);
+					$filters = ['phase' => 'http_request_cache_settings'];
 
 					$data = [
 						'name' => 'Cache ruleset',
@@ -268,24 +269,33 @@ class cloudflare
 					break;
 			}
 
-			if (empty($ruleset['id']))
+			$ruleset = $this->client->find_ruleset($filters);
+
+			if (empty($ruleset['result'][0]['id']))
 			{
+				if (!empty($ruleset['errors']))
+				{
+					$errors = array_merge($errors, $ruleset['errors']);
+				}
+
 				$ruleset = $this->client->create_ruleset($data);
 
-				if (empty($ruleset['result']['id']))
+				return new JsonResponse(['ruleset' => $ruleset], 500);
+
+				if (empty($ruleset['result'][0]['id']))
 				{
 					$errors[]['message'] = $this->language->lang('CLOUDFLARE_ERR_RULESET_TYPE');
 				}
 				else
 				{
-					$fields['ruleset_id'] = $ruleset['result']['id'];
-					$this->config->set(sprintf('cloudflare_%s_ruleset_id', $type), $ruleset['result']['id']);
+					$fields['ruleset_id'] = $ruleset['result'][0]['id'];
+					$this->config->set(sprintf('cloudflare_%s_ruleset_id', $type), $ruleset['result'][0]['id']);
 				}
 			}
 			else
 			{
-				$fields['ruleset_id'] = $ruleset['id'];
-				$this->config->set(sprintf('cloudflare_%s_ruleset_id', $type), $ruleset['id']);
+				$fields['ruleset_id'] = $ruleset['result'][0]['id'];
+				$this->config->set(sprintf('cloudflare_%s_ruleset_id', $type), $ruleset['result'][0]['id']);
 			}
 		}
 		/*else
@@ -324,7 +334,7 @@ class cloudflare
 		}*/
 
 		if (!empty($errors)) {
-			return new JsonResponse($errors, 400);
+			return new JsonResponse(['errors' => $errors], 400);
 		}
 
 		if (empty($fields['ruleset_rules_id']))
@@ -335,11 +345,6 @@ class cloudflare
 			switch($type)
 			{
 				case 'firewall':
-					$rules = $this->client->find_ruleset_rules($fields['ruleset_id'], [
-						'action' => 'managed_challenge',
-						'description' => 'phpbb:firewall'
-					], true);
-
 					$data = [
 						'description' => 'phpbb:firewall',
 						'expression' => '(http.request.uri.path contains "ucp.php" and (http.request.uri.query contains "mode=login" or http.request.uri.query contains "mode=register")) or (http.request.uri.path contains "memberlist.php" and http.request.uri.query contains "mode=contactadmin")',
@@ -351,11 +356,6 @@ class cloudflare
 					break;
 
 				case 'cache':
-					$rules = $this->client->find_ruleset_rules($fields['ruleset_id'], [
-						'action' => 'set_cache_settings',
-						'description' => 'phpbb:cache'
-					], true);
-
 					$data = [
 						'description' => 'phpbb:cache',
 						'expression' => '(http.request.uri.path contains "file.php" and http.request.uri.query wildcard r"*avatar=*")',
@@ -368,9 +368,17 @@ class cloudflare
 					break;
 			}
 
-			if (empty($rules['id']))
+			$rules = $this->client->find_ruleset_rules($fields['ruleset_id'], [
+				'description' => sprintf('phpbb:%s', $type)
+			]);
+
+			if (empty($rules['result']['rules'][0]['id']))
 			{
-				// TODO: Fix duplication
+				if (!empty($rules['errors']))
+				{
+					$errors = array_merge($errors, $rules['errors']);
+				}
+
 				$rules = $this->client->create_ruleset_rules($fields['ruleset_id'], $data);
 
 				if (empty($rules['result']['rules']))
@@ -379,14 +387,14 @@ class cloudflare
 				}
 				else
 				{
-					$fields['ruleset_rules_id'] = $rules['result'][0]['id'];
-					$this->config->set(sprintf('cloudflare_%s_ruleset_rules_id', $type), $rules['result'][0]['id']);
+					$fields['ruleset_rules_id'] = $rules['result']['rules'][0]['id'];
+					$this->config->set(sprintf('cloudflare_%s_ruleset_rules_id', $type), $rules['result']['rules'][0]['id']);
 				}
 			}
 			else
 			{
-				$fields['ruleset_rules_id'] = $rules['id'];
-				$this->config->set(sprintf('cloudflare_%s_ruleset_rules_id', $type), $rules['id']);
+				$fields['ruleset_rules_id'] = $rules['result']['rules'][0]['id'];
+				$this->config->set(sprintf('cloudflare_%s_ruleset_rules_id', $type), $rules['result']['rules'][0]['id']);
 			}
 		}
 		else
@@ -427,11 +435,12 @@ class cloudflare
 		}
 
 		if (!empty($errors)) {
-			return new JsonResponse($errors, 400);
+			return new JsonResponse(['errors' => $errors], 400);
 		}
 
 		return new JsonResponse([
 			'success' => true,
+			'type' => $type,
 			'ruleset_id' => $fields['ruleset_id'],
 			'ruleset_rules_id' => $fields['ruleset_rules_id']
 		]);

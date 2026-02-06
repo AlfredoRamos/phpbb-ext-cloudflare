@@ -129,6 +129,7 @@
 		fields?.value?.setAttribute('disabled', '');
 		button?.setAttribute('disabled', '');
 
+		// TODO: Show loading indicator
 		fetch(purgeCacheForm.getAttribute('action').trim(), {
 			method: purgeCacheForm.getAttribute('method'),
 			headers: {
@@ -227,12 +228,17 @@
 				return;
 			}
 
-			e.target.setAttribute('disabled', '');
 			const container = button.parentElement;
 			const fields = {
-				rulesetID: container.querySelector('input[type="text"]'),
+				rulesetID: container.querySelector('.cf-ruleset-id'),
+				rulesetRulesID: container.querySelector('.cf-ruleset-rules-id'),
 			};
 
+			button.setAttribute('disabled', '');
+			fields?.rulesetID?.setAttribute('disabled', '');
+			fields?.rulesetRulesID?.setAttribute('disabled', '');
+
+			// TODO: Show loading indicator
 			fetch(endpoint, {
 				method: 'POST',
 				headers: {
@@ -240,6 +246,10 @@
 					'X-Requested-With': 'XMLHttpRequest',
 					'Cache-Control': 'no-cache',
 				},
+				body: JSON.stringify({
+					ruleset_id: fields?.rulesetID?.value,
+					ruleset_rules_id: fields?.rulesetRulesID?.value,
+				}),
 			})
 				.then((r) => {
 					console.log('then json: ', r);
@@ -269,7 +279,8 @@
 						return;
 					}
 
-					fields.rulesetID.value = r?.result?.id;
+					fields.rulesetID.value = r?.ruleset_id ?? '';
+					fields.rulesetRulesID.value = r?.ruleset_rules_id ?? '';
 
 					window.phpbb.alert(
 						window.cloudflareCfg?.lang?.rulesetRulesSuccessTitle,
@@ -316,7 +327,9 @@
 					);
 				})
 				.finally(() => {
+					button.removeAttribute('disabled', '');
 					fields?.rulesetID?.removeAttribute('disabled');
+					fields?.rulesetRulesID?.removeAttribute('disabled');
 				});
 		});
 	});
