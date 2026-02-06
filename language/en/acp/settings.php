@@ -28,6 +28,13 @@ $lang = array_merge($lang, [
 	'ACP_CLOUDFLARE_API_TOKEN_EXPLAIN' => 'Cloudflare API token with enough permissions to purge the zone cache (<code>Zone.Cache Purge</code>).',
 	'ACP_CLOUDFLARE_ZONE_ID' => 'Zone ID',
 	'ACP_CLOUDFLARE_ZONE_ID_EXPLAIN' => 'The identifier of your domain on Cloudflare.',
+	'ACP_CLOUDFLARE_FIREWALL_RULESET_ID' => 'Firewall ruleset ID',
+	'ACP_CLOUDFLARE_FIREWALL_RULESET_ID_EXPLAIN' => 'The ruleset ID for security custom rules. Leave it blank to find it or create it as needed by clicking the <samp>%s</samp> button.',
+	'ACP_CLOUDFLARE_CACHE_RULESET_ID' => 'Cache ruleset ID',
+	'ACP_CLOUDFLARE_CACHE_RULESET_ID_EXPLAIN' => 'The ruleset ID for the cache custom rules. Leave it blank to find it or create it as needed by clicking the <samp>%s</samp> button.',
+
+	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Toggle %s',
+	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Invalid values for fields: <samp>%s</samp>',
 
 	'CLOUDFLARE_PURGE_CACHE' => 'Purge the Cloudflare cache',
 	'CLOUDFLARE_PURGE_CACHE_EXPLAIN' => 'Purge Cloudflare cache by type. Note that Cloudflare impose a limit of request per seconds.',

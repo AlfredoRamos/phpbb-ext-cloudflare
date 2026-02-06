@@ -32,31 +32,28 @@
 		});
 	}, 250);
 
-	document.body
-		.querySelectorAll('.toggle-cloudflare-secret')
-		?.forEach((elem) => {
-			elem?.addEventListener('click', (e) => {
-				const toggle = e.target.closest('.toggle-cloudflare-secret');
-				const container = toggle.parentElement;
+	document.body.querySelectorAll('.cf-btn-toggle')?.forEach((elem) => {
+		elem?.addEventListener('click', (e) => {
+			const toggle = e.target.closest('.cf-btn-toggle');
+			const container = toggle.parentElement;
 
-				if (!toggle || !container) {
-					return;
-				}
+			if (!toggle || !container) {
+				return;
+			}
 
-				const field = container?.querySelector('.cloudflare-secret');
-				const icon = toggle?.querySelector('.icon');
+			const field = container?.querySelector('.cf-field-secret');
+			const icon = toggle?.querySelector('.icon');
 
-				if (!field || !icon) {
-					return;
-				}
+			if (!field || !icon) {
+				return;
+			}
 
-				const isHidden =
-					field.getAttribute('type').trim() === 'password';
-				field.setAttribute('type', isHidden ? 'text' : 'password');
-				icon.classList.toggle('fa-eye-slash', isHidden);
-				icon.classList.toggle('fa-eye', !isHidden);
-			});
+			const isHidden = field.getAttribute('type').trim() === 'password';
+			field.setAttribute('type', isHidden ? 'text' : 'password');
+			icon.classList.toggle('fa-eye-slash', isHidden);
+			icon.classList.toggle('fa-eye', !isHidden);
 		});
+	});
 
 	document.body
 		.querySelectorAll(
@@ -92,7 +89,7 @@
 			'[name="cloudflare_purge_cache_value"]',
 		),
 	};
-	const button = purgeCacheForm?.querySelector('.cloudflare-button');
+	const button = purgeCacheForm?.querySelector('.cf-btn');
 	const valueContainer = purgeCacheForm?.querySelector(
 		'.cloudflare-value-container',
 	);
@@ -164,21 +161,21 @@
 			.then((r) => {
 				if (!r.success) {
 					window.phpbb.alert(
-						darkWrapper?.getAnimations('data-ajax-error-title'),
+						darkWrapper?.getAttribute('data-ajax-error-title'),
 						darkWrapper?.getAttribute('data-ajax-error-text'),
 					);
 					return;
 				}
 
 				window.phpbb.alert(
-					window.cloudflareCfg?.lang?.successTitle,
-					window.cloudflareCfg?.lang?.successBody,
+					window.cloudflareCfg?.lang?.purgeCacheSuccessTitle,
+					window.cloudflareCfg?.lang?.purgeCacheSuccessBody,
 				);
 			})
 			.catch((e) => {
 				if (e?.body?.errors?.length <= 0) {
 					window.phpbb.alert(
-						darkWrapper?.getAnimations('data-ajax-error-title'),
+						darkWrapper?.getAttribute('data-ajax-error-title'),
 						darkWrapper?.getAttribute('data-ajax-error-text'),
 					);
 					return;
@@ -202,14 +199,14 @@
 
 				if (message.length <= 0) {
 					window.phpbb.alert(
-						darkWrapper?.getAnimations('data-ajax-error-title'),
+						darkWrapper?.getAttribute('data-ajax-error-title'),
 						darkWrapper?.getAttribute('data-ajax-error-text'),
 					);
 					return;
 				}
 
 				window.phpbb.alert(
-					darkWrapper?.getAnimations('data-ajax-error-title'),
+					darkWrapper?.getAttribute('data-ajax-error-title'),
 					message,
 				);
 			})
@@ -217,6 +214,111 @@
 				fields?.type?.removeAttribute('disabled');
 				fields?.value?.removeAttribute('disabled');
 			});
+	});
+
+	document.body.querySelectorAll('.cf-rules-sync')?.forEach((elem) => {
+		elem?.addEventListener('click', (e) => {
+			e.preventDefault();
+
+			const button = e.target.closest('.cf-rules-sync');
+			const endpoint = button?.getAttribute('data-url') ?? '';
+
+			if (!button || !endpoint) {
+				return;
+			}
+
+			e.target.setAttribute('disabled', '');
+			const container = button.parentElement;
+			const fields = {
+				rulesetID: container.querySelector('input[type="text"]'),
+			};
+
+			fetch(endpoint, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Requested-With': 'XMLHttpRequest',
+					'Cache-Control': 'no-cache',
+				},
+			})
+				.then((r) => {
+					console.log('then json: ', r);
+					const json = r.json();
+
+					if (!r.ok) {
+						return json.then((e) => {
+							return Promise.reject({
+								status: r.status,
+								body: e,
+								headers: {
+									'Content-Type': 'application/json',
+								},
+							});
+						});
+					}
+
+					return json;
+				})
+				.then((r) => {
+					console.log('then: ', r); // TODO: Delete
+					if (!r.success) {
+						window.phpbb.alert(
+							darkWrapper?.getAttribute('data-ajax-error-title'),
+							darkWrapper?.getAttribute('data-ajax-error-text'),
+						);
+						return;
+					}
+
+					fields.rulesetID.value = r?.result?.id;
+
+					window.phpbb.alert(
+						window.cloudflareCfg?.lang?.rulesetRulesSuccessTitle,
+						window.cloudflareCfg?.lang?.rulesetRulesSuccessBody,
+					);
+				})
+				.catch((e) => {
+					console.log('then: ', e); // TODO: Delete
+					if (e?.body?.errors?.length <= 0) {
+						window.phpbb.alert(
+							darkWrapper?.getAttribute('data-ajax-error-title'),
+							darkWrapper?.getAttribute('data-ajax-error-text'),
+						);
+						return;
+					}
+
+					let message = '';
+
+					e?.body?.errors?.forEach((err, idx) => {
+						if (!err) {
+							return;
+						}
+
+						message += err?.message ?? '';
+
+						if (idx < e?.errors?.length - 1) {
+							message += '<br>';
+						}
+					});
+
+					message = message.trim();
+
+					if (message.length <= 0) {
+						window.phpbb.alert(
+							darkWrapper?.getAttribute('data-ajax-error-title'),
+							darkWrapper?.getAttribute('data-ajax-error-text'),
+						);
+						return;
+					}
+
+					window.phpbb.alert(
+						darkWrapper?.getAttribute('data-ajax-error-title'),
+						message,
+					);
+				})
+				.finally(() => {
+					fields?.rulesetID?.removeAttribute('disabled');
+				});
+		});
 	});
 
 	window.phpbb.resizeTextArea(
