@@ -49,8 +49,5 @@ $lang = array_merge($lang, [
 	'TURNSTILE_NOSCRIPT' => 'Veuillez activer JavaScript dans votre navigateur pour charger le test.',
 	'TURNSTILE_LOGIN_ERROR_ATTEMPTS' => 'Vous avez dépassé le nombre maximum de tentatives de connexion autorisées.<br>En plus de votre nom d’utilisateur et de votre mot de passe, Turnstile sera utilisé pour authentifier votre session.',
 
-	'CLOUDFLARE_REQUEST_EXCEPTION' => 'Erreur de requête Cloudflare: %s',
-
-	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Afficher/Masquer la %s',
-	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Valeurs invalides pour les champs : <samp>%s</samp>'
+	'CLOUDFLARE_REQUEST_EXCEPTION' => 'Erreur de requête Cloudflare: %s'
 ]);
