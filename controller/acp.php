@@ -203,13 +203,13 @@ class acp
 		{
 			$template_vars = array_merge([
 				'CLOUDFLARE_FIREWALL_RULESET_RULES_SYNC_URL' => $this->controller_helper->route('alfredoramos_cloudflare_sync_ruleset_rules', [
-				'type' => 'firewall',
-				'hash' => generate_link_hash('cloudflare_sync_ruleset_rules')
-			]),
-			'CLOUDFLARE_CACHE_RULESET_RULES_SYNC_URL' => $this->controller_helper->route('alfredoramos_cloudflare_sync_ruleset_rules', [
-				'type' => 'cache',
-				'hash' => generate_link_hash('cloudflare_sync_ruleset_rules')
-			])
+					'type' => 'firewall',
+					'hash' => generate_link_hash('cloudflare_firewall_sync_ruleset_rules')
+				]),
+				'CLOUDFLARE_CACHE_RULESET_RULES_SYNC_URL' => $this->controller_helper->route('alfredoramos_cloudflare_sync_ruleset_rules', [
+					'type' => 'cache',
+					'hash' => generate_link_hash('cloudflare_cache_sync_ruleset_rules')
+				])
 			], $template_vars);
 		}
 

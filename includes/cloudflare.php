@@ -11,7 +11,6 @@ namespace alfredoramos\cloudflare\includes;
 
 use GuzzleHttp\Exception\GuzzleException;
 
-// TODO: Improve returned data to indentify errors
 class cloudflare
 {
 	use http_trait;
@@ -35,7 +34,13 @@ class cloudflare
 	public const RULESET_PHASES = ['http_request_cache_settings', 'http_request_firewall_custom'];
 
 	/** @var array */
-	public const CHALLENGE_TYPES = ['managed_challenge', 'challenge', 'js_challenge'];
+	public const RULESET_RULE_ACTIONS = [
+		// Firewall challenge actions
+		'managed_challenge', 'challenge', 'js_challenge',
+
+		// Cache actions
+		'set_cache_settings'
+	];
 
 	public function __construct(?string $api_token = null, ?string $zone_id = null)
 	{
@@ -90,7 +95,7 @@ class cloudflare
 	{
 		$allowed = ['method' => ['GET', 'POST', 'PUT', 'PATCH']];
 
-		if (empty($method) || !in_array($method, $allowed['method'], true) || empty($endpoint))
+		if (empty($this->api_token) || empty($method) || !in_array($method, $allowed['method'], true) || empty($endpoint))
 		{
 			return [
 				'errors' => [['message' => 'Empty required data.']]
@@ -127,11 +132,13 @@ class cloudflare
 		};
 	}
 
-	public function purge_cache(array $opts = []): ?array
+	public function purge_cache(array $opts = []): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id) || empty($opts['type']) || !in_array($opts['type'], self::PURGE_CACHE_TYPES, true))
 		{
-			return null;
+			return [
+				'errors' => [['message' => 'Empty required data.']]
+			];
 		}
 
 		$payload = [];
@@ -164,7 +171,9 @@ class cloudflare
 
 		if (empty($payload))
 		{
-			return null;
+			return [
+				'errors' => [['message' => 'Empty fields in payload.']]
+			];
 		}
 
 		return $this->make_request('POST', sprintf('zones/%s/purge_cache', $this->zone_id), $payload);
@@ -238,11 +247,16 @@ class cloudflare
 
 		$ruleset_info = $this->get_ruleset($ruleset_id);
 
-		if (empty($ruleset_info) || empty($ruleset_info['result']['rules']))
+		if (empty($ruleset_info['result']))
 		{
 			return [
 				'errors' => [['message' => 'Empty ruleset data.']]
 			];
+		}
+
+		if (empty($ruleset_info['result']['rules']))
+		{
+			return ['result' => ['rules' => []]];
 		}
 
 		$allowed_fields = ['action', 'description'];
@@ -284,31 +298,37 @@ class cloudflare
 		];
 	}
 
-	public function get_rulesets(): ?array
+	public function get_rulesets(): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id))
 		{
-			return null;
+			return [
+				'errors' => [['message' => 'Empty required data.']]
+			];
 		}
 
 		return $this->make_request('GET', sprintf('zones/%s/rulesets', $this->zone_id));
 	}
 
-	public function get_ruleset(string $ruleset_id = ''): ?array
+	public function get_ruleset(string $ruleset_id = ''): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id) || empty($ruleset_id))
 		{
-			return null;
+			return [
+				'errors' => [['message' => 'Empty required data.']]
+			];
 		}
 
 		return $this->make_request('GET', sprintf('zones/%s/rulesets/%s', $this->zone_id, $ruleset_id));
 	}
 
-	public function create_ruleset(array $data = []): ?array
+	public function create_ruleset(array $data = []): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id) || empty($data))
 		{
-			return null;
+			return [
+				'errors' => [['message' => 'Empty required data.']]
+			];
 		}
 
 		$required = ['name', 'description', 'kind', 'phase'];
@@ -348,18 +368,22 @@ class cloudflare
 
 		if (!empty($missing) || empty($payload))
 		{
-			return null;
+			return [
+				'errors' => [['message' => sprintf('Empty fields in payload: %s', implode(',', $missing))]]
+			];
 		}
 
 		return $this->make_request('POST', sprintf('zones/%s/rulesets', $this->zone_id), $payload);
 	}
 
-	public function create_ruleset_rules(string $ruleset_id = '', array $data = []): ?array
+	public function create_ruleset_rules(string $ruleset_id = '', array $data = []): array
 	{
 
 		if (empty($this->api_token) || empty($this->zone_id) || empty($ruleset_id) || empty($data))
 		{
-			return null;
+			return [
+				'errors' => [['message' => 'Empty required data.']]
+			];
 		}
 
 		$required = ['description', 'expression', 'action'];
@@ -371,7 +395,7 @@ class cloudflare
 			switch($key)
 			{
 				case 'action':
-					if (empty($value) || !in_array($value, self::CHALLENGE_TYPES, true))
+					if (empty($value) || !in_array($value, self::RULESET_RULE_ACTIONS, true))
 					{
 						$missing[] = $key;
 						continue 2;
@@ -422,17 +446,21 @@ class cloudflare
 
 		if (!empty($missing) || empty($payload))
 		{
-			return null;
+			return [
+				'errors' => [['message' => sprintf('Empty fields in payload: %s', implode(',', $missing))]]
+			];
 		}
 
 		return $this->make_request('POST', sprintf('zones/%s/rulesets/%s/rules', $this->zone_id, $ruleset_id), $payload);
 	}
 
-	public function update_ruleset(string $ruleset_id = '', array $data = []): ?array
+	public function update_ruleset(string $ruleset_id = '', array $data = []): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id) || empty($ruleset_id) || empty($data))
 		{
-			return null;
+			return [
+				'errors' => [['message' => 'Empty required data.']]
+			];
 		}
 
 		$required = ['kind', 'phase'];
@@ -480,17 +508,21 @@ class cloudflare
 
 		if (!empty($missing) || empty($payload))
 		{
-			return null;
+			return [
+				'errors' => [['message' => sprintf('Empty fields in payload: %s', implode(',', $missing))]]
+			];
 		}
 
 		return $this->make_request('PUT', sprintf('zones/%s/rulesets/%s', $this->zone_id, $ruleset_id), $payload);
 	}
 
-	public function update_ruleset_rules(string $ruleset_id = '', string $rule_id = '', array $data = []): ?array
+	public function update_ruleset_rules(string $ruleset_id = '', string $rule_id = '', array $data = []): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id) || empty($ruleset_id) || empty($rule_id) || empty($data))
 		{
-			return null;
+			return [
+				'errors' => [['message' => 'Empty required data.']]
+			];
 		}
 
 		$required = ['description', 'expression', 'action'];
@@ -505,7 +537,7 @@ class cloudflare
 			switch($key)
 			{
 				case 'action':
-					if (empty($value) || !in_array($value, self::CHALLENGE_TYPES, true))
+					if (empty($value) || !in_array($value, self::RULESET_RULE_ACTIONS, true))
 					{
 						$missing[] = $key;
 						continue 2;
@@ -528,7 +560,9 @@ class cloudflare
 
 		if (!empty($missing) || empty($payload))
 		{
-			return null;
+			return [
+				'errors' => [['message' => sprintf('Empty fields in payload: %s', implode(',', $missing))]]
+			];
 		}
 
 		return $this->make_request('PATCH', sprintf('zones/%s/rulesets/%s/rules/%s', $this->zone_id, $ruleset_id, $rule_id), $payload);

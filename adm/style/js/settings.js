@@ -124,12 +124,13 @@
 
 	purgeCacheForm?.addEventListener('submit', (e) => {
 		e.preventDefault();
+		window.phpbb.clearLoadingTimeout();
 
+		window.$loadingIndicator = window.phpbb.loadingIndicator();
 		fields?.type?.setAttribute('disabled', '');
 		fields?.value?.setAttribute('disabled', '');
 		button?.setAttribute('disabled', '');
 
-		// TODO: Show loading indicator
 		fetch(purgeCacheForm.getAttribute('action').trim(), {
 			method: purgeCacheForm.getAttribute('method'),
 			headers: {
@@ -191,7 +192,7 @@
 
 					message += err?.message ?? '';
 
-					if (idx < e?.errors?.length - 1) {
+					if (idx < e?.body?.errors?.length - 1) {
 						message += '<br>';
 					}
 				});
@@ -214,12 +215,20 @@
 			.finally(() => {
 				fields?.type?.removeAttribute('disabled');
 				fields?.value?.removeAttribute('disabled');
+
+				if (
+					window.$loadingIndicator &&
+					window.$loadingIndicator.is(':visible')
+				) {
+					window.$loadingIndicator.fadeOut(window.phpbb.alertTime);
+				}
 			});
 	});
 
 	document.body.querySelectorAll('.cf-rules-sync')?.forEach((elem) => {
 		elem?.addEventListener('click', (e) => {
 			e.preventDefault();
+			window.phpbb.clearLoadingTimeout();
 
 			const button = e.target.closest('.cf-rules-sync');
 			const endpoint = button?.getAttribute('data-url') ?? '';
@@ -228,6 +237,7 @@
 				return;
 			}
 
+			window.$loadingIndicator = window.phpbb.loadingIndicator();
 			const container = button.parentElement;
 			const fields = {
 				rulesetID: container.querySelector('.cf-ruleset-id'),
@@ -238,7 +248,6 @@
 			fields?.rulesetID?.setAttribute('disabled', '');
 			fields?.rulesetRulesID?.setAttribute('disabled', '');
 
-			// TODO: Show loading indicator
 			fetch(endpoint, {
 				method: 'POST',
 				headers: {
@@ -270,7 +279,6 @@
 					return json;
 				})
 				.then((r) => {
-					console.log('then: ', r); // TODO: Delete
 					if (!r.success) {
 						window.phpbb.alert(
 							darkWrapper?.getAttribute('data-ajax-error-title'),
@@ -288,7 +296,6 @@
 					);
 				})
 				.catch((e) => {
-					console.log('then: ', e); // TODO: Delete
 					if (e?.body?.errors?.length <= 0) {
 						window.phpbb.alert(
 							darkWrapper?.getAttribute('data-ajax-error-title'),
@@ -306,7 +313,7 @@
 
 						message += err?.message ?? '';
 
-						if (idx < e?.errors?.length - 1) {
+						if (idx < e?.body?.errors?.length - 1) {
 							message += '<br>';
 						}
 					});
@@ -330,6 +337,15 @@
 					button.removeAttribute('disabled', '');
 					fields?.rulesetID?.removeAttribute('disabled');
 					fields?.rulesetRulesID?.removeAttribute('disabled');
+
+					if (
+						window.$loadingIndicator &&
+						window.$loadingIndicator.is(':visible')
+					) {
+						window.$loadingIndicator.fadeOut(
+							window.phpbb.alertTime,
+						);
+					}
 				});
 		});
 	});

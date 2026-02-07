@@ -209,7 +209,7 @@ class cloudflare
 		$hash = trim($hash);
 
 		// CSRF protection
-		if (empty($hash) || !check_link_hash($hash, 'cloudflare_sync_ruleset_rules')) {
+		if (empty($hash) || !check_link_hash($hash, sprintf('cloudflare_%s_sync_ruleset_rules', $type))) {
 			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}
 
@@ -271,16 +271,20 @@ class cloudflare
 
 			$ruleset = $this->client->find_ruleset($filters);
 
+			if (!empty($ruleset['errors']))
+			{
+				$errors = array_merge($errors, $ruleset['errors']);
+				return new JsonResponse(['errors' => $errors], 400);
+			}
+
 			if (empty($ruleset['result'][0]['id']))
 			{
+				$ruleset = $this->client->create_ruleset($data);
+
 				if (!empty($ruleset['errors']))
 				{
 					$errors = array_merge($errors, $ruleset['errors']);
 				}
-
-				$ruleset = $this->client->create_ruleset($data);
-
-				return new JsonResponse(['ruleset' => $ruleset], 500);
 
 				if (empty($ruleset['result'][0]['id']))
 				{
@@ -296,6 +300,11 @@ class cloudflare
 			{
 				$fields['ruleset_id'] = $ruleset['result'][0]['id'];
 				$this->config->set(sprintf('cloudflare_%s_ruleset_id', $type), $ruleset['result'][0]['id']);
+			}
+
+			if (!empty($errors))
+			{
+				return new JsonResponse(['errors' => $errors], 400);
 			}
 		}
 		/*else
@@ -372,14 +381,20 @@ class cloudflare
 				'description' => sprintf('phpbb:%s', $type)
 			]);
 
+			if (!empty($rules['errors']))
+			{
+				$errors = array_merge($errors, $rules['errors']);
+				return new JsonResponse(['errors' => $errors], 400);
+			}
+
 			if (empty($rules['result']['rules'][0]['id']))
 			{
+				$rules = $this->client->create_ruleset_rules($fields['ruleset_id'], $data);
+
 				if (!empty($rules['errors']))
 				{
 					$errors = array_merge($errors, $rules['errors']);
 				}
-
-				$rules = $this->client->create_ruleset_rules($fields['ruleset_id'], $data);
 
 				if (empty($rules['result']['rules']))
 				{
@@ -395,6 +410,11 @@ class cloudflare
 			{
 				$fields['ruleset_rules_id'] = $rules['result']['rules'][0]['id'];
 				$this->config->set(sprintf('cloudflare_%s_ruleset_rules_id', $type), $rules['result']['rules'][0]['id']);
+			}
+
+			if (!empty($errors))
+			{
+				return new JsonResponse(['errors' => $errors], 400);
 			}
 		}
 		else
@@ -424,13 +444,16 @@ class cloudflare
 					break;
 			}
 
-			if (empty($data))
+			$rules = $this->client->update_ruleset_rules($fields['ruleset_id'], $fields['ruleset_rules_id'], $data);
+
+			if (!empty($rules['errors']))
+			{
+				$errors = array_merge($errors, $rules['errors']);
+			}
+
+			if (empty($rules['result']['rules']) || empty($data))
 			{
 				$errors[]['message'] = $this->language->lang('CLOUDFLARE_ERR_RULESET_RULES_UPDATE');
-			}
-			else
-			{
-				$this->client->update_ruleset_rules($fields['ruleset_id'], $fields['ruleset_rules_id'], $data);
 			}
 		}
 
