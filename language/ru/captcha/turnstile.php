@@ -32,19 +32,22 @@ $lang = array_merge($lang, [
 	'TURNSTILE_SECRET_EXPLAIN' => 'Секретный ключ, созданный на вашем аккаунте Turnstile.',
 	'TURNSTILE_THEME' => 'Тема',
 	'TURNSTILE_THEME_EXPLAIN' => 'Цветовая тема виджета Turnstile.',
+	'TURNSTILE_THEME_AUTO' => 'Auto',
 	'TURNSTILE_THEME_LIGHT' => 'Светлая',
 	'TURNSTILE_THEME_DARK' => 'Тёмная',
 	'TURNSTILE_SIZE' => 'Размер',
 	'TURNSTILE_SIZE_EXPLAIN' => 'Размер виджета Turnstile.',
 	'TURNSTILE_SIZE_NORMAL' => 'Обычный',
+	'TURNSTILE_SIZE_FLEXIBLE' => 'Flexible',
 	'TURNSTILE_SIZE_COMPACT' => 'Компактный',
+	'TURNSTILE_APPEARANCE' => 'Appearance',
+	'TURNSTILE_APPEARANCE_EXPLAIN' => 'The visibility of the Turnstile widget.',
+	'TURNSTILE_APPEARANCE_ALWAYS' => 'Always',
+	'TURNSTILE_APPEARANCE_INTERACTION_ONLY' => 'Invisible',
 	'TURNSTILE_NOT_AVAILABLE' => 'Чтобы использовать Turnstile, необходимо создать учетную запись на сайте <a href="https://dash.cloudflare.com/?to=/:account/turnstile" rel="external nofollow noreferrer noopener" target="_blank">www.cloudflare.com</a>.',
 	'TURNSTILE_INCORRECT' => 'Вы указали неправильное решение.',
 	'TURNSTILE_NOSCRIPT' => 'Для загрузки включите JavaScript в вашем браузере.',
 	'TURNSTILE_LOGIN_ERROR_ATTEMPTS' => 'Вы превысили максимально допустимое количество попыток входа.<br>В дополнение к вашему логину и паролю будет использоваться Turnstile.',
 
-	'CLOUDFLARE_REQUEST_EXCEPTION' => 'Ошибка запроса Cloudflare: %s',
-
-	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Переключатель %s',
-	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Недопустимые значения для полей: <samp>%s</samp>'
+	'CLOUDFLARE_REQUEST_EXCEPTION' => 'Ошибка запроса Cloudflare: %s'
 ]);
