@@ -3,8 +3,8 @@
 	"type": "phpbb-extension",
 	"description": "Cloudflare extension for phpBB",
 	"homepage": "https://github.com/AlfredoRamos/phpbb-ext-cloudflare",
-	"version": "0.3.0-dev",
-	"time": "2026-01-31",
+	"version": "0.4.0-dev",
+	"time": "2026-02-06",
 	"keywords": [
 		"phpbb",
 		"extension",
