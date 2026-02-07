@@ -58,6 +58,7 @@ class cloudflare
 	 * @param auth				$auth
 	 * @param config			$config
 	 * @param request			$request
+	 * @param controller_helper	$controller_helper
 	 * @param language			$language
 	 * @param user				$user
 	 * @param log				$log
@@ -77,6 +78,11 @@ class cloudflare
 		$this->log = $log;
 		$this->client = $client;
 		$this->helper = $helper;
+
+		$this->client->set_options([
+			'api_token' => $this->config->offsetGet('cloudflare_api_token'),
+			'zone_id' => $this->config->offsetGet('cloudflare_zone_id')
+		]);
 	}
 
 	/**
@@ -130,7 +136,7 @@ class cloudflare
 		}
 
 		if (!empty($errors)) {
-			return new JsonResponse($errors, 400);
+			return new JsonResponse(['errors' => $errors], 400);
 		}
 
 		$data = [];
@@ -158,11 +164,7 @@ class cloudflare
 		}
 		else
 		{
-			$data = $this->client->purge_cache(
-				$this->config->offsetGet('cloudflare_api_token'),
-				$this->config->offsetGet('cloudflare_zone_id'),
-				$payload
-			);
+			$data = $this->client->purge_cache($payload);
 
 			if ((empty($data['success']) || $data['success'] !== true) && !empty($data['errors']))
 			{
@@ -171,7 +173,7 @@ class cloudflare
 		}
 
 		if (!empty($errors)) {
-			return new JsonResponse($errors, 400);
+			return new JsonResponse(['errors' => $errors], 400);
 		}
 
 		// Admin log
@@ -185,5 +187,285 @@ class cloudflare
 		);
 
 		return new JsonResponse($data);
+	}
+
+	public function sync_ruleset_rules(string $type = '', string $hash = ''): JsonResponse
+	{
+		// This route can only be used by founder admins
+		// Other users do not need to know this page exist
+		if (!$this->auth->acl_get('a_') || (int) $this->user->data['user_type'] !== USER_FOUNDER) {
+			throw new http_exception(404, 'PAGE_NOT_FOUND');
+		}
+
+		// Load translations
+		$this->language->add_lang(['controller', 'acp/info_acp_common', 'acp/settings'], 'alfredoramos/cloudflare');
+
+		// This route only responds to AJAX calls
+		if (!$this->request->is_ajax()) {
+			throw new runtime_exception('EXCEPTION_CLOUDFLARE_AJAX_ONLY');
+		}
+
+		// Security hash
+		$hash = trim($hash);
+
+		// CSRF protection
+		if (empty($hash) || !check_link_hash($hash, sprintf('cloudflare_%s_sync_ruleset_rules', $type))) {
+			throw new http_exception(403, 'NO_AUTH_OPERATION');
+		}
+
+		// Mandatory API data
+		if (empty($this->config->offsetGet('cloudflare_api_token')) || empty($this->config->offsetGet('cloudflare_zone_id'))) {
+			throw new runtime_exception('EXCEPTION_CLOUDFLARE_NO_API_DATA');
+		}
+
+		$errors = [];
+		$allowed = ['firewall', 'cache'];
+		$type = trim($type);
+
+		if (!in_array($type, $allowed, true))
+		{
+			$errors[]['message'] = $this->language->lang('CLOUDFLARE_ERR_RULESET_TYPE');
+		}
+
+		if (!empty($errors)) {
+			return new JsonResponse(['errors' => $errors], 400);
+		}
+
+		$fields = [
+			'ruleset_id' => $this->request->variable(sprintf('cloudflare_%s_ruleset_id', $type), ''),
+			'ruleset_rules_id' => $this->request->variable(sprintf('cloudflare_%s_ruleset_rules_id', $type), '')
+		];
+
+		$payload = [];
+
+		if (empty($fields['ruleset_id']))
+		{
+			$ruleset = null;
+			$data = [];
+			$filters = [];
+
+			switch($type)
+			{
+				case 'firewall':
+					$filters = ['phase' => 'http_request_firewall_custom'];
+
+					$data = [
+						'name' => 'Firewall ruleset',
+						'description' => 'Created by Cloudflare extension for phpBB https://alfredoramos.mx/cloudflare-extension-for-phpbb/',
+						'kind' => 'zone',
+						'phase' => 'http_request_firewall_custom'
+					];
+					break;
+
+				case 'cache':
+					$filters = ['phase' => 'http_request_cache_settings'];
+
+					$data = [
+						'name' => 'Cache ruleset',
+						'description' => 'Created by Cloudflare extension for phpBB https://alfredoramos.mx/cloudflare-extension-for-phpbb/',
+						'kind' => 'zone',
+						'phase' => 'http_request_cache_settings'
+					];
+					break;
+			}
+
+			$ruleset = $this->client->find_ruleset($filters);
+
+			if (!empty($ruleset['errors']))
+			{
+				$errors = array_merge($errors, $ruleset['errors']);
+				return new JsonResponse(['errors' => $errors], 400);
+			}
+
+			if (empty($ruleset['result'][0]['id']))
+			{
+				$ruleset = $this->client->create_ruleset($data);
+
+				if (!empty($ruleset['errors']))
+				{
+					$errors = array_merge($errors, $ruleset['errors']);
+				}
+
+				if (empty($ruleset['result'][0]['id']))
+				{
+					$errors[]['message'] = $this->language->lang('CLOUDFLARE_ERR_RULESET_TYPE');
+				}
+				else
+				{
+					$fields['ruleset_id'] = $ruleset['result'][0]['id'];
+					$this->config->set(sprintf('cloudflare_%s_ruleset_id', $type), $ruleset['result'][0]['id']);
+				}
+			}
+			else
+			{
+				$fields['ruleset_id'] = $ruleset['result'][0]['id'];
+				$this->config->set(sprintf('cloudflare_%s_ruleset_id', $type), $ruleset['result'][0]['id']);
+			}
+
+			if (!empty($errors))
+			{
+				return new JsonResponse(['errors' => $errors], 400);
+			}
+		}
+		/*else
+		{
+			$data = [];
+
+			switch($type)
+			{
+				case 'firewall':
+					$data = [
+						//'name' => 'Firewall ruleset',
+						'description' => 'Created by Cloudflare extension for phpBB https://alfredoramos.mx/cloudflare-extension-for-phpbb/',
+						'kind' => 'zone',
+						'phase' => 'http_request_firewall_custom'
+					];
+					break;
+
+				case 'cache':
+					$data = [
+						//'name' => 'Cache ruleset',
+						'description' => 'Created by Cloudflare extension for phpBB https://alfredoramos.mx/cloudflare-extension-for-phpbb/',
+						'kind' => 'zone',
+						'phase' => 'http_request_cache_settings'
+					];
+					break;
+			}
+
+			if (empty($data))
+			{
+				$errors[]['message'] = $this->language->lang('CLOUDFLARE_ERR_RULESET_UPDATE');
+			}
+			else
+			{
+				$this->client->update_ruleset($fields['ruleset_id'], $data);
+			}
+		}*/
+
+		if (!empty($errors)) {
+			return new JsonResponse(['errors' => $errors], 400);
+		}
+
+		if (empty($fields['ruleset_rules_id']))
+		{
+			$rules = [];
+			$data = [];
+
+			switch($type)
+			{
+				case 'firewall':
+					$data = [
+						'description' => 'phpbb:firewall',
+						'expression' => '(http.request.uri.path contains "ucp.php" and (http.request.uri.query contains "mode=login" or http.request.uri.query contains "mode=register")) or (http.request.uri.path contains "memberlist.php" and http.request.uri.query contains "mode=contactadmin")',
+						'action' => 'managed_challenge',
+						'position' => [
+							'index' => 1,
+						]
+					];
+					break;
+
+				case 'cache':
+					$data = [
+						'description' => 'phpbb:cache',
+						'expression' => '(http.request.uri.path contains "file.php" and http.request.uri.query wildcard r"*avatar=*")',
+						'action' => 'set_cache_settings',
+						'action_parameters' => [
+							'cache' => true,
+							'cache_key' => ['cache_deception_armor' => true]
+						]
+					];
+					break;
+			}
+
+			$rules = $this->client->find_ruleset_rules($fields['ruleset_id'], [
+				'description' => sprintf('phpbb:%s', $type)
+			]);
+
+			if (!empty($rules['errors']))
+			{
+				$errors = array_merge($errors, $rules['errors']);
+				return new JsonResponse(['errors' => $errors], 400);
+			}
+
+			if (empty($rules['result']['rules'][0]['id']))
+			{
+				$rules = $this->client->create_ruleset_rules($fields['ruleset_id'], $data);
+
+				if (!empty($rules['errors']))
+				{
+					$errors = array_merge($errors, $rules['errors']);
+				}
+
+				if (empty($rules['result']['rules']))
+				{
+					$errors[]['message'] = $this->language->lang('CLOUDFLARE_ERR_RULESET_RULES_LIST');
+				}
+				else
+				{
+					$fields['ruleset_rules_id'] = $rules['result']['rules'][0]['id'];
+					$this->config->set(sprintf('cloudflare_%s_ruleset_rules_id', $type), $rules['result']['rules'][0]['id']);
+				}
+			}
+			else
+			{
+				$fields['ruleset_rules_id'] = $rules['result']['rules'][0]['id'];
+				$this->config->set(sprintf('cloudflare_%s_ruleset_rules_id', $type), $rules['result']['rules'][0]['id']);
+			}
+
+			if (!empty($errors))
+			{
+				return new JsonResponse(['errors' => $errors], 400);
+			}
+		}
+		else
+		{
+			$data = [];
+
+			switch($type)
+			{
+				case 'firewall':
+					$data = [
+						'description' => 'phpbb:firewall',
+						'expression' => '(http.request.uri.path contains "ucp.php" and (http.request.uri.query contains "mode=login" or http.request.uri.query "mode=register")) or (http.request.uri.path contains "memberlist.php" and http.request.uri.query "mode=contactadmin")',
+						'action' => 'managed_challenge',
+					];
+					break;
+
+				case 'cache':
+					$data = [
+						'description' => 'phpbb:cache',
+						'expression' => '(http.request.uri.path contains "file.php" and http.request.uri.query wildcard r"*avatar=*")',
+						'action' => 'set_cache_settings',
+						'action_parameters' => [
+							'cache' => true,
+							'cache_key' => ['cache_deception_armor' => true]
+						]
+					];
+					break;
+			}
+
+			$rules = $this->client->update_ruleset_rules($fields['ruleset_id'], $fields['ruleset_rules_id'], $data);
+
+			if (!empty($rules['errors']))
+			{
+				$errors = array_merge($errors, $rules['errors']);
+			}
+
+			if (empty($rules['result']['rules']) || empty($data))
+			{
+				$errors[]['message'] = $this->language->lang('CLOUDFLARE_ERR_RULESET_RULES_UPDATE');
+			}
+		}
+
+		if (!empty($errors)) {
+			return new JsonResponse(['errors' => $errors], 400);
+		}
+
+		return new JsonResponse([
+			'success' => true,
+			'type' => $type,
+			'ruleset_id' => $fields['ruleset_id'],
+			'ruleset_rules_id' => $fields['ruleset_rules_id']
+		]);
 	}
 }

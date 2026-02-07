@@ -12,6 +12,7 @@ namespace alfredoramos\cloudflare\controller;
 use phpbb\config\config;
 use phpbb\template\template;
 use phpbb\request\request;
+use phpbb\controller\helper as controller_helper;
 use phpbb\language\language;
 use phpbb\user;
 use phpbb\log\log;
@@ -28,6 +29,9 @@ class acp
 	/** @var request */
 	protected $request;
 
+	/** @var controller_helper */
+	protected $controller_helper;
+
 	/** @var language */
 	protected $language;
 
@@ -43,21 +47,23 @@ class acp
 	/**
 	 * Controller constructor.
 	 *
-	 * @param config	$config
-	 * @param template	$template
-	 * @param request	$request
-	 * @param language	$language
-	 * @param user		$user
-	 * @param log		$log
-	 * @param helper	$helper
+	 * @param config			$config
+	 * @param template			$template
+	 * @param request			$request
+	 * @param controller_helper	$controller_helper
+	 * @param language			$language
+	 * @param user				$user
+	 * @param log				$log
+	 * @param helper			$helper
 	 *
 	 * @return void
 	 */
-	public function __construct(config $config, template $template, request $request, language $language, user $user, log $log, helper $helper)
+	public function __construct(config $config, template $template, request $request, controller_helper $controller_helper, language $language, user $user, log $log, helper $helper)
 	{
 		$this->config = $config;
 		$this->template = $template;
 		$this->request = $request;
+		$this->controller_helper = $controller_helper;
 		$this->language = $language;
 		$this->user = $user;
 		$this->log = $log;
@@ -94,6 +100,30 @@ class acp
 				'options' => [
 					'regexp' => '#^\w{32}$#'
 				]
+			],
+			'cloudflare_firewall_ruleset_id' => [
+				'filter' => FILTER_VALIDATE_REGEXP,
+				'options' => [
+					'regexp' => '#^(?:\w{32})?$#'
+				]
+			],
+			'cloudflare_firewall_ruleset_rules_id' => [
+				'filter' => FILTER_VALIDATE_REGEXP,
+				'options' => [
+					'regexp' => '#^(?:\w{32})?$#'
+				]
+			],
+			'cloudflare_cache_ruleset_id' => [
+				'filter' => FILTER_VALIDATE_REGEXP,
+				'options' => [
+					'regexp' => '#^(?:\w{32})?$#'
+				]
+			],
+			'cloudflare_cache_ruleset_rules_id' => [
+				'filter' => FILTER_VALIDATE_REGEXP,
+				'options' => [
+					'regexp' => '#^(?:\w{32})?$#'
+				]
 			]
 		];
 
@@ -112,12 +142,26 @@ class acp
 			// Form data
 			$fields = [
 				'cloudflare_api_token' => $this->request->variable('cloudflare_api_token', ''),
-				'cloudflare_zone_id' => $this->request->variable('cloudflare_zone_id', '')
+				'cloudflare_zone_id' => $this->request->variable('cloudflare_zone_id', ''),
+				'cloudflare_firewall_ruleset_id' => $this->request->variable('cloudflare_firewall_ruleset_id', ''),
+				'cloudflare_firewall_ruleset_rules_id' => $this->request->variable('cloudflare_firewall_ruleset_rules_id', ''),
+				'cloudflare_cache_ruleset_id' => $this->request->variable('cloudflare_cache_ruleset_id', ''),
+				'cloudflare_cache_ruleset_rules_id' => $this->request->variable('cloudflare_cache_ruleset_rules_id', '')
 			];
 
 			// Validation check
 			if ($this->helper->validate($fields, $filters, $errors))
 			{
+				if (empty($fields['cloudflare_firewall_ruleset_id']))
+				{
+					$fields['cloudflare_firewall_ruleset_rules_id'] = '';
+				}
+
+				if (empty($fields['cloudflare_cache_ruleset_id']))
+				{
+					$fields['cloudflare_cache_ruleset_rules_id'] = '';
+				}
+
 				// Save configuration
 				foreach ($fields as $key => $value)
 				{
@@ -140,7 +184,7 @@ class acp
 		}
 
 		// Assign template variables
-		$this->template->assign_vars([
+		$template_vars = [
 			'ACP_CLOUDFLARE_SETTINGS_EXPLAIN' => $this->language->lang(
 				'ACP_CLOUDFLARE_SETTINGS_EXPLAIN',
 				$this->helper::SUPPORT_FAQ,
@@ -148,8 +192,28 @@ class acp
 				$this->helper::VENDOR_DONATE,
 			),
 			'CLOUDFLARE_API_TOKEN' => $this->config->offsetGet('cloudflare_api_token'),
-			'CLOUDFLARE_ZONE_ID' => $this->config->offsetGet('cloudflare_zone_id')
-		]);
+			'CLOUDFLARE_ZONE_ID' => $this->config->offsetGet('cloudflare_zone_id'),
+			'CLOUDFLARE_FIREWALL_RULESET_ID' => $this->config->offsetGet('cloudflare_firewall_ruleset_id'),
+			'CLOUDFLARE_FIREWALL_RULESET_RULES_ID' => $this->config->offsetGet('cloudflare_firewall_ruleset_rules_id'),
+			'CLOUDFLARE_CACHE_RULESET_ID' => $this->config->offsetGet('cloudflare_cache_ruleset_id'),
+			'CLOUDFLARE_CACHE_RULESET_RULES_ID' => $this->config->offsetGet('cloudflare_cache_ruleset_rules_id')
+		];
+
+		if (!empty($this->config->offsetGet('cloudflare_api_token')) && !empty($this->config->offsetGet('cloudflare_zone_id')))
+		{
+			$template_vars = array_merge([
+				'CLOUDFLARE_FIREWALL_RULESET_RULES_SYNC_URL' => $this->controller_helper->route('alfredoramos_cloudflare_sync_ruleset_rules', [
+					'type' => 'firewall',
+					'hash' => generate_link_hash('cloudflare_firewall_sync_ruleset_rules')
+				]),
+				'CLOUDFLARE_CACHE_RULESET_RULES_SYNC_URL' => $this->controller_helper->route('alfredoramos_cloudflare_sync_ruleset_rules', [
+					'type' => 'cache',
+					'hash' => generate_link_hash('cloudflare_cache_sync_ruleset_rules')
+				])
+			], $template_vars);
+		}
+
+		$this->template->assign_vars($template_vars);
 
 		// Validation errors
 		foreach ($errors as $key => $value)

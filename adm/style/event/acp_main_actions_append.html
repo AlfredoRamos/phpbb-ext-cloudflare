@@ -20,7 +20,10 @@
 				<textarea id="cloudflare_purge_cadlche_value" name="cloudflare_purge_cache_value"></textarea>
 			</details>
 			{% endif %}
-			<button type="submit" class="cloudflare-button">{{ lang('RUN') }}</button>
+			<button type="submit" class="cf-btn cf-btn-primary cf-btn-icon">
+				<i class="icon fa-cloud fa-fw" aria-hidden="true"></i>
+				{{ lang('RUN') }}
+			</button>
 		</dd>
 	</dl>
 </form>
