@@ -22,12 +22,12 @@ if (empty($lang) || !is_array($lang)) {
 }
 
 $lang = array_merge($lang, [
-	'EXCEPTION_CLOUDFLARE_NO_API_DATA' => 'Cloudflare API key and Zone ID are mandatory.',
-	'EXCEPTION_CLOUDFLARE_AJAX_ONLY' => 'This route can only be used on AJAX calls.',
+	'EXCEPTION_CLOUDFLARE_NO_API_DATA' => 'El token de API de Cloudflare y el ID de Zona son obligatorios.',
+	'EXCEPTION_CLOUDFLARE_AJAX_ONLY' => 'Esta ruta sólo se puede utilizar en las llamadas AJAX.',
 
-	'CLOUDFLARE_ERR_PURGE_CACHE_TYPE' => 'Invalid purge cache type.',
-	'CLOUDFLARE_ERR_RULESET_TYPE' => 'Invalid ruleset type.',
-	'CLOUDFLARE_ERR_RULESET_UPDATE' => 'Could not update ruleset.',
-	'CLOUDFLARE_ERR_RULESET_RULES_LIST' => 'Invalid ruleset rules.',
-	'CLOUDFLARE_ERR_RULESET_RULES_UPDATE' => 'Could not update ruleset rules.'
+	'CLOUDFLARE_ERR_PURGE_CACHE_TYPE' => 'El tipo de caché a purgar es inválido.',
+	'CLOUDFLARE_ERR_RULESET_TYPE' => 'El tipo del grupo de reglas es inválido.',
+	'CLOUDFLARE_ERR_RULESET_UPDATE' => 'No se pudo actualizar grupo de reglas.',
+	'CLOUDFLARE_ERR_RULESET_RULES_LIST' => 'La lista de reglas del grupo de reglas son inválidas.',
+	'CLOUDFLARE_ERR_RULESET_RULES_UPDATE' => 'No se pudo actualizar las reglas del grupo de reglas.'
 ]);
