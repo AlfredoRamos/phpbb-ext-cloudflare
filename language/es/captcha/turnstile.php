@@ -25,7 +25,7 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, [
 	'CAPTCHA_TURNSTILE' => 'Cloudflare Turnstile',
-	'CAPTCHA_TURNSTILE_EXPLAIN' => 'Consulte las <a href="https://www.phpbb.com/customise/db/extension/cloudflare/faq" rel="external nofollow noreferrer noopener" target="_blank"><strong>Preguntas Frecuentes</strong></a> para obtener más información. Si requiere de ayuda, por favor visite la sección de <a href="https://www.phpbb.com/customise/db/extension/cloudflare/support" rel="external nofollow noreferrer noopener" target="_blank"><strong>Soporte</strong></a>.',
+	'CAPTCHA_TURNSTILE_EXPLAIN' => '<p>Consulte las <a href="%1$s" rel="external nofollow noreferrer noopener" target="_blank"><strong>Preguntas Frecuentes</strong></a> para obtener más información. Si requiere de ayuda, por favor visite la sección de <a href="%2$s" rel="external nofollow noreferrer noopener" target="_blank"><strong>Soporte</strong></a>.</p><p>Si le gustó o encontró útil esta extensión y quiere mostrar un gesto de agradecimiento, puede considerar contribuir a su desarrollo realizando una <a href="%3$s" rel="external nofollow noreferrer noopener" target="_blank"><strong>donación</strong></a>.</p>',
 	'TURNSTILE_KEY' => 'Clave del sitio',
 	'TURNSTILE_KEY_EXPLAIN' => 'La clave del sitio generada en Turnstile para su dominio.',
 	'TURNSTILE_SECRET' => 'Clave secreta',
@@ -36,7 +36,7 @@ $lang = array_merge($lang, [
 	'TURNSTILE_THEME_LIGHT' => 'Claro',
 	'TURNSTILE_THEME_DARK' => 'Obscuro',
 	'TURNSTILE_SIZE' => 'Tamaño',
-	'TURNSTILE_SIZE_EXPLAIN' => 'El tamaño del widget de hCapcha.',
+	'TURNSTILE_SIZE_EXPLAIN' => 'El tamaño del widget de Turnstile.',
 	'TURNSTILE_SIZE_NORMAL' => 'Normal',
 	'TURNSTILE_SIZE_FLEXIBLE' => 'Flexible',
 	'TURNSTILE_SIZE_COMPACT' => 'Compacto',
