@@ -32,19 +32,22 @@ $lang = array_merge($lang, [
 	'TURNSTILE_SECRET_EXPLAIN' => 'Der in Ihrem Turnstile‑Konto generierte geheime Schlüssel.',
 	'TURNSTILE_THEME' => 'Thema',
 	'TURNSTILE_THEME_EXPLAIN' => 'Das Farbschema des Turnstile-Widgets.',
+	'TURNSTILE_THEME_AUTO' => 'Auto',
 	'TURNSTILE_THEME_LIGHT' => 'Hell',
 	'TURNSTILE_THEME_DARK' => 'Dunkel',
 	'TURNSTILE_SIZE' => 'Größe',
 	'TURNSTILE_SIZE_EXPLAIN' => 'Die Größe des Turnstile-Widgets.',
 	'TURNSTILE_SIZE_NORMAL' => 'Normal',
+	'TURNSTILE_SIZE_FLEXIBLE' => 'Flexible',
 	'TURNSTILE_SIZE_COMPACT' => 'Kompakt',
+	'TURNSTILE_APPEARANCE' => 'Appearance',
+	'TURNSTILE_APPEARANCE_EXPLAIN' => 'The visibility of the Turnstile widget.',
+	'TURNSTILE_APPEARANCE_ALWAYS' => 'Always',
+	'TURNSTILE_APPEARANCE_INTERACTION_ONLY' => 'Invisible',
 	'TURNSTILE_NOT_AVAILABLE' => 'Um Turnstile nutzen zu können, müssen Sie ein Konto bei <a href="https://dash.cloudflare.com/?to=/:account/turnstile" rel="external nofollow noreferrer noopener" target="_blank">www.cloudflare.com</a> erstellen.',
 	'TURNSTILE_INCORRECT' => 'Die von Ihnen eingegebene Lösung war falsch.',
 	'TURNSTILE_NOSCRIPT' => 'Bitte aktivieren Sie JavaScript in Ihrem Browser, um die Challenge zu laden.',
 	'TURNSTILE_LOGIN_ERROR_ATTEMPTS' => 'Sie haben die maximal zulässige Anzahl an Anmeldeversuchen überschritten.<br>Zusätzlich zu Ihrem Benutzernamen und Passwort wird Turnstile zur Authentifizierung Ihrer Sitzung verwendet.',
 
-	'CLOUDFLARE_REQUEST_EXCEPTION' => 'Cloudflare Anforderungsfehler: %s',
-
-	'ACP_CLOUDFLARE_TOGGLE_SECRET' => '%s umschalten',
-	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Ungültige Werte für Felder: <samp>%s</samp>'
+	'CLOUDFLARE_REQUEST_EXCEPTION' => 'Cloudflare Anforderungsfehler: %s'
 ]);
