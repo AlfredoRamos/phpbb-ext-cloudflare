@@ -24,14 +24,14 @@ if (empty($lang) || !is_array($lang)) {
 $lang = array_merge($lang, [
 	'ACP_CLOUDFLARE_SETTINGS_EXPLAIN' => '<p>Here you can configure the API data for Cloudflare. Consult the <a href="%1$s" rel="external nofollow noreferrer noopener" target="_blank"><strong>FAQ</strong></a> for more information. If you require assistance, please visit the <a href="%2$s" rel="external nofollow noreferrer noopener" target="_blank"><strong>Support</strong></a> section.</p><p>If you like or found this extension useful and want to show some appreciation, you can consider supporting its development by <a href="%3$s" rel="external nofollow noreferrer noopener" target="_blank"><strong>giving a donation</strong></a>.</p>',
 
-	'ACP_CLOUDFLARE_API_TOKEN' => 'API Token',
-	'ACP_CLOUDFLARE_API_TOKEN_EXPLAIN' => 'Cloudflare API token with the permissions <code>Zone:Zone WAF:Edit</code>, <code>Zone:Cache Rules:Edit</code> and <code>Zone:Cache Purge:Purge</code>.',
-	'ACP_CLOUDFLARE_ZONE_ID' => 'Zone ID',
-	'ACP_CLOUDFLARE_ZONE_ID_EXPLAIN' => 'The identifier of your domain on Cloudflare.',
-	'ACP_CLOUDFLARE_FIREWALL_RULESET_ID' => 'Firewall ruleset ID',
-	'ACP_CLOUDFLARE_FIREWALL_RULESET_ID_EXPLAIN' => 'The ruleset ID for security custom rules. Leave it blank to find it or create it as needed by clicking the <samp>%s</samp> button.',
-	'ACP_CLOUDFLARE_CACHE_RULESET_ID' => 'Cache ruleset ID',
-	'ACP_CLOUDFLARE_CACHE_RULESET_ID_EXPLAIN' => 'The ruleset ID for the cache custom rules. Leave it blank to find it or create it as needed by clicking the <samp>%s</samp> button.',
+	'CLOUDFLARE_API_TOKEN' => 'API Token',
+	'CLOUDFLARE_API_TOKEN_EXPLAIN' => 'Cloudflare API token with the permissions <code>Zone:Zone WAF:Edit</code>, <code>Zone:Cache Rules:Edit</code> and <code>Zone:Cache Purge:Purge</code>.',
+	'CLOUDFLARE_ZONE_ID' => 'Zone ID',
+	'CLOUDFLARE_ZONE_ID_EXPLAIN' => 'The identifier of your domain on Cloudflare.',
+	'CLOUDFLARE_FIREWALL_RULESET_ID' => 'Firewall ruleset ID',
+	'CLOUDFLARE_FIREWALL_RULESET_ID_EXPLAIN' => 'The ruleset ID for security custom rules. Leave it blank to find it or create it as needed by clicking the <samp>%s</samp> button.',
+	'CLOUDFLARE_CACHE_RULESET_ID' => 'Cache ruleset ID',
+	'CLOUDFLARE_CACHE_RULESET_ID_EXPLAIN' => 'The ruleset ID for the cache custom rules. Leave it blank to find it or create it as needed by clicking the <samp>%s</samp> button.',
 
 	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Toggle %s',
 	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Invalid values for fields: <samp>%s</samp>',

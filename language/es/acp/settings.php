@@ -24,14 +24,14 @@ if (empty($lang) || !is_array($lang)) {
 $lang = array_merge($lang, [
 	'ACP_CLOUDFLARE_SETTINGS_EXPLAIN' => '<p>Aquí puede configurar los datos del API de Cloudflare. Consulte las <a href="%1$s" rel="external nofollow noreferrer noopener" target="_blank"><strong>Preguntas Frecuentes</strong></a> para obtener más información. Si requiere de ayuda, por favor visite la sección de <a href="%2$s" rel="external nofollow noreferrer noopener" target="_blank"><strong>Soporte</strong></a> section.</p><p>Si le gustó o encontró útil esta extensión y quiere mostrar un gesto de agradecimiento, puede considerar contribuir a su desarrollo realizando una <a href="%3$s" rel="external nofollow noreferrer noopener" target="_blank"><strong>donación</strong></a>.</p>',
 
-	'ACP_CLOUDFLARE_API_TOKEN' => 'Token de API',
-	'ACP_CLOUDFLARE_API_TOKEN_EXPLAIN' => 'El token de la API de Cloudflare con los permisos <code>Zona:WAF de zona:Editar</code>, <code>Zona:Cache Rules:Editar</code> y <code>Zona:Purga de caché:Purgar</code>.',
-	'ACP_CLOUDFLARE_ZONE_ID' => 'ID de Zona',
-	'ACP_CLOUDFLARE_ZONE_ID_EXPLAIN' => 'El identificador de su dominio en Cloudflare.',
-	'ACP_CLOUDFLARE_FIREWALL_RULESET_ID' => 'ID del grupo de reglas de firewall',
-	'ACP_CLOUDFLARE_FIREWALL_RULESET_ID_EXPLAIN' => 'El ID del grupo de reglas que contiene las reglas personalizadas del firewall. Deje en blanco para buscarlo o generarlo según sea necesario al dar click en el botón <samp>%s</samp>.',
-	'ACP_CLOUDFLARE_CACHE_RULESET_ID' => 'ID del grupo de reglas de caché',
-	'ACP_CLOUDFLARE_CACHE_RULESET_ID_EXPLAIN' => 'El ID del grupo de reglas que contiene las reglas personalizadas de caché. Deje en blanco para buscarlo o generarlo según sea necesario al dar click en el botón <samp>%s</samp>.',
+	'CLOUDFLARE_API_TOKEN' => 'Token de API',
+	'CLOUDFLARE_API_TOKEN_EXPLAIN' => 'El token de la API de Cloudflare con los permisos <code>Zona:WAF de zona:Editar</code>, <code>Zona:Cache Rules:Editar</code> y <code>Zona:Purga de caché:Purgar</code>.',
+	'CLOUDFLARE_ZONE_ID' => 'ID de Zona',
+	'CLOUDFLARE_ZONE_ID_EXPLAIN' => 'El identificador de su dominio en Cloudflare.',
+	'CLOUDFLARE_FIREWALL_RULESET_ID' => 'ID del grupo de reglas de firewall',
+	'CLOUDFLARE_FIREWALL_RULESET_ID_EXPLAIN' => 'El ID del grupo de reglas que contiene las reglas personalizadas del firewall. Deje en blanco para buscarlo o generarlo según sea necesario al dar click en el botón <samp>%s</samp>.',
+	'CLOUDFLARE_CACHE_RULESET_ID' => 'ID del grupo de reglas de caché',
+	'CLOUDFLARE_CACHE_RULESET_ID_EXPLAIN' => 'El ID del grupo de reglas que contiene las reglas personalizadas de caché. Deje en blanco para buscarlo o generarlo según sea necesario al dar click en el botón <samp>%s</samp>.',
 
 	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Alternar visibilidad de %s',
 	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Valores inválido para los campos: <samp>%s</samp>',

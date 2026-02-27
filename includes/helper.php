@@ -83,8 +83,12 @@ class helper
 	 *
 	 * @return bool
 	 */
-	public function validate(array &$fields = [], array &$filters = [], array &$errors = []): bool
+	public function validate(array &$fields = null, array &$filters = null, array &$errors = null): bool
 	{
+		$fields = $fields ?? [];
+		$filters = $filters ?? [];
+		$errors = $errors ?? [];
+
 		if (empty($fields) || empty($filters))
 		{
 			return false;
@@ -103,7 +107,7 @@ class helper
 			// Not using empty() because an empty string can be a valid value
 			if (!isset($value) || $value === false)
 			{
-				$invalid[] = $this->language->lang(sprintf('%s', strtoupper($key)));
+				$invalid[] = $this->language->lang(strtoupper($key));
 				unset($fields[$key]);
 			}
 		}
