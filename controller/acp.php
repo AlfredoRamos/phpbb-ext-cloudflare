@@ -92,37 +92,37 @@ class acp
 			'cloudflare_api_token' => [
 				'filter' => FILTER_VALIDATE_REGEXP,
 				'options' => [
-					'regexp' => '#^\w{40}$#'
+					'regexp' => '#\A[A-Za-z0-9_-]{40}\z#'
 				]
 			],
 			'cloudflare_zone_id' => [
 				'filter' => FILTER_VALIDATE_REGEXP,
 				'options' => [
-					'regexp' => '#^\w{32}$#'
+					'regexp' => '#\A[A-Za-z0-9_]{32}\z#'
 				]
 			],
 			'cloudflare_firewall_ruleset_id' => [
 				'filter' => FILTER_VALIDATE_REGEXP,
 				'options' => [
-					'regexp' => '#^(?:\w{32})?$#'
+					'regexp' => '#\A(?:[A-Za-z0-9_]{32})?\z#'
 				]
 			],
 			'cloudflare_firewall_ruleset_rules_id' => [
 				'filter' => FILTER_VALIDATE_REGEXP,
 				'options' => [
-					'regexp' => '#^(?:\w{32})?$#'
+					'regexp' => '#\A(?:[A-Za-z0-9_]{32})?\z#'
 				]
 			],
 			'cloudflare_cache_ruleset_id' => [
 				'filter' => FILTER_VALIDATE_REGEXP,
 				'options' => [
-					'regexp' => '#^(?:\w{32})?$#'
+					'regexp' => '#\A(?:[A-Za-z0-9_]{32})?\z#'
 				]
 			],
 			'cloudflare_cache_ruleset_rules_id' => [
 				'filter' => FILTER_VALIDATE_REGEXP,
 				'options' => [
-					'regexp' => '#^(?:\w{32})?$#'
+					'regexp' => '#\A(?:[A-Za-z0-9_]{32})?\z#'
 				]
 			]
 		];
