@@ -52,7 +52,7 @@
 		value="${build-directory}/package/${vendor-name}/${extension-name}" />
 
 	<!-- Remove incomplete translations. -->
-	<property name="exclude-langs" value="" override="true" />
+	<property name="exclude-langs" value="cs,de,fr,ru,tr" override="true" />
 
 	<!-- These are the main targets which you will probably want to use -->
 	<target name="all" depends="prepare-structure,package" />
