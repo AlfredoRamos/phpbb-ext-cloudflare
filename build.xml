@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Cloudflare Extension Builder" description="Builds an extension.zip from a git repository" default="all">
+<project name="Cloudflare Extension Builder"
+	description="Builds an extension.zip from a git repository" default="all">
 	<property name="env" value="production" />
 	<property name="vendor-name" value="alfredoramos" />
 	<property name="extension-name" value="cloudflare" />
@@ -17,6 +18,7 @@
 	<target name="clean-package">
 		<echo msg="Cleaning files and directories" />
 
+		<delete dir="${dir}/scss" />
 		<delete dir="${dir}/tests" />
 		<delete dir="${dir}/node_modules" />
 		<delete dir="${dir}/.github" />
@@ -52,7 +54,7 @@
 		value="${build-directory}/package/${vendor-name}/${extension-name}" />
 
 	<!-- Remove incomplete translations. -->
-	<property name="exclude-langs" value="" override="true" />
+	<property name="exclude-langs" value="cs,de,fr,ru,tr" override="true" />
 
 	<!-- These are the main targets which you will probably want to use -->
 	<target name="all" depends="prepare-structure,package" />
@@ -97,9 +99,6 @@
 			<fileset dir="${package-directory}/language">
 				<patternset>
 					<include name="**/*.php" />
-					<exclude name="**/en/**/*.php" />
-					<exclude name="**/es/**/*.php" />
-					<exclude name="**/es_x_tu/**/*.php" />
 				</patternset>
 			</fileset>
 		</foreach>
@@ -156,7 +155,9 @@
 		<if>
 			<equals arg1="${env}" arg2="production" />
 			<then>
-				<phingcall target="minify-assets" />
+				<phingcall target="minify-assets">
+					<property name="dir" value="${package-directory}" />
+				</phingcall>
 			</then>
 		</if>
 
@@ -179,10 +180,7 @@
 
 	<!-- Create the zip and tar ball -->
 	<target name="wrap-package">
-		<echo msg="Cleaning build" />
-		<exec command="npm run build-clean" checkreturn="true" />
-
-		<echo msg="Creating archives (${vendor-name}/${extension-name} ${package-version})" />
+		<echo msg="Creating archives (${vendor-name}/${extension-name} ${version})" />
 		<zip basedir="${build-directory}/package/" destfile="${destination-filename}.zip" />
 		<tar basedir="${build-directory}/package/" destfile="${destination-filename}.tar.gz"
 			compression="gzip" />

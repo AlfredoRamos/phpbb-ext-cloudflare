@@ -19,6 +19,15 @@ services:
 
     alfredoramos.cloudflare.client:
         class: alfredoramos\cloudflare\includes\cloudflare
+        arguments:
+            - '@dbal.conn'
+            - '@auth'
+            - '@config'
+            - '@request'
+            - '@language'
+            - '@content.visibility'
+            - '%tables.users%'
+            - '%tables.posts%'
 
     alfredoramos.cloudflare.controller.acp:
         class: alfredoramos\cloudflare\controller\acp
@@ -26,7 +35,6 @@ services:
             - '@config'
             - '@template'
             - '@request'
-            - '@controller.helper'
             - '@language'
             - '@user'
             - '@log'

@@ -1,9 +1,3 @@
 alfredoramos_cloudflare_purge_cache:
     path: /cloudflare/purge_cache/{hash}
-    methods: [POST]
     defaults: { _controller: alfredoramos.cloudflare.controller.cloudflare:purge_cache, hash: '' }
-
-alfredoramos_cloudflare_sync_ruleset_rules:
-    path: /cloudflare/sync_ruleset_rules/{type}/{hash}
-    methods: [POST]
-    defaults: { _controller: alfredoramos.cloudflare.controller.cloudflare:sync_ruleset_rules, hash: '' }

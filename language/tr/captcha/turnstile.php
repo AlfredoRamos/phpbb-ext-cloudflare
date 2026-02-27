@@ -32,19 +32,22 @@ $lang = array_merge($lang, [
 	'TURNSTILE_SECRET_EXPLAIN' => 'Turnstile hesabınızda oluşturulan gizli anahtar.',
 	'TURNSTILE_THEME' => 'Tema',
 	'TURNSTILE_THEME_EXPLAIN' => 'Turnstile widget\'ının renk teması.',
+	'TURNSTILE_THEME_AUTO' => 'Auto',
 	'TURNSTILE_THEME_LIGHT' => 'Açık',
 	'TURNSTILE_THEME_DARK' => 'Koyu',
 	'TURNSTILE_SIZE' => 'Boyut',
 	'TURNSTILE_SIZE_EXPLAIN' => 'Turnstile widget\'ının boyutu.',
 	'TURNSTILE_SIZE_NORMAL' => 'Normal',
+	'TURNSTILE_SIZE_FLEXIBLE' => 'Flexible',
 	'TURNSTILE_SIZE_COMPACT' => 'Kompakt',
+	'TURNSTILE_APPEARANCE' => 'Appearance',
+	'TURNSTILE_APPEARANCE_EXPLAIN' => 'The visibility of the Turnstile widget.',
+	'TURNSTILE_APPEARANCE_ALWAYS' => 'Always',
+	'TURNSTILE_APPEARANCE_INTERACTION_ONLY' => 'Invisible',
 	'TURNSTILE_NOT_AVAILABLE' => 'Turnstile kullanmak için <a href="https://dash.cloudflare.com/?to=/:account/turnstile" rel="external nofollow noreferrer noopener" target="_blank">www.cloudflare.com</a> sitesinde bir hesap oluşturmalısınız.',
 	'TURNSTILE_INCORRECT' => 'Sağladığınız çözüm yanlıştı.',
 	'TURNSTILE_NOSCRIPT' => 'Lütfen meydan okumayı yüklemek için tarayıcınızda JavaScript\'i etkinleştirin.',
 	'TURNSTILE_LOGIN_ERROR_ATTEMPTS' => 'İzin verilen maksimum giriş denemesi sayısını aştınız.<br>Kullanıcı adınıza ve şifrenize ek olarak, oturumunuzun kimliğini doğrulamak için Turnstile kullanılacaktır.',
 
-	'CLOUDFLARE_REQUEST_EXCEPTION' => 'Cloudflare istek hatası: %s',
-
-	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Aç/kapat %s',
-	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Şu alanlar için geçersiz değerler: <samp>%s</samp>'
+	'CLOUDFLARE_REQUEST_EXCEPTION' => 'Cloudflare istek hatası: %s'
 ]);

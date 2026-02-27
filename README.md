@@ -4,6 +4,7 @@ Cloudflare extension for phpBB.
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/AlfredoRamos/phpbb-ext-cloudflare/ci.yml?style=flat-square)](https://github.com/AlfredoRamos/phpbb-ext-cloudflare/actions)
 [![Latest Stable Version](https://img.shields.io/github/tag/AlfredoRamos/phpbb-ext-cloudflare.svg?label=stable&style=flat-square)](https://github.com/AlfredoRamos/phpbb-ext-cloudflare/releases)
+[![Code Quality](https://img.shields.io/codacy/grade/880e827356774dcf8348b803ff5b6855.svg?style=flat-square)](https://app.codacy.com/gh/AlfredoRamos/phpbb-ext-cloudflare/dashboard)
 [![Translation Progress](https://badges.crowdin.net/phpbb-ext-cloudflare/localized.svg)](https://crowdin.com/project/phpbb-ext-cloudflare)
 [![License](https://img.shields.io/github/license/AlfredoRamos/phpbb-ext-cloudflare.svg?style=flat-square)](https://raw.githubusercontent.com/AlfredoRamos/phpbb-ext-cloudflare/main/license.txt)
 

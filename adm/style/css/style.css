@@ -9,29 +9,27 @@
 	font-family: Consolas, monaco, monospace;
 }
 
-.cf-btn {
-	font-weight: bold;
+.toggle-cloudflare-secret {
+	vertical-align: middle;
 	cursor: pointer;
 }
 
-.cf-btn-icon {
-	vertical-align: middle;
-}
-
-.cf-btn-icon,
-.cf-btn-icon .icon {
+.toggle-cloudflare-secret,
+.toggle-cloudflare-secret .icon {
 	display: inline-block;
 }
 
-.cf-btn-primary {
-	color: #555;
+.cloudflare-button {
 	border-radius: 3px;
 	border: 1px solid #e58737;
 	padding: 3px 6px;
 	background-color: #fff;
+	color: #555;
+	font-weight: bold;
+	cursor: pointer;
 }
 
-.cf-btn-primary:hover {
+.cloudflare-button:hover {
 	color: #fff;
 	background-color: #f68e35;
 }
@@ -41,7 +39,7 @@
 	cursor: not-allowed;
 }
 
-.cf-btn:disabled {
+.cloudflare-button:disabled {
 	cursor: wait;
 }
 
@@ -57,7 +55,7 @@
 
 #cloudflare_purge_cache_type,
 .cloudflare-value-container,
-#cloudflare_purge_cache_form .cf-btn {
+.cloudflare-button {
 	display: block;
 	margin: 10px 0;
 }

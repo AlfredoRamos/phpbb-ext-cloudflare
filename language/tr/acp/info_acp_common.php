@@ -22,8 +22,7 @@ if (empty($lang) || !is_array($lang)) {
 }
 
 $lang = array_merge($lang, [
-	'EXCEPTION_CLOUDFLARE_NO_API_DATA' => 'Cloudflare API key and Zone ID are mandatory.',
-	'EXCEPTION_CLOUDFLARE_AJAX_ONLY' => 'This route can only be used on AJAX calls.',
-
-	'CLOUDFLARE_ERR_PURGE_CACHE_TYPE' => 'Invalid purge cache type.'
+	'ACP_CLOUDFLARE' => 'Cloudflare',
+	'LOG_CLOUDFLARE_DATA' => '<strong>Cloudflare configuration change</strong><br>» %s',
+	'LOG_CLOUDFLARE_PURGE_CACHE' => '<strong>Cloudflare purge cache</strong><br>» %s'
 ]);

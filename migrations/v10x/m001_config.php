@@ -30,22 +30,6 @@ class m001_config extends migration
 				'config.add',
 				['cloudflare_zone_id', '']
 			],
-			[
-				'config.add',
-				['cloudflare_firewall_ruleset_id', '']
-			],
-			[
-				'config.add',
-				['cloudflare_firewall_ruleset_rules_id', '']
-			],
-			[
-				'config.add',
-				['cloudflare_cache_ruleset_id', '']
-			],
-			[
-				'config.add',
-				['cloudflare_cache_ruleset_rules_id', '']
-			],
 
 			// Turnstile
 			[

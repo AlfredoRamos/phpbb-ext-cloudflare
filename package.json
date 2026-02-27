@@ -18,7 +18,6 @@
 		"build-templates": "node .github/scripts/build-templates.js",
 		"build": "npm run build-css && npm run build-js && npm run build-templates",
 		"build-dev": "npm run build && npm run lint-css",
-		"build-clean": "node .github/scripts/build-clean.js",
 		"lint-css": "npx stylelint '**/*.css' --fix"
 	},
 	"devDependencies": {
