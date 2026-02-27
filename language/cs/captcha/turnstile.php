@@ -32,19 +32,22 @@ $lang = array_merge($lang, [
 	'TURNSTILE_SECRET_EXPLAIN' => 'Tajný klíč vygenerovaný pro váš účet Turnstile.',
 	'TURNSTILE_THEME' => 'Téma vzhledu',
 	'TURNSTILE_THEME_EXPLAIN' => 'Barva vzhledu widgetu Turnstile.',
+	'TURNSTILE_THEME_AUTO' => 'Auto',
 	'TURNSTILE_THEME_LIGHT' => 'Světlý',
 	'TURNSTILE_THEME_DARK' => 'Tmavý',
 	'TURNSTILE_SIZE' => 'Velikost',
 	'TURNSTILE_SIZE_EXPLAIN' => 'Velikost widgetu Turnstile.',
 	'TURNSTILE_SIZE_NORMAL' => 'Normální',
+	'TURNSTILE_SIZE_FLEXIBLE' => 'Flexible',
 	'TURNSTILE_SIZE_COMPACT' => 'Kompaktní',
+	'TURNSTILE_APPEARANCE' => 'Appearance',
+	'TURNSTILE_APPEARANCE_EXPLAIN' => 'The visibility of the Turnstile widget.',
+	'TURNSTILE_APPEARANCE_ALWAYS' => 'Always',
+	'TURNSTILE_APPEARANCE_INTERACTION_ONLY' => 'Invisible',
 	'TURNSTILE_NOT_AVAILABLE' => 'Pro používání služby Turnstile si nejprve vytvořte účet na <a href="https://dash.cloudflare.com/?to=/:account/turnstile" rel="external nofollow noreferrer noopener" target="_blank">www.cloudflare.com</a>.',
 	'TURNSTILE_INCORRECT' => 'Zadali jste nesprávné řešení.',
 	'TURNSTILE_NOSCRIPT' => 'Povolte ve svém prohlížeči JavaScript pro načtení Turnstile.',
 	'TURNSTILE_LOGIN_ERROR_ATTEMPTS' => 'Překročili jste maximální počet pokusů o přihlášení.<br>Pro ověření vaší relace vyplňte kromě svého uživatelského jména a hesla také Turnstile.',
 
-	'CLOUDFLARE_REQUEST_EXCEPTION' => 'Chyba požadavku Cloudflare: %s',
-
-	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Přepnout zobrazení %s',
-	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Neplatné hodnoty pro pole: <samp>%s</samp>'
+	'CLOUDFLARE_REQUEST_EXCEPTION' => 'Chyba požadavku Cloudflare: %s'
 ]);
