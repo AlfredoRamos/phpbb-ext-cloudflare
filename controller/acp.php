@@ -21,28 +21,28 @@ use alfredoramos\cloudflare\includes\helper;
 class acp
 {
 	/** @var config */
-	protected $config;
+	protected config $config;
 
 	/** @var template */
-	protected $template;
+	protected template $template;
 
 	/** @var request */
-	protected $request;
+	protected request $request;
 
 	/** @var controller_helper */
-	protected $controller_helper;
+	protected controller_helper $controller_helper;
 
 	/** @var language */
-	protected $language;
+	protected language $language;
 
 	/** @var user */
-	protected $user;
+	protected user $user;
 
 	/** @var log */
-	protected $log;
+	protected log $log;
 
 	/** @var helper */
-	protected $helper;
+	protected helper $helper;
 
 	/**
 	 * Controller constructor.

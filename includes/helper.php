@@ -21,25 +21,25 @@ use alfredoramos\cloudflare\includes\cloudflare as cloudflare_client;
 class helper
 {
 	/** @var config */
-	protected $config;
+	protected config $config;
 
 	/** @var request */
-	protected $request;
+	protected request $request;
 
 	/** @var language */
-	protected $language;
+	protected language $language;
 
 	/** @var template */
-	protected $template;
+	protected template $template;
 
 	/** @var routing_helper */
-	protected $routing_helper;
+	protected routing_helper $routing_helper;
 
 	/** @var captcha_factory */
-	protected $captcha_factory;
+	protected captcha_factory $captcha_factory;
 
 	/** @var cloudflare_client */
-	protected $cloudflare_client;
+	protected cloudflare_client $cloudflare_client;
 
 	/** @var string */
 	public const SUPPORT_FAQ = 'https://www.phpbb.com/customise/db/extension/cloudflare/faq';
@@ -61,7 +61,7 @@ class helper
 	 * @param captcha_factory		$captcha_factory
 	 * @param cloudflare_client		$cloudflare_client
 	 *
-	 * @param void
+	 * @return void
 	 */
 	public function __construct(config $config, request $request, language $language, template $template, routing_helper $routing_helper, captcha_factory $captcha_factory, cloudflare_client $cloudflare_client)
 	{
@@ -124,7 +124,12 @@ class helper
 		return empty($errors);
 	}
 
-	public function original_visitor_ip(): string|null
+	/**
+	 * Get Cloudflare original visitor IP.
+	 *
+	 * @return null|string
+	 */
+	public function original_visitor_ip(): ?string
 	{
 		$ip = null;
 
@@ -136,6 +141,13 @@ class helper
 		return $ip;
 	}
 
+	/**
+	 * Sanitize string list.
+	 *
+	 * @param array $list
+	 *
+	 * @return array
+	 */
 	public function sanitize_string_list(array $list = []): array
 	{
 		$ary = [];
@@ -160,6 +172,11 @@ class helper
 		return $ary;
 	}
 
+	/**
+	 * Generate UUID v4.
+	 *
+	 * @return string
+	 */
 	public function uuid_v4(): string
 	{
 		$data = random_bytes(16);
@@ -173,7 +190,17 @@ class helper
 		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 	}
 
-	// * delay = base_delay × 2^(attempt − 1) + jitter
+	/**
+	 * Generate exponential backoff delay.
+	 *
+	 * delay = base_delay × 2^(attempt − 1) + jitter
+	 *
+	 * @param int	$attempt
+	 * @param int	$base_ms
+	 * @param int	$max_ms
+	 *
+	 * @return void
+	 */
 	public function backoff_delay(int $attempt, int $base_ms = 250, int $max_ms = 2500): void {
 		// Exponential backoff
 		$delay_ms = min($base_ms * (2 ** ($attempt - 1)), $max_ms);
@@ -184,7 +211,12 @@ class helper
 		usleep(($delay_ms + $jitter) * 1000);
 	}
 
-	public function acp_assign_template_variables()
+	/**
+	 * Generate global template variables for ACP.
+	 *
+	 * @return void
+	 */
+	public function acp_assign_template_variables(): void
 	{
 		$this->language->add_lang(['acp/settings'], 'alfredoramos/cloudflare');
 
@@ -206,6 +238,11 @@ class helper
 		}
 	}
 
+	/**
+	 * Setup captcha for login page.
+	 *
+	 * @return void
+	 */
 	public function setup_login_captcha(): void
 	{
 		if ((int) $this->config->offsetGet('turnstile_force_login') !== 1)

@@ -43,6 +43,11 @@ class listener implements EventSubscriberInterface
 		];
 	}
 
+	/**
+	 * Restore Cloudflare original visitor IP.
+	 *
+	 * @return void
+	 */
 	public function restore_original_ip($event): void
 	{
 		$ip = $this->helper->original_visitor_ip();
@@ -53,11 +58,17 @@ class listener implements EventSubscriberInterface
 		}
 	}
 
+	/**
+	 * Assign global template variables for ACP.
+	 */
 	public function acp_global_template_variables($event): void
 	{
 		$this->helper->acp_assign_template_variables();
 	}
 
+	/**
+	 * Setup captcha for login page.
+	 */
 	public function login_captcha($event): void
 	{
 		if ($event['admin'])

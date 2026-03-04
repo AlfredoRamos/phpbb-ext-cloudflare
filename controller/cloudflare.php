@@ -26,31 +26,31 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class cloudflare
 {
 	/** @var auth */
-	protected $auth;
+	protected auth $auth;
 
 	/** @var config */
-	protected $config;
+	protected config $config;
 
 	/** @var request */
-	protected $request;
+	protected request $request;
 
 	/** @var controller_helper */
-	protected $controller_helper;
+	protected controller_helper $controller_helper;
 
 	/** @var language */
 	protected $language;
 
 	/** @var user */
-	protected $user;
+	protected user $user;
 
 	/** @var log */
-	protected $log;
+	protected log $log;
 
 	/** @var cloudflare_client */
-	protected $client;
+	protected cloudflare_client $client;
 
 	/** @var helper */
-	protected $helper;
+	protected helper $helper;
 
 	/**
 	 * Controller constructor.
@@ -91,6 +91,7 @@ class cloudflare
 	 * @param string $hash
 	 *
 	 * @throws http_exception
+	 * @throws runtime_exception
 	 *
 	 * @return JsonResponse
 	 */
@@ -189,6 +190,17 @@ class cloudflare
 		return new JsonResponse($data);
 	}
 
+	/**
+	 * Cloudflare sync ruleset rules handler.
+	 *
+	 * @param string	$type
+	 * @param string	$hash
+	 *
+	 * @throws http_exception
+	 * @throws runtime_exception
+	 *
+	 * @return JsonResponse
+	 */
 	public function sync_ruleset_rules(string $type = '', string $hash = ''): JsonResponse
 	{
 		// This route can only be used by founder admins
@@ -307,40 +319,6 @@ class cloudflare
 				return new JsonResponse(['errors' => $errors], 400);
 			}
 		}
-		/*else
-		{
-			$data = [];
-
-			switch($type)
-			{
-				case 'firewall':
-					$data = [
-						//'name' => 'Firewall ruleset',
-						'description' => 'Created by Cloudflare extension for phpBB https://alfredoramos.mx/cloudflare-extension-for-phpbb/',
-						'kind' => 'zone',
-						'phase' => 'http_request_firewall_custom'
-					];
-					break;
-
-				case 'cache':
-					$data = [
-						//'name' => 'Cache ruleset',
-						'description' => 'Created by Cloudflare extension for phpBB https://alfredoramos.mx/cloudflare-extension-for-phpbb/',
-						'kind' => 'zone',
-						'phase' => 'http_request_cache_settings'
-					];
-					break;
-			}
-
-			if (empty($data))
-			{
-				$errors[]['message'] = $this->language->lang('CLOUDFLARE_ERR_RULESET_UPDATE');
-			}
-			else
-			{
-				$this->client->update_ruleset($fields['ruleset_id'], $data);
-			}
-		}*/
 
 		if (!empty($errors)) {
 			return new JsonResponse(['errors' => $errors], 400);

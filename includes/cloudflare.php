@@ -15,11 +15,11 @@ class cloudflare
 {
 	use http_trait;
 
-	/** @var string */
-	private $api_token = null;
+	/** @var null|string */
+	private ?string $api_token = null;
 
-	/** @var string */
-	private $zone_id = null;
+	/** @var null|string */
+	private ?string $zone_id = null;
 
 	/** @var string */
 	private const API_BASE_URL = 'https://api.cloudflare.com/client/v4/';
@@ -42,6 +42,14 @@ class cloudflare
 		'set_cache_settings'
 	];
 
+	/**
+	 * Cloudflare client constructor.
+	 *
+	 * @param null|string	$api_token
+	 * @param null|string	$zone_id
+	 *
+	 * @return void
+	 */
 	public function __construct(?string $api_token = null, ?string $zone_id = null)
 	{
 		if (!empty($api_token))
@@ -57,6 +65,13 @@ class cloudflare
 		$this->get_client(['base_uri' => self::API_BASE_URL]);
 	}
 
+	/**
+	 * Set client options.
+	 *
+	 * @param array $opts
+	 *
+	 * @return void
+	 */
 	public function set_options(array $opts = []): void
 	{
 		if (empty($opts))
@@ -91,6 +106,15 @@ class cloudflare
 		}
 	}
 
+	/**
+	 * Make HTTP request.
+	 *
+	 * @param string		$method
+	 * @param string		$endpoint
+	 * @param null|array	$payload
+	 *
+	 * @return array
+	 */
 	protected function make_request(string $method = 'GET', string $endpoint = '', ?array $payload = null): array
 	{
 		$allowed = ['method' => ['GET', 'POST', 'PUT', 'PATCH']];
@@ -132,6 +156,13 @@ class cloudflare
 		};
 	}
 
+	/**
+	 * Purge cache action.
+	 *
+	 * @param array $opts
+	 *
+	 * @return array
+	 */
 	public function purge_cache(array $opts = []): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id) || empty($opts['type']) || !in_array($opts['type'], self::PURGE_CACHE_TYPES, true))
@@ -179,6 +210,14 @@ class cloudflare
 		return $this->make_request('POST', sprintf('zones/%s/purge_cache', $this->zone_id), $payload);
 	}
 
+	/**
+	 * Helper to find ruleset.
+	 *
+	 * @param array	$opts
+	 * @param bool	$match_all
+	 *
+	 * @return array
+	 */
 	public function find_ruleset(array $opts = [], bool $match_all = false): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id) || empty($opts))
@@ -236,6 +275,15 @@ class cloudflare
 		];
 	}
 
+	/**
+	 * Helper to find rules of ruleset.
+	 *
+	 * @param string	$ruleset_id
+	 * @param array		$opts
+	 * @param bool		$match_all
+	 *
+	 * @return array
+	 */
 	public function find_ruleset_rules(string $ruleset_id = null, array $opts = [], bool $match_all = false): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id) || empty($ruleset_id) || empty($opts))
@@ -298,6 +346,11 @@ class cloudflare
 		];
 	}
 
+	/**
+	 * Get ruleset list.
+	 *
+	 * @return array
+	 */
 	public function get_rulesets(): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id))
@@ -310,6 +363,13 @@ class cloudflare
 		return $this->make_request('GET', sprintf('zones/%s/rulesets', $this->zone_id));
 	}
 
+	/**
+	 * Get ruleset by ID.
+	 *
+	 * @param string $ruleset_id
+	 *
+	 * @return array
+	 */
 	public function get_ruleset(string $ruleset_id = ''): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id) || empty($ruleset_id))
@@ -322,6 +382,13 @@ class cloudflare
 		return $this->make_request('GET', sprintf('zones/%s/rulesets/%s', $this->zone_id, $ruleset_id));
 	}
 
+	/**
+	 * Create ruleset.
+	 *
+	 * @param array $data
+	 *
+	 * @return array
+	 */
 	public function create_ruleset(array $data = []): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id) || empty($data))
@@ -376,6 +443,14 @@ class cloudflare
 		return $this->make_request('POST', sprintf('zones/%s/rulesets', $this->zone_id), $payload);
 	}
 
+	/**
+	 * Create rules for ruleset.
+	 *
+	 * @param string	$ruleset_id
+	 * @param array		$data
+	 *
+	 * @return array
+	 */
 	public function create_ruleset_rules(string $ruleset_id = '', array $data = []): array
 	{
 
@@ -454,6 +529,14 @@ class cloudflare
 		return $this->make_request('POST', sprintf('zones/%s/rulesets/%s/rules', $this->zone_id, $ruleset_id), $payload);
 	}
 
+	/**
+	 * Update ruleset.
+	 *
+	 * @param string	$ruleset_id
+	 * @param array		$data
+	 *
+	 * @return array
+	 */
 	public function update_ruleset(string $ruleset_id = '', array $data = []): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id) || empty($ruleset_id) || empty($data))
@@ -516,6 +599,15 @@ class cloudflare
 		return $this->make_request('PUT', sprintf('zones/%s/rulesets/%s', $this->zone_id, $ruleset_id), $payload);
 	}
 
+	/**
+	 * Update rules of ruleset.
+	 *
+	 * @param string	$ruleset_id
+	 * @param string	$rule_id
+	 * @param array		$data
+	 *
+	 * @return array
+	 */
 	public function update_ruleset_rules(string $ruleset_id = '', string $rule_id = '', array $data = []): array
 	{
 		if (empty($this->api_token) || empty($this->zone_id) || empty($ruleset_id) || empty($rule_id) || empty($data))

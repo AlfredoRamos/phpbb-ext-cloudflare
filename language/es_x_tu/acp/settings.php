@@ -43,8 +43,5 @@ $lang = array_merge($lang, [
 	'CLOUDFLARE_PURGE_CACHE_SUCCESS_TITLE' => 'Caché purgada',
 	'CLOUDFLARE_PURGE_CACHE_SUCCESS_BODY' => 'La caché de Cloudflare se ha purgado correctamente.',
 	'CLOUDFLARE_RULESET_RULES_SUCCESS_TITLE' => 'Reglas del grupo de reglas actualizadas',
-	'CLOUDFLARE_RULESET_RULES_SUCCESS_BODY' => 'Las reglas del grupo de reglas de Cloudflare han sido actualizadas correctamente.',
-
-	'TURNSTILE_FORCE_LOGIN' => 'Forzar medidas contra el spam en inicios de sesión',
-	'TURNSTILE_FORCE_LOGIN_EXPLAIN' => 'Requiere que los usuarios siempre pasen la tarea anti-spam para ayudar a prevenir inicios de sesión automatizados.'
+	'CLOUDFLARE_RULESET_RULES_SUCCESS_BODY' => 'Las reglas del grupo de reglas de Cloudflare han sido actualizadas correctamente.'
 ]);
