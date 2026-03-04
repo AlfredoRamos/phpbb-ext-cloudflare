@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - '**/language/en/**/*.php'
+      - '**/language/es/**/*.php'
+      - '**/language/es_x_tu/**/*.php'
     branches: [main]
   workflow_dispatch: {}
 
@@ -32,6 +34,7 @@ jobs:
       - name: Crowdin
         uses: crowdin/github-action@v2
         with:
+          crowdin_branch_name: ${{ env.BRANCH_NAME }}
           upload_sources: true
           upload_sources_args: --delete-obsolete --cache
           upload_translations_args: --language=es --language=es_x_tu
