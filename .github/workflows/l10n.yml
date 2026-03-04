@@ -1,0 +1,46 @@
+name: Translations
+
+on:
+  push:
+    paths:
+      - '**/language/en/**/*.php'
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: Sync
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+    steps:
+      - name: Checkout extension
+        uses: actions/checkout@v6
+
+      - name: Cache Crowdin source files
+        uses: actions/cache@v4
+        with:
+          path: ~/.crowdin/cache.json
+          key: ${{ runner.os }}-crowdin-cache-${{ github.ref_name }}-${{ hashFiles('**/crowdin.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-crowdin-cache-${{ github.ref_name }}-
+
+      - name: Crowdin
+        uses: crowdin/github-action@v2
+        with:
+          upload_sources: true
+          upload_sources_args: --delete-obsolete --cache
+          upload_translations_args: --language=es --language=es_x_tu
+          download_translations: true
+          skip_untranslated_strings: true
+          localization_branch_name: l10n
+          pull_request_title: Translations updates from Crowdin
+          pull_request_labels: enhancement, translations
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
