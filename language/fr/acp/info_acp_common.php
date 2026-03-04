@@ -23,6 +23,6 @@ if (empty($lang) || !is_array($lang)) {
 
 $lang = array_merge($lang, [
 	'ACP_CLOUDFLARE' => 'Cloudflare',
-	'LOG_CLOUDFLARE_DATA' => '<strong>Cloudflare configuration change</strong><br>» %s',
+	'LOG_CLOUDFLARE_DATA' => '<strong>Configuration Cloudflare changer</strong><br>» %s',
 	'LOG_CLOUDFLARE_PURGE_CACHE' => '<strong>Cloudflare purge cache</strong><br>» %s'
 ]);
