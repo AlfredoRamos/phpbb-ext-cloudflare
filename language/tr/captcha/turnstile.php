@@ -44,6 +44,8 @@ $lang = array_merge($lang, [
 	'TURNSTILE_APPEARANCE_EXPLAIN' => 'The visibility of the Turnstile widget.',
 	'TURNSTILE_APPEARANCE_ALWAYS' => 'Always',
 	'TURNSTILE_APPEARANCE_INTERACTION_ONLY' => 'Invisible',
+	'TURNSTILE_FORCE_LOGIN' => 'Force spambot countermeasures in logins',
+	'TURNSTILE_FORCE_LOGIN_EXPLAIN' => 'Requires users to always pass the anti-spambot task to help prevent automated logins.',
 	'TURNSTILE_NOT_AVAILABLE' => 'Turnstile kullanmak için <a href="https://dash.cloudflare.com/?to=/:account/turnstile" rel="external nofollow noreferrer noopener" target="_blank">www.cloudflare.com</a> sitesinde bir hesap oluşturmalısınız.',
 	'TURNSTILE_INCORRECT' => 'Sağladığınız çözüm yanlıştı.',
 	'TURNSTILE_NOSCRIPT' => 'Lütfen meydan okumayı yüklemek için tarayıcınızda JavaScript\'i etkinleştirin.',

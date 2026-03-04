@@ -13,14 +13,16 @@ use GuzzleHttp\Client as GuzzleClient;
 
 trait http_trait
 {
-	/** @var GuzzleClient */
+	/** @var null|GuzzleClient */
 	protected ?GuzzleClient $client = null;
 
 	/** @var array */
-	protected  array $client_options = [];
+	protected array $client_options = [];
 
 	/**
 	 * Get Guzzle client
+	 *
+	 * @param null|array $opts
 	 *
 	 * @return GuzzleClient
 	 */

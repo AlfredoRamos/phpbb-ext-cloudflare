@@ -31,37 +31,37 @@ class turnstile extends captcha_abstract
 	private const VERIFY_ENDPOINT = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
 	/** @var config */
-	protected $config;
+	protected config $config;
 
 	/** @var user */
-	protected $user;
+	protected user $user;
 
 	/** @var request */
-	protected $request;
+	protected request $request;
 
 	/** @var template */
-	protected $template;
+	protected template $template;
 
 	/** @var language */
-	protected $language;
+	protected language $language;
 
 	/** @var log_interface */
-	protected $log;
+	protected log_interface $log;
 
 	/** @var helper */
-	protected $helper;
+	protected helper $helper;
 
 	/** @var string */
-	protected $root_path;
+	protected string $root_path;
 
 	/** @var string */
-	protected $php_ext;
+	protected string $php_ext;
 
 	/** @var array */
-	protected $supported_values = [
+	protected array $supported_values = [
 		'theme' => ['auto', 'light', 'dark'],
 		'size' => ['normal', 'flexible', 'compact'],
-		'appearance' => ['always', 'interaction-only'] // Not yet implemented: execute
+		'appearance' => ['always', 'interaction-only']
 	];
 
 	/**
@@ -176,31 +176,31 @@ class turnstile extends captcha_abstract
 			'turnstile_key' => [
 				'filter' => FILTER_VALIDATE_REGEXP,
 				'options' => [
-					'regexp' => '#^\dx[\w\-]{22}$#'
+					'regexp' => '#\A\dx[\w\-]{22}\z#'
 				]
 			],
 			'turnstile_secret' => [
 				'filter' => FILTER_VALIDATE_REGEXP,
 				'options' => [
-					'regexp' => '#^\dx[\w\-]{33}$#'
+					'regexp' => '#\A\dx[\w\-]{33}\z#'
 				]
 			],
 			'turnstile_theme' => [
 				'filter' => FILTER_VALIDATE_REGEXP,
 				'options' => [
-					'regexp' => '#^(?:' . implode('|', $this->supported_values['theme']) . ')?$#'
+					'regexp' => '#\A(?:' . implode('|', $this->supported_values['theme']) . ')?\z#'
 				]
 			],
 			'turnstile_size' => [
 				'filter' => FILTER_VALIDATE_REGEXP,
 				'options' => [
-					'regexp' => '#^(?:' . implode('|', $this->supported_values['size']) . ')?$#'
+					'regexp' => '#\A(?:' . implode('|', $this->supported_values['size']) . ')?\z#'
 				]
 			],
 			'turnstile_appearance' => [
 				'filter' => FILTER_VALIDATE_REGEXP,
 				'options' => [
-					'regexp' => '#^(?:' . implode('|', $this->supported_values['appearance']) . ')?$#'
+					'regexp' => '#\A(?:' . implode('|', $this->supported_values['appearance']) . ')?\z#'
 				]
 			],
 			'turnstile_force_login' => [
