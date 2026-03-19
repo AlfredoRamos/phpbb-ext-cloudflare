@@ -238,7 +238,7 @@
 			}
 
 			window.$loadingIndicator = window.phpbb.loadingIndicator();
-			const container = button.parentElement;
+			const container = button.closest('dd');
 			const fields = {
 				rulesetID: container.querySelector('.cf-ruleset-id'),
 				rulesetRulesID: container.querySelector('.cf-ruleset-rules-id'),
@@ -247,6 +247,13 @@
 			button.setAttribute('disabled', '');
 			fields?.rulesetID?.setAttribute('disabled', '');
 			fields?.rulesetRulesID?.setAttribute('disabled', '');
+
+			const icons = {
+				ruleset: container.querySelector('.cf-label-ruleset > .fa-fw'),
+				rulesetRules: container.querySelector(
+					'.cf-label-rules > .fa-fw',
+				),
+			};
 
 			fetch(endpoint, {
 				method: 'POST',
@@ -261,7 +268,6 @@
 				}),
 			})
 				.then((r) => {
-					console.log('then json: ', r);
 					const json = r.json();
 
 					if (!r.ok) {
@@ -346,6 +352,32 @@
 							window.phpbb.alertTime,
 						);
 					}
+
+					icons?.ruleset?.classList?.toggle(
+						'acp-icon-settings',
+						fields.rulesetID.value?.length > 0,
+					);
+					icons?.ruleset?.classList?.toggle(
+						'fa-check',
+						fields.rulesetID.value?.length > 0,
+					);
+					icons?.ruleset?.classList?.toggle(
+						'fa-question',
+						!(fields.rulesetID.value?.length > 0),
+					);
+
+					icons?.rulesetRules?.classList?.toggle(
+						'acp-icon-settings',
+						fields.rulesetRulesID.value?.length > 0,
+					);
+					icons?.rulesetRules?.classList?.toggle(
+						'fa-check',
+						fields.rulesetRulesID.value?.length > 0,
+					);
+					icons?.rulesetRules?.classList?.toggle(
+						'fa-question',
+						!(fields.rulesetRulesID.value?.length > 0),
+					);
 				});
 		});
 	});

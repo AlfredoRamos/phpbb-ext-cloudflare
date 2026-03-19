@@ -334,7 +334,7 @@ class cloudflare
 				case 'firewall':
 					$data = [
 						'description' => 'phpbb:firewall',
-						'expression' => '(http.request.uri.path contains "ucp.php" and (http.request.uri.query contains "mode=login" or http.request.uri.query contains "mode=register")) or (http.request.uri.path contains "memberlist.php" and http.request.uri.query contains "mode=contactadmin")',
+						'expression' => '(http.request.uri.path contains "ucp.php" and (http.request.uri.query contains "mode=login" or http.request.uri.query contains "mode=register" or http.request.uri.query contains "mode=resend_act")) or (http.request.uri.path contains "/user/forgot_password") or (http.request.uri.path contains "memberlist.php" and http.request.uri.query contains "mode=contactadmin") or (http.request.uri.path contains "posting.php" and (http.request.uri.query contains "mode=post" or http.request.uri.query contains "mode=edit" or http.request.uri.query contains "mode=quote" or http.request.uri.query contains "mode=reply")) or (http.request.uri.path contains "search.php")',
 						'action' => 'managed_challenge',
 						'position' => [
 							'index' => 1,

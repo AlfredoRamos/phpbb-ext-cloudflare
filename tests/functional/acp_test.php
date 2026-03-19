@@ -92,10 +92,7 @@ class acp_test extends \phpbb_functional_test_case
 			($widget->attr('data-appearance') === 'interaction-only') ? '1x00000000000000000000BB' : '3x00000000000000000000FF',
 			$widget->attr('data-sitekey')
 		);
-		$this->assertSame(1, preg_match(
-			'#^\dx[\w\-]{22}$#',
-			$widget->attr('data-sitekey')
-		));
+		$this->assertSame(1, preg_match('#\A\dx[A-Za-z0-9_-]{22}\z#',$widget->attr('data-sitekey')));
 		$this->assertSame('dark', $widget->attr('data-theme'));
 		$this->assertSame('compact', $widget->attr('data-size'));
 		$this->assertSame('interaction-only', $widget->attr('data-appearance'));
