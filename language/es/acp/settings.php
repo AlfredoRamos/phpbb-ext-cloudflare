@@ -29,12 +29,12 @@ $lang = array_merge($lang, [
 	'CLOUDFLARE_ZONE_ID' => 'ID de Zona',
 	'CLOUDFLARE_ZONE_ID_EXPLAIN' => 'El identificador de su dominio en Cloudflare.',
 
-	'ACP_CLOUDFLARE_FIREWALL_SETTINGS' => 'Firewall settings',
-	'ACP_CLOUDFLARE_CACHE_SETTINGS' => 'Cache settings',
-	'ACP_CLOUDFLARE_RULESET_ID' => 'Ruleset',
-	'ACP_CLOUDFLARE_RULESET_RULES_ID' => 'Rules',
-	'ACP_CLOUDFLARE_SYNC' => 'Sync rules',
-	'ACP_CLOUDFLARE_SYNC_EXPLAIN' => 'Click the <samp>%s</samp> button to create or update rules as needed.',
+	'ACP_CLOUDFLARE_FIREWALL_SETTINGS' => 'Ajustes del cortafuegos',
+	'ACP_CLOUDFLARE_CACHE_SETTINGS' => 'Ajustes de caché',
+	'ACP_CLOUDFLARE_RULESET_ID' => 'Grupo de reglas',
+	'ACP_CLOUDFLARE_RULESET_RULES_ID' => 'Reglas',
+	'ACP_CLOUDFLARE_SYNC' => 'Sincronizar reglas',
+	'ACP_CLOUDFLARE_SYNC_EXPLAIN' => 'Haga clic en el botón <samp>%s</samp> para crear o actualizar reglas según sea necesario.',
 	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Alternar visibilidad de %s',
 	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Valores inválido para los campos: <samp>%s</samp>',
 
