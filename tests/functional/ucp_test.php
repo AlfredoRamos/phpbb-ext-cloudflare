@@ -32,17 +32,8 @@ class ucp_test extends \phpbb_functional_test_case
 
 		$widget = $container->filter('.cf-turnstile');
 		$this->assertSame(1, $widget->count());
-		$this->assertSame(
-			'1x00000000000000000000AA',
-			$widget->attr('data-sitekey')
-		);
-		$this->assertSame(
-			1,
-			preg_match(
-				'#^\dx[\w\-]{22}$#',
-				$widget->attr('data-sitekey')
-			)
-		);
+		$this->assertSame('1x00000000000000000000AA', $widget->attr('data-sitekey'));
+		$this->assertSame(1, preg_match('#\A\dx[A-Za-z0-9_-]{22}\z#', $widget->attr('data-sitekey')));
 
 		$script = $crawler->filterXPath('//script[contains(@src, "cloudflare.com")]');
 		$this->assertSame(1, $script->count());
@@ -67,17 +58,8 @@ class ucp_test extends \phpbb_functional_test_case
 
 		$widget = $container->filter('.cf-turnstile');
 		$this->assertSame(1, $widget->count());
-		$this->assertSame(
-			'1x00000000000000000000AA',
-			$widget->attr('data-sitekey')
-		);
-		$this->assertSame(
-			1,
-			preg_match(
-				'#^\dx[\w\-]{22}$#',
-				$widget->attr('data-sitekey')
-			)
-		);
+		$this->assertSame('1x00000000000000000000AA', $widget->attr('data-sitekey'));
+		$this->assertSame(1, preg_match('#\A\dx[A-Za-z0-9_-]{22}\z#', $widget->attr('data-sitekey')));
 
 		$script = $crawler->filterXPath('//script[contains(@src, "cloudflare.com")]');
 		$this->assertSame(1, $script->count());
