@@ -28,11 +28,13 @@ $lang = array_merge($lang, [
 	'CLOUDFLARE_API_TOKEN_EXPLAIN' => 'Cloudflare API token with the permissions <code>Zone:Zone WAF:Edit</code>, <code>Zone:Cache Rules:Edit</code> and <code>Zone:Cache Purge:Purge</code>.',
 	'CLOUDFLARE_ZONE_ID' => 'Zone ID',
 	'CLOUDFLARE_ZONE_ID_EXPLAIN' => 'The identifier of your domain on Cloudflare.',
-	'CLOUDFLARE_FIREWALL_RULESET_ID' => 'Firewall ruleset ID',
-	'CLOUDFLARE_FIREWALL_RULESET_ID_EXPLAIN' => 'The ruleset ID for security custom rules. Leave it blank to find it or create it as needed by clicking the <samp>%s</samp> button.',
-	'CLOUDFLARE_CACHE_RULESET_ID' => 'Cache ruleset ID',
-	'CLOUDFLARE_CACHE_RULESET_ID_EXPLAIN' => 'The ruleset ID for the cache custom rules. Leave it blank to find it or create it as needed by clicking the <samp>%s</samp> button.',
 
+	'ACP_CLOUDFLARE_FIREWALL_SETTINGS' => 'Firewall settings',
+	'ACP_CLOUDFLARE_CACHE_SETTINGS' => 'Cache settings',
+	'ACP_CLOUDFLARE_RULESET_ID' => 'Ruleset',
+	'ACP_CLOUDFLARE_RULESET_RULES_ID' => 'Rules',
+	'ACP_CLOUDFLARE_SYNC' => 'Sync rules',
+	'ACP_CLOUDFLARE_SYNC_EXPLAIN' => 'Click the <samp>%s</samp> button to create or update rules as needed.',
 	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Toggle %s',
 	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Invalid values for fields: <samp>%s</samp>',
 

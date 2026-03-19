@@ -28,11 +28,13 @@ $lang = array_merge($lang, [
 	'CLOUDFLARE_API_TOKEN_EXPLAIN' => 'El token de la API de Cloudflare con los permisos <code>Zona:WAF de zona:Editar</code>, <code>Zona:Cache Rules:Editar</code> y <code>Zona:Purga de caché:Purgar</code>.',
 	'CLOUDFLARE_ZONE_ID' => 'ID de Zona',
 	'CLOUDFLARE_ZONE_ID_EXPLAIN' => 'El identificador de su dominio en Cloudflare.',
-	'CLOUDFLARE_FIREWALL_RULESET_ID' => 'ID del grupo de reglas de firewall',
-	'CLOUDFLARE_FIREWALL_RULESET_ID_EXPLAIN' => 'El ID del grupo de reglas que contiene las reglas personalizadas del firewall. Deje en blanco para buscarlo o generarlo según sea necesario al dar click en el botón <samp>%s</samp>.',
-	'CLOUDFLARE_CACHE_RULESET_ID' => 'ID del grupo de reglas de caché',
-	'CLOUDFLARE_CACHE_RULESET_ID_EXPLAIN' => 'El ID del grupo de reglas que contiene las reglas personalizadas de caché. Deje en blanco para buscarlo o generarlo según sea necesario al dar click en el botón <samp>%s</samp>.',
 
+	'ACP_CLOUDFLARE_FIREWALL_SETTINGS' => 'Firewall settings',
+	'ACP_CLOUDFLARE_CACHE_SETTINGS' => 'Cache settings',
+	'ACP_CLOUDFLARE_RULESET_ID' => 'Ruleset',
+	'ACP_CLOUDFLARE_RULESET_RULES_ID' => 'Rules',
+	'ACP_CLOUDFLARE_SYNC' => 'Sync rules',
+	'ACP_CLOUDFLARE_SYNC_EXPLAIN' => 'Click the <samp>%s</samp> button to create or update rules as needed.',
 	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Alternar visibilidad de %s',
 	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Valores inválido para los campos: <samp>%s</samp>',
 
