@@ -1,7 +1,7 @@
 /**
  * Cloudflare extension for phpBB.
  * @author Alfredo Ramos <alfredo.ramos@proton.me>
- * @copyright 2021 Alfredo Ramos
+ * @copyright 2026 Alfredo Ramos
  * @license GPL-2.0-only
  */
 #acp-cloudflare input[type='text'],
@@ -62,9 +62,8 @@
 	margin: 10px 0;
 }
 
-.cf-label-icon {
-	display: inline-block;
-	height: 20px;
-	width: 20px;
-	text-align: center;
+.cf-info-container {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
 }

@@ -57,15 +57,15 @@
 				</div>
 				<br>
 				{% endif %}
-				<div>
-					<span class="cf-label-icon cf-label-ruleset">
-						<i class="icon {% if CLOUDFLARE_FIREWALL_RULESET_ID %} acp-icon-settings fa-check{% else %} fa-question{% endif %} fa-fw" aria-hidden="true"></i>
-					</span> {{ lang('ACP_CLOUDFLARE_RULESET_ID') }}
-				</div>
-				<div>
-					<span class="cf-label-icon cf-label-rules">
-						<i class="icon {% if CLOUDFLARE_FIREWALL_RULESET_RULES_ID %} acp-icon-settings fa-check{% else %} fa-question{% endif %} fa-fw" aria-hidden="true"></i>
-					</span> {{ lang('ACP_CLOUDFLARE_RULESET_RULES_ID') }}
+				<div class="cf-info-container">
+					<div class="cf-label-ruleset">
+						<i class="icon{% if CLOUDFLARE_FIREWALL_RULESET_ID %} acp-icon-settings fa-check{% else %} fa-question{% endif %} fa-fw" aria-hidden="true"></i>
+						{{ lang('ACP_CLOUDFLARE_RULESET_ID') }}
+					</div>
+					<div class="cf-label-rules">
+						<i class="icon{% if CLOUDFLARE_FIREWALL_RULESET_RULES_ID %} acp-icon-settings fa-check{% else %} fa-question{% endif %} fa-fw" aria-hidden="true"></i>
+						{{ lang('ACP_CLOUDFLARE_RULESET_RULES_ID') }}
+					</div>
 				</div>
 				<input type="hidden" name="cloudflare_firewall_ruleset_id"{% if CLOUDFLARE_FIREWALL_RULESET_ID %} value="{{ CLOUDFLARE_FIREWALL_RULESET_ID }}"{% endif %} autocomplete="off" class="cf-ruleset-id medium">
 				<input type="hidden" name="cloudflare_firewall_ruleset_rules_id"{% if CLOUDFLARE_FIREWALL_RULESET_RULES_ID %} value="{{ CLOUDFLARE_FIREWALL_RULESET_RULES_ID }}"{% endif %} autocomplete="off" class="cf-ruleset-rules-id medium">
@@ -89,15 +89,15 @@
 				</div>
 				<br>
 				{% endif %}
-				<div>
-					<span class="cf-label-icon cf-label-ruleset">
-						<i class="icon {% if CLOUDFLARE_CACHE_RULESET_ID %} acp-icon-settings fa-check{% else %} fa-question{% endif %} fa-fw" aria-hidden="true"></i>
-					</span> {{ lang('ACP_CLOUDFLARE_RULESET_ID') }}
-				</div>
-				<div>
-					<span class="cf-label-icon cf-label-rules">
-						<i class="icon {% if CLOUDFLARE_CACHE_RULESET_RULES_ID %} acp-icon-settings fa-check{% else %} fa-question{% endif %} fa-fw" aria-hidden="true"></i>
-					</span> {{ lang('ACP_CLOUDFLARE_RULESET_RULES_ID') }}
+				<div class="cf-info-container">
+					<div class="cf-label-ruleset">
+						<i class="icon{% if CLOUDFLARE_CACHE_RULESET_ID %} acp-icon-settings fa-check{% else %} fa-question{% endif %} fa-fw" aria-hidden="true"></i>
+						{{ lang('ACP_CLOUDFLARE_RULESET_ID') }}
+					</div>
+					<div class="cf-label-rules">
+						<i class="icon{% if CLOUDFLARE_CACHE_RULESET_RULES_ID %} acp-icon-settings fa-check{% else %} fa-question{% endif %} fa-fw" aria-hidden="true"></i>
+						{{ lang('ACP_CLOUDFLARE_RULESET_RULES_ID') }}
+					</div>
 				</div>
 				<input type="hidden" name="cloudflare_cache_ruleset_id"{% if CLOUDFLARE_CACHE_RULESET_ID %} value="{{ CLOUDFLARE_CACHE_RULESET_ID }}"{% endif %} autocomplete="off" class="cf-ruleset-id medium">
 				<input type="hidden" name="cloudflare_cache_ruleset_rules_id"{% if CLOUDFLARE_CACHE_RULESET_RULES_ID %} value="{{ CLOUDFLARE_CACHE_RULESET_RULES_ID }}"{% endif %} autocomplete="off" class="cf-ruleset-rules-id medium">

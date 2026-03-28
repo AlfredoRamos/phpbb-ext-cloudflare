@@ -1,7 +1,7 @@
 /**
  * Cloudflare extension for phpBB.
  * @author Alfredo Ramos <alfredo.ramos@proton.me>
- * @copyright 2021 Alfredo Ramos
+ * @copyright 2026 Alfredo Ramos
  * @license GPL-2.0-only
  */
 
@@ -353,30 +353,34 @@
 						);
 					}
 
+					const rulesetFilled = fields.rulesetID.value?.length > 0;
+					const rulesetRulesFilled =
+						fields.rulesetRulesID.value?.length > 0;
+
 					icons?.ruleset?.classList?.toggle(
 						'acp-icon-settings',
-						fields.rulesetID.value?.length > 0,
+						rulesetFilled,
 					);
 					icons?.ruleset?.classList?.toggle(
 						'fa-check',
-						fields.rulesetID.value?.length > 0,
+						rulesetFilled,
 					);
 					icons?.ruleset?.classList?.toggle(
 						'fa-question',
-						!(fields.rulesetID.value?.length > 0),
+						!rulesetFilled,
 					);
 
 					icons?.rulesetRules?.classList?.toggle(
 						'acp-icon-settings',
-						fields.rulesetRulesID.value?.length > 0,
+						rulesetRulesFilled,
 					);
 					icons?.rulesetRules?.classList?.toggle(
 						'fa-check',
-						fields.rulesetRulesID.value?.length > 0,
+						rulesetRulesFilled,
 					);
 					icons?.rulesetRules?.classList?.toggle(
 						'fa-question',
-						!(fields.rulesetRulesID.value?.length > 0),
+						!rulesetRulesFilled,
 					);
 				});
 		});
