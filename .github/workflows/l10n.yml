@@ -37,6 +37,7 @@ jobs:
           crowdin_branch_name: ${{ env.BRANCH_NAME }}
           upload_sources: true
           upload_sources_args: --delete-obsolete --cache
+          upload_translations: true
           upload_translations_args: --language=es --language=es_x_tu
           download_translations: true
           localization_branch_name: l10n
