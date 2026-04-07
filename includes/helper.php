@@ -20,6 +20,8 @@ use alfredoramos\cloudflare\includes\cloudflare as cloudflare_client;
 
 class helper
 {
+	use http_trait;
+
 	/** @var config */
 	protected config $config;
 
@@ -266,5 +268,48 @@ class helper
 		{
 			return;
 		}
+	}
+
+	/**
+	 * Check if the domain is protected by Cloudflare.
+	 *
+	 * @param string $url
+	 *
+	 * @return bool
+	 */
+	public function is_domain_protected(string $url = ''): bool
+	{
+		$url = trim($url);
+
+		if (empty($url))
+		{
+			return false;
+		}
+
+		$parts = parse_url($url);
+
+		if ($parts === false || empty($parts['host']))
+		{
+			return false;
+		}
+
+		// Always use HTTPS for the trace request
+		if (empty($parts['scheme']) || $parts['scheme'] !== 'https')
+		{
+			$parts['scheme'] = 'https';
+		}
+
+		$trace_url = $parts['scheme'] . '://' . $parts['host'] . '/cdn-cgi/trace';
+
+		$this->get_client();
+		$response = $this->client->request('GET', $trace_url);
+
+		// Rute only exists if protected by Cloudflare
+		if ($response->getStatusCode() !== 200)
+		{
+			return false;
+		}
+
+		return strtolower($response->getHeaderLine('Server')) === 'cloudflare';
 	}
 }

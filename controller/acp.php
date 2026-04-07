@@ -17,6 +17,7 @@ use phpbb\language\language;
 use phpbb\user;
 use phpbb\log\log;
 use alfredoramos\cloudflare\includes\helper;
+use alfredoramos\cloudflare\includes\cloudflare as cloudflare_client;
 
 class acp
 {
@@ -44,6 +45,9 @@ class acp
 	/** @var helper */
 	protected helper $helper;
 
+	/** @var cloudflare_client */
+	protected cloudflare_client $cloudflare_client;
+
 	/**
 	 * Controller constructor.
 	 *
@@ -55,10 +59,11 @@ class acp
 	 * @param user				$user
 	 * @param log				$log
 	 * @param helper			$helper
+	 * @param cloudflare_client	$cloudflare_client
 	 *
 	 * @return void
 	 */
-	public function __construct(config $config, template $template, request $request, controller_helper $controller_helper, language $language, user $user, log $log, helper $helper)
+	public function __construct(config $config, template $template, request $request, controller_helper $controller_helper, language $language, user $user, log $log, helper $helper, cloudflare_client $cloudflare_client)
 	{
 		$this->config = $config;
 		$this->template = $template;
@@ -68,6 +73,7 @@ class acp
 		$this->user = $user;
 		$this->log = $log;
 		$this->helper = $helper;
+		$this->cloudflare_client = $cloudflare_client;
 	}
 
 	/**
@@ -214,6 +220,24 @@ class acp
 		}
 
 		$this->template->assign_vars($template_vars);
+
+		// Cloudflare errors
+		$server_name = $this->config->offsetGet('server_name');
+		if (!$this->helper->is_domain_protected($server_name))
+		{
+			$errors[]['message'] = $this->language->lang('ACP_CLOUDFLARE_NOT_PROTECTED_EXPLAIN', $server_name);
+		}
+
+		$this->cloudflare_client->set_options([
+			'api_token' => $this->config->offsetGet('cloudflare_api_token'),
+			'zone_id' => $this->config->offsetGet('cloudflare_zone_id')
+		]);
+		$zone_data = $this->cloudflare_client->zone_details();
+
+		if (!empty($zone_data['success']) && $zone_data['success'] === true && !empty($zone_data['result']['name']) && !str_contains($server_name, $zone_data['result']['name']))
+		{
+			$errors[]['message'] = $this->language->lang('ACP_CLOUDFLARE_DOMAIN_MISMATCH_EXPLAIN', $zone_data['result']['name'], $server_name);
+		}
 
 		// Validation errors
 		foreach ($errors as $key => $value)
