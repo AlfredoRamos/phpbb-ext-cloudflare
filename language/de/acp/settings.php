@@ -37,6 +37,8 @@ $lang = array_merge($lang, [
 	'ACP_CLOUDFLARE_SYNC_EXPLAIN' => 'Click the <samp>%s</samp> button to create or update rules as needed.',
 	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Toggle %s',
 	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Invalid values for fields: <samp>%s</samp>',
+	'ACP_CLOUDFLARE_NOT_PROTECTED_EXPLAIN' => 'Your domain %s does not seem to be protected by Cloudflare.',
+	'ACP_CLOUDFLARE_DOMAIN_MISMATCH_EXPLAIN' => 'The domain configured in Cloudflare (<samp>%1$s</samp>) does not match the one configured in your phpBB board (<samp>%2$s</samp>).',
 
 	'CLOUDFLARE_PURGE_CACHE' => 'Purge the Cloudflare cache',
 	'CLOUDFLARE_PURGE_CACHE_EXPLAIN' => 'Purge Cloudflare cache by type. Note that Cloudflare impose a limit of request per seconds.',
