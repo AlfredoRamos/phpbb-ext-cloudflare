@@ -25,7 +25,7 @@ class cloudflare
 	private const API_BASE_URL = 'https://api.cloudflare.com/client/v4/';
 
 	/** @var array */
-	public const PURGE_CACHE_TYPES = ['purge_everything', /*'files', 'tags',*/ 'hosts'/*, 'prefixes'*/]; // TODO: Add support for missing types
+	public const PURGE_CACHE_TYPES = ['purge_everything', 'hosts']; // Not implemented: files, tags, prefixes
 
 	/** @var array */
 	public const RULESET_KINDS = ['zone'];
@@ -174,30 +174,16 @@ class cloudflare
 
 		$payload = [];
 
+		// Not implemented: files, tags, prefixes
 		switch($opts['type'])
 		{
 			case 'purge_everything':
 				$payload = [$opts['type'] => true]; // Override value
 				break;
 
-			// TODO: Add support for missing types
-			/*
-			case 'files':
-				break;
-
-			case 'tags':
-				break;
-			*/
-
 			case 'hosts':
 				$payload = [$opts['type'] => $opts['value']];
 				break;
-
-			// TODO: Add support for missing types
-			/*
-			case 'prefixes':
-				break;
-			*/
 		}
 
 		if (empty($payload))
@@ -658,5 +644,17 @@ class cloudflare
 		}
 
 		return $this->make_request('PATCH', sprintf('zones/%s/rulesets/%s/rules/%s', $this->zone_id, $ruleset_id, $rule_id), $payload);
+	}
+
+	public function zone_details(): array
+	{
+		if (empty($this->api_token) || empty($this->zone_id))
+		{
+			return [
+				'errors' => [['message' => 'Empty required data.']]
+			];
+		}
+
+		return $this->make_request('GET', sprintf('zones/%s', $this->zone_id));
 	}
 }
