@@ -40,6 +40,9 @@ $lang = array_merge($lang, [
 	'ACP_CLOUDFLARE_NOT_PROTECTED_EXPLAIN' => 'Your domain %s does not seem to be protected by Cloudflare.',
 	'ACP_CLOUDFLARE_DOMAIN_MISMATCH_EXPLAIN' => 'The domain configured in Cloudflare (<samp>%1$s</samp>) does not match the one configured in your phpBB board (<samp>%2$s</samp>).',
 
+	'ACP_CLOUDFLARE_CACHE_TIME' => 'Cache time',
+	'ACP_CLOUDFLARE_CACHE_TIME_EXPLAIN' => 'Default time to store attachments in Cloudflare cache.',
+
 	'CLOUDFLARE_PURGE_CACHE' => 'Purge the Cloudflare cache',
 	'CLOUDFLARE_PURGE_CACHE_EXPLAIN' => 'Purge Cloudflare cache by type. Note that Cloudflare impose a limit of request per seconds.',
 	'CLOUDFLARE_PURGE_CACHE_TYPE_PURGE_EVERYTHING' => 'Purge everything',

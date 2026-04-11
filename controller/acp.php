@@ -130,7 +130,20 @@ class acp
 				'options' => [
 					'regexp' => '#\A(?:[A-Za-z0-9_]{32})?\z#'
 				]
-			]
+			],
+			'cloudflare_cache_time' => [
+				'filter' => FILTER_VALIDATE_INT,
+				'options' => [
+					'min_range' => $this->helper::MIN_CACHE_TIME,
+					'max_range' => $this->helper::MAX_CACHE_TIME
+				]
+			],
+			'cloudflare_cache_type' => [
+				'filter' => FILTER_VALIDATE_REGEXP,
+				'options' => [
+					'regexp' => '#\A(?:' . implode('|', $this->helper::SUPPORTED_CACHE_UNITS) . ')\z#'
+				]
+			],
 		];
 
 		// Request form data
@@ -152,7 +165,9 @@ class acp
 				'cloudflare_firewall_ruleset_id' => $this->request->variable('cloudflare_firewall_ruleset_id', ''),
 				'cloudflare_firewall_ruleset_rules_id' => $this->request->variable('cloudflare_firewall_ruleset_rules_id', ''),
 				'cloudflare_cache_ruleset_id' => $this->request->variable('cloudflare_cache_ruleset_id', ''),
-				'cloudflare_cache_ruleset_rules_id' => $this->request->variable('cloudflare_cache_ruleset_rules_id', '')
+				'cloudflare_cache_ruleset_rules_id' => $this->request->variable('cloudflare_cache_ruleset_rules_id', ''),
+				'cloudflare_cache_time' => $this->request->variable('cloudflare_cache_time', 7),
+				'cloudflare_cache_type' => $this->request->variable('cloudflare_cache_type', $this->helper::SUPPORTED_CACHE_UNITS[1]),
 			];
 
 			// Validation check
@@ -206,7 +221,11 @@ class acp
 			'CLOUDFLARE_FIREWALL_RULESET_ID' => $this->config->offsetGet('cloudflare_firewall_ruleset_id'),
 			'CLOUDFLARE_FIREWALL_RULESET_RULES_ID' => $this->config->offsetGet('cloudflare_firewall_ruleset_rules_id'),
 			'CLOUDFLARE_CACHE_RULESET_ID' => $this->config->offsetGet('cloudflare_cache_ruleset_id'),
-			'CLOUDFLARE_CACHE_RULESET_RULES_ID' => $this->config->offsetGet('cloudflare_cache_ruleset_rules_id')
+			'CLOUDFLARE_CACHE_RULESET_RULES_ID' => $this->config->offsetGet('cloudflare_cache_ruleset_rules_id'),
+			'CLOUDFLARE_CACHE_TIME' => (int) $this->config->offsetGet('cloudflare_cache_time'),
+			'CLOUDFLARE_MIN_CACHE_TIME' => $this->helper::MIN_CACHE_TIME,
+			'CLOUDFLARE_MAX_CACHE_TIME' => $this->helper::MAX_CACHE_TIME,
+			'CLOUDFLARE_CACHE_TYPE' => $this->config->offsetGet('cloudflare_cache_type')
 		];
 
 		// Cloudflare errors
@@ -241,6 +260,28 @@ class acp
 		}
 
 		$this->template->assign_vars($template_vars);
+
+		// Cloudflare cache types
+		foreach ($this->helper::SUPPORTED_CACHE_UNITS as $key => $value)
+		{
+			$unit_key = '';
+
+			switch($value) {
+				case 'h':
+					$unit_key = 'HOURS';
+					break;
+
+				case 'd':
+					$unit_key = 'DAYS';
+					break;
+			}
+
+			$this->template->assign_block_vars('CLOUDFLARE_CACHE_UNITS', [
+				'NAME' => $this->language->lang($unit_key),
+				'VALUE' => $value,
+				'SELECTED' => ($value === $this->config->offsetGet('cloudflare_cache_type'))
+			]);
+		}
 
 		// Validation errors
 		foreach ($errors as $key => $value)
