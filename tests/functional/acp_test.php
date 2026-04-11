@@ -16,17 +16,16 @@ class acp_test extends \phpbb_functional_test_case
 {
 	use functional_test_case_trait;
 
-	protected function setUp(): void
+	protected function init(): void
 	{
-		parent::setUp();
-		$this->add_lang_ext('alfredoramos/cloudflare', 'captcha/turnstile');
+		$this->add_lang_ext('alfredoramos/cloudflare', ['captcha/turnstile', 'acp/settings']);
 		$this->login();
 		$this->admin_login();
 	}
 
-	public function test_plugin_option()
+	public function test_captcha_plugin_settings()
 	{
-		$crawler = self::request('GET', sprintf('adm/index.php?i=acp_captcha&mode=visual&sid=%s', $this->sid));
+		$crawler = self::request('GET', 'adm/index.php?i=acp_captcha&mode=visual&sid=' . $this->sid);
 		$form = $crawler->selectButton('configure')->form();
 
 		$this->assertTrue($form->has('select_captcha'));
@@ -40,10 +39,10 @@ class acp_test extends \phpbb_functional_test_case
 		$form = $crawler->selectButton('submit')->form();
 
 		$this->assertTrue($form->has('turnstile_key'));
-		$this->assertSame('', $form->get('turnstile_key')->getValue());
+		$this->assertSame('1x00000000000000000000AA', $form->get('turnstile_key')->getValue());
 
 		$this->assertTrue($form->has('turnstile_secret'));
-		$this->assertSame('', $form->get('turnstile_secret')->getValue());
+		$this->assertSame('1x0000000000000000000000000000000AA', $form->get('turnstile_secret')->getValue());
 
 		$this->assertTrue($form->has('turnstile_theme'));
 		$this->assertSame('auto', $form->get('turnstile_theme')->getValue());
@@ -67,7 +66,7 @@ class acp_test extends \phpbb_functional_test_case
 		);
 
 		$crawler = self::submit($form, [
-			'turnstile_key' => '1x00000000000000000000AA',
+			'turnstile_key' => '1x00000000000000000000BB',
 			'turnstile_secret' => '1x0000000000000000000000000000000AA',
 			'turnstile_theme' => 'dark',
 			'turnstile_size' => 'compact',
@@ -76,13 +75,13 @@ class acp_test extends \phpbb_functional_test_case
 
 		$this->assertSame(1, $crawler->filter('.successbox')->count());
 
-		$crawler = self::request('GET', sprintf('adm/index.php?i=acp_captcha&mode=visual&sid=%s', $this->sid));
+		$crawler = self::request('GET', 'adm/index.php?i=acp_captcha&mode=visual&sid=' . $this->sid);
 
 		$form = $crawler->selectButton('main_submit')->form();
 		$form->get('select_captcha')->select('alfredoramos.cloudflare.captcha.turnstile');
 		self::submit($form);
 
-		$crawler = self::request('GET', sprintf('adm/index.php?i=acp_captcha&mode=visual&sid=%s', $this->sid));
+		$crawler = self::request('GET', 'adm/index.php?i=acp_captcha&mode=visual&sid=' . $this->sid);
 
 		$widget = $crawler->filter('.cf-turnstile');
 		$this->assertSame(1, $widget->count());
@@ -105,5 +104,26 @@ class acp_test extends \phpbb_functional_test_case
 		$this->assertSame('https://challenges.cloudflare.com/turnstile/v0/api.js', $script->attr('src'));
 		$this->assertSame(1, $noscript->count());
 		$this->assertSame($this->lang('TURNSTILE_NOSCRIPT'), $noscript->filter('div')->text());
+	}
+
+	public function test_settings_page()
+	{
+		$crawler = self::request('GET', 'adm/index.php?i=-alfredoramos-cloudflare-acp-main_module&mode=settings&sid=' . $this->sid);
+		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
+
+		$this->assertTrue($form->has('cloudflare_api_token'));
+		$this->assertSame('cf_test_9f8d7c6b5a4e3d2c1b0a1234567890abcdef1234', $form->get('cloudflare_api_token')->getValue());
+
+		$this->assertTrue($form->has('cloudflare_zone_id'));
+		$this->assertSame('T3StL3x9Vw2Qm7Rz6Tn4Yb1C5D0eFhJkLpQsTuV', $form->get('cloudflare_zone_id')->getValue());
+
+		$this->assertTrue($form->has('cloudflare_firewall_ruleset_id'));
+		$this->assertTrue($form->has('cloudflare_firewall_ruleset_rules_id'));
+		$this->assertTrue($form->has('cloudflare_cache_ruleset_id'));
+		$this->assertTrue($form->has('cloudflare_cache_ruleset_rules_id'));
+
+		$this->assertSame(2, $crawler->filter('.cf-rules-sync')->count());
+		$this->assertTrue(str_contains($crawler->filter('.cf-rules-sync')->first()->attr('data-url'), '/cloudflare/sync_ruleset_rules/firewall/'));
+		$this->assertTrue(str_contains($crawler->filter('.cf-rules-sync')->last()->attr('data-url'), '/cloudflare/sync_ruleset_rules/cache/'));
 	}
 }
