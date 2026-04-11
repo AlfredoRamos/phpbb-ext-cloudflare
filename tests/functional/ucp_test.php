@@ -16,11 +16,8 @@ class ucp_test extends \phpbb_functional_test_case
 {
 	use functional_test_case_trait;
 
-	protected function setUp(): void
-	{
-		parent::setUp();
+	protected function init(): void {
 		$this->add_lang_ext('alfredoramos/cloudflare', 'captcha/turnstile');
-		$this->init_turnstile();
 	}
 
 	public function test_login_captcha()
@@ -41,10 +38,7 @@ class ucp_test extends \phpbb_functional_test_case
 
 		$noscript = $container->filter('noscript');
 		$this->assertSame(1, $noscript->count());
-		$this->assertSame(
-			$this->lang('TURNSTILE_NOSCRIPT'),
-			$noscript->filter('div')->text()
-		);
+		$this->assertSame($this->lang('TURNSTILE_NOSCRIPT'), $noscript->filter('div')->text());
 	}
 
 	public function test_register_captcha()
@@ -67,9 +61,6 @@ class ucp_test extends \phpbb_functional_test_case
 
 		$noscript = $container->filter('noscript');
 		$this->assertSame(1, $noscript->count());
-		$this->assertSame(
-			$this->lang('TURNSTILE_NOSCRIPT'),
-			$noscript->filter('div')->text()
-		);
+		$this->assertSame($this->lang('TURNSTILE_NOSCRIPT'), $noscript->filter('div')->text());
 	}
 }
