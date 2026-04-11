@@ -189,6 +189,10 @@ class acp
 			}
 		}
 
+		// Helper variables
+		$cf_api_token = $this->config->offsetGet('cloudflare_api_token');
+		$cf_zone_id = $this->config->offsetGet('cloudflare_zone_id');
+
 		// Assign template variables
 		$template_vars = [
 			'ACP_CLOUDFLARE_SETTINGS_EXPLAIN' => $this->language->lang(
@@ -197,15 +201,22 @@ class acp
 				$this->helper::SUPPORT_URL,
 				$this->helper::VENDOR_DONATE,
 			),
-			'CLOUDFLARE_API_TOKEN' => $this->config->offsetGet('cloudflare_api_token'),
-			'CLOUDFLARE_ZONE_ID' => $this->config->offsetGet('cloudflare_zone_id'),
+			'CLOUDFLARE_API_TOKEN' => $cf_api_token,
+			'CLOUDFLARE_ZONE_ID' => $cf_zone_id,
 			'CLOUDFLARE_FIREWALL_RULESET_ID' => $this->config->offsetGet('cloudflare_firewall_ruleset_id'),
 			'CLOUDFLARE_FIREWALL_RULESET_RULES_ID' => $this->config->offsetGet('cloudflare_firewall_ruleset_rules_id'),
 			'CLOUDFLARE_CACHE_RULESET_ID' => $this->config->offsetGet('cloudflare_cache_ruleset_id'),
 			'CLOUDFLARE_CACHE_RULESET_RULES_ID' => $this->config->offsetGet('cloudflare_cache_ruleset_rules_id')
 		];
 
-		if (!empty($this->config->offsetGet('cloudflare_api_token')) && !empty($this->config->offsetGet('cloudflare_zone_id')))
+		// Cloudflare errors
+		$server_name = $this->config->offsetGet('server_name');
+		if (!$this->helper->is_domain_protected($server_name))
+		{
+			$errors[]['message'] = $this->language->lang('ACP_CLOUDFLARE_NOT_PROTECTED_EXPLAIN', $server_name);
+		}
+
+		if (!empty($cf_api_token) && !empty($cf_zone_id))
 		{
 			$template_vars = array_merge([
 				'CLOUDFLARE_FIREWALL_SYNC_URL' => $this->controller_helper->route('alfredoramos_cloudflare_sync_ruleset_rules', [
@@ -217,27 +228,19 @@ class acp
 					'hash' => generate_link_hash('cloudflare_cache_sync_ruleset_rules')
 				])
 			], $template_vars);
+
+			// Cloudflare zone validation
+			$this->cloudflare_client->set_options(['api_token' => $cf_api_token, 'zone_id' => $cf_zone_id]);
+			$zone_data = $this->cloudflare_client->zone_details();
+
+			// Cloudflare errors
+			if (!empty($zone_data['success']) && $zone_data['success'] === true && !empty($zone_data['result']['name']) && !str_contains($server_name, $zone_data['result']['name']))
+			{
+				$errors[]['message'] = $this->language->lang('ACP_CLOUDFLARE_DOMAIN_MISMATCH_EXPLAIN', $zone_data['result']['name'], $server_name);
+			}
 		}
 
 		$this->template->assign_vars($template_vars);
-
-		// Cloudflare errors
-		$server_name = $this->config->offsetGet('server_name');
-		if (!$this->helper->is_domain_protected($server_name))
-		{
-			$errors[]['message'] = $this->language->lang('ACP_CLOUDFLARE_NOT_PROTECTED_EXPLAIN', $server_name);
-		}
-
-		$this->cloudflare_client->set_options([
-			'api_token' => $this->config->offsetGet('cloudflare_api_token'),
-			'zone_id' => $this->config->offsetGet('cloudflare_zone_id')
-		]);
-		$zone_data = $this->cloudflare_client->zone_details();
-
-		if (!empty($zone_data['success']) && $zone_data['success'] === true && !empty($zone_data['result']['name']) && !str_contains($server_name, $zone_data['result']['name']))
-		{
-			$errors[]['message'] = $this->language->lang('ACP_CLOUDFLARE_DOMAIN_MISMATCH_EXPLAIN', $zone_data['result']['name'], $server_name);
-		}
 
 		// Validation errors
 		foreach ($errors as $key => $value)
