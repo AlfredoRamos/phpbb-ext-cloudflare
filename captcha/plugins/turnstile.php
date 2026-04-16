@@ -176,13 +176,13 @@ class turnstile extends captcha_abstract
 			'turnstile_key' => [
 				'filter' => FILTER_VALIDATE_REGEXP,
 				'options' => [
-					'regexp' => '#\A\dx[A-Za-z0-9_-]{22}\z#'
+					'regexp' => '#\A[0-9]x[a-zA-Z0-9_-]{22}\z#'
 				]
 			],
 			'turnstile_secret' => [
 				'filter' => FILTER_VALIDATE_REGEXP,
 				'options' => [
-					'regexp' => '#\A\dx[A-Za-z0-9_-]{33}\z#'
+					'regexp' => '#\A[0-9]x[a-zA-Z0-9_-]{33}\z#'
 				]
 			],
 			'turnstile_theme' => [

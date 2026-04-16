@@ -10,17 +10,17 @@
 		<dt><label for="cloudflare_purge_cache">{{ lang('CLOUDFLARE_PURGE_CACHE') }}</label><br /><span>{{ lang('CLOUDFLARE_PURGE_CACHE_EXPLAIN') }}</span></dt>
 		<dd>
 			{% if CLOUDFLARE_PURGE_CACHE_TYPES %}
-			<select id="cloudflare_purge_cache_type" name="cloudflare_purge_cache_type">
+			<select id="cloudflare_purge_cache_type" name="cloudflare_purge_cache_type" class="cf-field cf-field-block cf-field-cache-type">
 				{% for TYPE in CLOUDFLARE_PURGE_CACHE_TYPES %}
 				<option value="{{ TYPE.VALUE }}"{% if TYPE.SELECTED %} selected="selected"{% endif %}>{{ TYPE.NAME }}</option>
 				{% endfor %}
 			</select>
 			<details class="cloudflare-value-container" style="display: none">
 				<summary>{{ lang('EDIT') }}</summary>
-				<textarea id="cloudflare_purge_cadlche_value" name="cloudflare_purge_cache_value"></textarea>
+				<textarea id="cloudflare_purge_cadlche_value" name="cloudflare_purge_cache_value" class="cf-field cf-field-cache-value"></textarea>
 			</details>
 			{% endif %}
-			<button type="submit" class="cf-btn cf-btn-primary cf-btn-icon">
+			<button type="submit" class="cf-btn cf-btn-block cf-btn-primary">
 				<i class="icon fa-cloud fa-fw" aria-hidden="true"></i>
 				{{ lang('RUN') }}
 			</button>

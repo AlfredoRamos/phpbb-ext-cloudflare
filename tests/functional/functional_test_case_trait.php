@@ -25,7 +25,7 @@ trait functional_test_case_trait
 		$this->update_config([
 			// Cloudflare API
 			'cloudflare_api_token' => 'cf_test_9f8d7c6b5a4e3d2c1b0a1234567890abcdef1234', // Fake
-			'cloudflare_zone_id' => 'T3StL3x9Vw2Qm7Rz6Tn4Yb1C5D0eFhJkLpQsTuV', // Fake
+			'cloudflare_zone_id' => '5d14bf0dfa6eb316cb18292586562ba3', // Fake
 
 			// Cloudflare Turnstile
 			'captcha_plugin' => 'alfredoramos.cloudflare.captcha.turnstile',
