@@ -37,6 +37,7 @@ $lang = array_merge($lang, [
 	'ACP_CLOUDFLARE_SYNC_EXPLAIN' => 'Click the <samp>%s</samp> button to create or update rules as needed.',
 	'ACP_CLOUDFLARE_TOGGLE_SECRET' => 'Activer/désactiver %s',
 	'ACP_CLOUDFLARE_VALIDATE_INVALID_FIELDS' => 'Valeurs invalides pour les champs : <samp>%s</samp>',
+	'ACP_CLOUDFLARE_INVALID_API_TOKEN' => 'Invalid Cloudflare API Token: %s',
 	'ACP_CLOUDFLARE_NOT_PROTECTED_EXPLAIN' => 'Your domain %s does not seem to be protected by Cloudflare.',
 	'ACP_CLOUDFLARE_DOMAIN_MISMATCH_EXPLAIN' => 'The domain configured in Cloudflare (<samp>%1$s</samp>) does not match the one configured in your phpBB board (<samp>%2$s</samp>).',
 
