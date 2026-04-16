@@ -82,12 +82,8 @@
 	);
 
 	const fields = {
-		type: purgeCacheForm?.querySelector(
-			'[name="cloudflare_purge_cache_type"]',
-		),
-		value: purgeCacheForm?.querySelector(
-			'[name="cloudflare_purge_cache_value"]',
-		),
+		type: purgeCacheForm?.querySelector('.cf-field-cache-type'),
+		value: purgeCacheForm?.querySelector('.cf-field-cache-value'),
 	};
 	const button = purgeCacheForm?.querySelector('.cf-btn');
 	const valueContainer = purgeCacheForm?.querySelector(
@@ -140,7 +136,7 @@
 			},
 			body: JSON.stringify({
 				type: fields?.type?.value ?? '',
-				value: fields?.value?.value ?? '',
+				value: fields?.value?.value ?? null,
 			}),
 		})
 			.then((r) => {
@@ -215,6 +211,7 @@
 			.finally(() => {
 				fields?.type?.removeAttribute('disabled');
 				fields?.value?.removeAttribute('disabled');
+				button?.removeAttribute('disabled');
 
 				if (
 					window.$loadingIndicator &&
@@ -386,7 +383,5 @@
 		});
 	});
 
-	window.phpbb.resizeTextArea(
-		jQuery('[name="cloudflare_purge_cache_value"]'),
-	);
+	window.phpbb.resizeTextArea(jQuery('.cf-field-cache-value'));
 })();

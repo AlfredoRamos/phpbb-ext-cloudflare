@@ -28,7 +28,12 @@ trait http_trait
 	 */
 	protected function get_client(?array $opts = null): GuzzleClient
 	{
-		$default = ['allow_redirects' => false];
+		$default = [
+			'allow_redirects' => false,
+			'headers' => [
+				'User-Agent' => 'phpBB/' . PHPBB_VERSION
+			]
+		];
 		$opts = array_replace($default, $opts ?? []);
 
 		if ($this->client === null || $this->client_options !== $opts)

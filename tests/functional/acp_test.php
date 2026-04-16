@@ -115,7 +115,7 @@ class acp_test extends \phpbb_functional_test_case
 		$this->assertSame('cf_test_9f8d7c6b5a4e3d2c1b0a1234567890abcdef1234', $form->get('cloudflare_api_token')->getValue());
 
 		$this->assertTrue($form->has('cloudflare_zone_id'));
-		$this->assertSame('T3StL3x9Vw2Qm7Rz6Tn4Yb1C5D0eFhJkLpQsTuV', $form->get('cloudflare_zone_id')->getValue());
+		$this->assertSame('5d14bf0dfa6eb316cb18292586562ba3', $form->get('cloudflare_zone_id')->getValue());
 
 		$this->assertTrue($form->has('cloudflare_firewall_ruleset_id'));
 		$this->assertTrue($form->has('cloudflare_firewall_ruleset_rules_id'));
@@ -123,7 +123,5 @@ class acp_test extends \phpbb_functional_test_case
 		$this->assertTrue($form->has('cloudflare_cache_ruleset_rules_id'));
 
 		$this->assertSame(2, $crawler->filter('.cf-rules-sync')->count());
-		$this->assertTrue(str_contains($crawler->filter('.cf-rules-sync')->first()->attr('data-url'), '/cloudflare/sync_ruleset_rules/firewall/'));
-		$this->assertTrue(str_contains($crawler->filter('.cf-rules-sync')->last()->attr('data-url'), '/cloudflare/sync_ruleset_rules/cache/'));
 	}
 }

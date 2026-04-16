@@ -9,6 +9,7 @@
 
 namespace alfredoramos\cloudflare\includes;
 
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 
 class cloudflare
@@ -128,7 +129,8 @@ class cloudflare
 
 		$params = [
 			'headers' => [
-				'Authorization' => 'Bearer ' . $this->api_token
+				'Authorization' => 'Bearer ' . $this->api_token,
+				'User-Agent' => 'phpBB/' . PHPBB_VERSION
 			]
 		];
 
@@ -148,12 +150,49 @@ class cloudflare
 
 			return $result;
 		}
+		catch (ClientException $ex) {
+			return json_decode($ex->getResponse()->getBody()->getContents(), true, JSON_OBJECT_AS_ARRAY | JSON_THROW_ON_ERROR);
+		}
 		catch (GuzzleException | JsonException $ex)
 		{
 			return [
 				'errors' => [['message' => $ex->getMessage()]]
 			];
 		};
+	}
+
+	/**
+	 * Verify API token.
+	 *
+	 * @return array
+	 */
+	public function verify_token(): array
+	{
+		if (empty($this->api_token))
+		{
+			return [
+				'errors' => [['message' => 'Empty required data.']]
+			];
+		}
+
+		return $this->make_request('GET', 'user/tokens/verify');
+	}
+
+	/**
+	 * Get zone details.
+	 *
+	 * @return array
+	 */
+	public function zone_details(): array
+	{
+		if (empty($this->api_token) || empty($this->zone_id))
+		{
+			return [
+				'errors' => [['message' => 'Empty required data.']]
+			];
+		}
+
+		return $this->make_request('GET', sprintf('zones/%s', $this->zone_id));
 	}
 
 	/**
@@ -644,17 +683,5 @@ class cloudflare
 		}
 
 		return $this->make_request('PATCH', sprintf('zones/%s/rulesets/%s/rules/%s', $this->zone_id, $ruleset_id, $rule_id), $payload);
-	}
-
-	public function zone_details(): array
-	{
-		if (empty($this->api_token) || empty($this->zone_id))
-		{
-			return [
-				'errors' => [['message' => 'Empty required data.']]
-			];
-		}
-
-		return $this->make_request('GET', sprintf('zones/%s', $this->zone_id));
 	}
 }

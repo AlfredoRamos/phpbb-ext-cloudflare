@@ -12,7 +12,6 @@ namespace alfredoramos\cloudflare\controller;
 use phpbb\auth\auth;
 use phpbb\config\config;
 use phpbb\request\request;
-use phpbb\controller\helper as controller_helper;
 use phpbb\language\language;
 use phpbb\user;
 use phpbb\log\log;
@@ -34,11 +33,8 @@ class cloudflare
 	/** @var request */
 	protected request $request;
 
-	/** @var controller_helper */
-	protected controller_helper $controller_helper;
-
 	/** @var language */
-	protected $language;
+	protected language $language;
 
 	/** @var user */
 	protected user $user;
@@ -58,7 +54,6 @@ class cloudflare
 	 * @param auth				$auth
 	 * @param config			$config
 	 * @param request			$request
-	 * @param controller_helper	$controller_helper
 	 * @param language			$language
 	 * @param user				$user
 	 * @param log				$log
@@ -67,12 +62,11 @@ class cloudflare
 	 *
 	 * @return void
 	 */
-	public function __construct(auth $auth, config $config, request $request, controller_helper $controller_helper, language $language, user $user, log $log, cloudflare_client $client, helper $helper)
+	public function __construct(auth $auth, config $config, request $request, language $language, user $user, log $log, cloudflare_client $client, helper $helper)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
 		$this->request = $request;
-		$this->controller_helper = $controller_helper;
 		$this->language = $language;
 		$this->user = $user;
 		$this->log = $log;
@@ -143,7 +137,7 @@ class cloudflare
 		$data = [];
 		$payload = ['type' => $fields['type'], 'value' => null];
 
-		if (!$fields['type'] !== 'purge_everything')
+		if ($fields['type'] !== 'purge_everything')
 		{
 			$fields['value'] = $this->helper->sanitize_string_list(explode(PHP_EOL, $fields['value']));
 		}
@@ -159,7 +153,7 @@ class cloudflare
 				break;
 		}
 
-		if (empty($fields['value']))
+		if ($fields['type'] !== 'purge_everything' && empty($fields['value']))
 		{
 			$errors[]['message'] = $this->language->lang('AJAX_ERROR_TEXT_PARSERERROR');
 		}

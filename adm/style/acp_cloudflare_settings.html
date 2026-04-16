@@ -49,14 +49,10 @@
 				<br><span>{{ lang('ACP_CLOUDFLARE_SYNC_EXPLAIN', lang('RESYNC')) }}</span>
 			</dt>
 			<dd>
-				{% if CLOUDFLARE_FIREWALL_SYNC_URL %}
-				<div>
-					<button type="button" class="cf-btn cf-btn-primary cf-btn-icon cf-rules-sync" data-url="{{ CLOUDFLARE_FIREWALL_SYNC_URL }}">
-						<i class="icon fa-refresh fa-fw" aria-hidden="true"></i> {{ lang('RESYNC') }}
-					</button>
-				</div>
+				<button type="button" class="cf-btn cf-btn-block cf-btn-primary cf-rules-sync"{% if CLOUDFLARE_FIREWALL_SYNC_URL %} data-url="{{ CLOUDFLARE_FIREWALL_SYNC_URL }}"{% else %} disabled{% endif %}>
+					<i class="icon fa-refresh fa-fw" aria-hidden="true"></i> {{ lang('RESYNC') }}
+				</button>
 				<br>
-				{% endif %}
 				<div class="cf-info-container">
 					<div class="cf-label-ruleset">
 						<i class="icon{% if CLOUDFLARE_FIREWALL_RULESET_ID %} acp-icon-settings fa-check{% else %} fa-question{% endif %} fa-fw" aria-hidden="true"></i>
@@ -81,14 +77,10 @@
 				<br><span>{{ lang('ACP_CLOUDFLARE_SYNC_EXPLAIN', lang('RESYNC')) }}</span>
 			</dt>
 			<dd>
-				{% if CLOUDFLARE_CACHE_SYNC_URL %}
-				<div>
-					<button type="button" class="cf-btn cf-btn-primary cf-btn-icon cf-rules-sync" data-url="{{ CLOUDFLARE_CACHE_SYNC_URL }}">
-						<i class="icon fa-refresh fa-fw" aria-hidden="true"></i> {{ lang('RESYNC') }}
-					</button>
-				</div>
+				<button type="button" class="cf-btn cf-btn-block cf-btn-primary cf-rules-sync"{% if CLOUDFLARE_CACHE_SYNC_URL %} data-url="{{ CLOUDFLARE_CACHE_SYNC_URL }}"{% else %} disabled{% endif %}>
+					<i class="icon fa-refresh fa-fw" aria-hidden="true"></i> {{ lang('RESYNC') }}
+				</button>
 				<br>
-				{% endif %}
 				<div class="cf-info-container">
 					<div class="cf-label-ruleset">
 						<i class="icon{% if CLOUDFLARE_CACHE_RULESET_ID %} acp-icon-settings fa-check{% else %} fa-question{% endif %} fa-fw" aria-hidden="true"></i>
