@@ -299,17 +299,29 @@ class helper
 			$parts['scheme'] = 'https';
 		}
 
-		$trace_url = $parts['scheme'] . '://' . $parts['host'] . '/cdn-cgi/trace';
+		$base_url = $parts['scheme'] . '://' . $parts['host'];
+		$trace_url = $base_url . '/cdn-cgi/trace';
 
 		$this->get_client();
-		$response = $this->client->request('GET', $trace_url);
 
-		// Rute only exists if protected by Cloudflare
+		$response = $this->client->request('GET', $base_url);
+
+		// It is pointless to continue
 		if ($response->getStatusCode() !== 200)
 		{
 			return false;
 		}
 
-		return strtolower($response->getHeaderLine('Server')) === 'cloudflare';
+		$is_protected = (!empty($response->getHeaderLine('Cf-Ray')) || !empty($response->getHeaderLine('Cf-Cache-Status')));
+
+		$response = $this->client->request('GET', $trace_url);
+
+		// Rute only exists if protected by Cloudflare
+		if ($response->getStatusCode() !== 200)
+		{
+			return $is_protected;
+		}
+
+		return ($is_protected && strtolower($response->getHeaderLine('Server')) === 'cloudflare');
 	}
 }
