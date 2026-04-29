@@ -3,7 +3,7 @@
 Cloudflare extension for phpBB.
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/AlfredoRamos/phpbb-ext-cloudflare/ci.yml?style=flat-square)](https://github.com/AlfredoRamos/phpbb-ext-cloudflare/actions)
-[![Latest Stable Version](https://img.shields.io/github/tag/AlfredoRamos/phpbb-ext-cloudflare.svg?label=stable&style=flat-square)](https://github.com/AlfredoRamos/phpbb-ext-cloudflare/releases)
+[![Latest Stable Version](https://img.shields.io/github/tag/AlfredoRamos/phpbb-ext-cloudflare.svg?label=stable&style=flat-square)](https://www.phpbb.com/customise/db/extension/cloudflare/)
 [![Translation Progress](https://badges.crowdin.net/phpbb-ext-cloudflare/localized.svg)](https://crowdin.com/project/phpbb-ext-cloudflare)
 [![License](https://img.shields.io/github/license/AlfredoRamos/phpbb-ext-cloudflare.svg?style=flat-square)](https://raw.githubusercontent.com/AlfredoRamos/phpbb-ext-cloudflare/main/license.txt)
 
@@ -31,7 +31,7 @@ See the [full blog post](https://alfredoramos.mx/cloudflare-extension-for-phpbb/
 
 ### Support
 
-- [**Download page**](https://github.com/AlfredoRamos/phpbb-ext-cloudflare/releases)
+- [**Download page**](https://www.phpbb.com/customise/db/extension/cloudflare/)
 - [GitHub issues](https://github.com/AlfredoRamos/phpbb-ext-cloudflare/issues)
 - [Crowdin translations](https://crowdin.com/project/phpbb-ext-cloudflare)
 
@@ -41,8 +41,8 @@ If you like or found my work useful and want to show some appreciation, you can 
 
 ### Installation
 
-- Download the [latest release](https://github.com/AlfredoRamos/phpbb-ext-cloudflare/releases)
-- Decompress the `*.zip` or `*.tar.gz` file
+- Download the [latest release](https://www.phpbb.com/community/viewtopic.php?t=2668441)
+- Decompress the `*.zip`
 - Copy the files and directories inside `{PHPBB_ROOT}/ext/alfredoramos/cloudflare/`
 - Go to your `Administration Control Panel` > `Customize` > `Manage extensions`
 - Click on `Enable` and confirm
