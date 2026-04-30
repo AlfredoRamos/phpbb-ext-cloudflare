@@ -250,7 +250,7 @@ class acp
 				}
 
 				// Cloudflare validation
-				if (!$this->helper->is_domain_protected($server_name))
+				if (!$this->helper->is_domain_protected(generate_board_url(true)))
 				{
 					$errors[]['message'] = $this->language->lang('ACP_CLOUDFLARE_NOT_PROTECTED_EXPLAIN', $server_name);
 				}

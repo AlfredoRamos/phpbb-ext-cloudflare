@@ -15,8 +15,9 @@ use phpbb\language\language;
 use phpbb\template\template;
 use phpbb\routing\helper as routing_helper;
 use phpbb\captcha\factory as captcha_factory;
-use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use alfredoramos\cloudflare\includes\cloudflare as cloudflare_client;
+use GuzzleHttp\Exception\ConnectException;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 class helper
 {
@@ -293,18 +294,24 @@ class helper
 			return false;
 		}
 
-		// Always use HTTPS for the trace request
-		if (empty($parts['scheme']) || $parts['scheme'] !== 'https')
+		if (!preg_match('#^https?://#', $url))
 		{
-			$parts['scheme'] = 'https';
+			$url = ($this->config->offsetGet('server_protocol') ?? 'https://') . $url;
 		}
 
-		$base_url = $parts['scheme'] . '://' . $parts['host'];
+		$base_url = $parts['scheme'] . '://' . $parts['host'] . (!empty($parts['port']) ? $parts['port'] : '');
 		$trace_url = $base_url . '/cdn-cgi/trace';
 
 		$this->get_client();
 
-		$response = $this->client->request('GET', $base_url);
+		try
+		{
+			$response = $this->client->request('GET', $base_url);
+		}
+		catch (ConnectException $ex)
+		{
+			return false;
+		}
 
 		// It is pointless to continue
 		if ($response->getStatusCode() !== 200)
@@ -314,7 +321,14 @@ class helper
 
 		$is_protected = (!empty($response->getHeaderLine('Cf-Ray')) || !empty($response->getHeaderLine('Cf-Cache-Status')));
 
-		$response = $this->client->request('GET', $trace_url);
+		try
+		{
+			$response = $this->client->request('GET', $trace_url);
+		}
+		catch (ConnectException $ex)
+		{
+			return $is_protected;
+		}
 
 		// Rute only exists if protected by Cloudflare
 		if ($response->getStatusCode() !== 200)
