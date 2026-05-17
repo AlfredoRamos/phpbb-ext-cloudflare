@@ -295,9 +295,7 @@ class cloudflare
 			}
 		}
 
-		return [
-			'errors' => [['message' => 'Internal error.']]
-		];
+		return ['result' => []];
 	}
 
 	/**
@@ -366,9 +364,7 @@ class cloudflare
 			}
 		}
 
-		return [
-			'errors' => [['message' => 'Internal error.']]
-		];
+		return ['result' => ['rules' => []]];
 	}
 
 	/**

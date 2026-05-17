@@ -163,11 +163,13 @@ class cloudflare
 
 			if ((empty($data['success']) || $data['success'] !== true) && !empty($data['errors']))
 			{
+			    error_log("Cloudflare Plugin - Purge Cache Error: " . print_r($data['errors'], true));
 				$errors = array_merge($errors, $data['errors']);
 			}
 		}
 
 		if (!empty($errors)) {
+		    error_log("Cloudflare Plugin - Purge Cache Failed. Request returning 400. Errors: " . print_r($errors, true));
 			return new JsonResponse(['errors' => $errors], 400);
 		}
 
@@ -279,6 +281,7 @@ class cloudflare
 
 			if (!empty($ruleset['errors']))
 			{
+			    error_log("Cloudflare Plugin - Find Ruleset Error (Type: $type): " . print_r($ruleset['errors'], true));
 				$errors = array_merge($errors, $ruleset['errors']);
 				return new JsonResponse(['errors' => $errors], 400);
 			}
@@ -289,6 +292,7 @@ class cloudflare
 
 				if (!empty($ruleset['errors']))
 				{
+				    error_log("Cloudflare Plugin - Create Ruleset Error (Type: $type): " . print_r($ruleset['errors'], true));
 					$errors = array_merge($errors, $ruleset['errors']);
 				}
 
@@ -398,7 +402,7 @@ class cloudflare
 				case 'firewall':
 					$data = [
 						'description' => 'phpbb:firewall',
-						'expression' => '(http.request.uri.path contains "ucp.php" and (http.request.uri.query contains "mode=login" or http.request.uri.query "mode=register")) or (http.request.uri.path contains "memberlist.php" and http.request.uri.query "mode=contactadmin")',
+						'expression' => '(http.request.uri.path contains "ucp.php" and (http.request.uri.query contains "mode=login" or http.request.uri.query contains "mode=register" or http.request.uri.query contains "mode=resend_act")) or (http.request.uri.path contains "/user/forgot_password") or (http.request.uri.path contains "memberlist.php" and http.request.uri.query contains "mode=contactadmin") or (http.request.uri.path contains "posting.php" and (http.request.uri.query contains "mode=post" or http.request.uri.query contains "mode=edit" or http.request.uri.query contains "mode=quote" or http.request.uri.query contains "mode=reply")) or (http.request.uri.path contains "search.php")',
 						'action' => 'managed_challenge',
 					];
 					break;
@@ -420,16 +424,19 @@ class cloudflare
 
 			if (!empty($rules['errors']))
 			{
+			    error_log("Cloudflare Plugin - Update Ruleset Error (Type: $type): " . print_r($rules['errors'], true));
 				$errors = array_merge($errors, $rules['errors']);
 			}
 
 			if (empty($rules['result']['rules']) || empty($data))
 			{
+			    error_log("Cloudflare Plugin - Update Ruleset Empty Result/Data (Type: $type)");
 				$errors[]['message'] = $this->language->lang('CLOUDFLARE_ERR_RULESET_RULES_UPDATE');
 			}
 		}
 
 		if (!empty($errors)) {
+		    error_log("Cloudflare Plugin - Sync Failed. Request returning 400. Errors: " . print_r($errors, true));
 			return new JsonResponse(['errors' => $errors], 400);
 		}
 
