@@ -318,6 +318,23 @@ class cloudflare
 			return new JsonResponse(['errors' => $errors], 400);
 		}
 
+		$default_rules = [
+			'firewall' => [
+				'description' => 'phpbb:firewall',
+				'expression' => '(http.request.uri.path contains "ucp.php" and (http.request.uri.query contains "mode=login" or http.request.uri.query contains "mode=register" or http.request.uri.query contains "mode=resend_act")) or (http.request.uri.path contains "/user/forgot_password") or (http.request.uri.path contains "memberlist.php" and http.request.uri.query contains "mode=contactadmin") or (http.request.uri.path contains "posting.php" and (http.request.uri.query contains "mode=post" or http.request.uri.query contains "mode=edit" or http.request.uri.query contains "mode=quote" or http.request.uri.query contains "mode=reply")) or (http.request.uri.path contains "search.php")',
+				'action' => 'managed_challenge'
+			],
+			'cache' => [
+				'description' => 'phpbb:cache',
+				'expression' => '(http.request.uri.path contains "file.php" and http.request.uri.query wildcard r"*avatar=*")',
+				'action' => 'set_cache_settings',
+				'action_parameters' => [
+					'cache' => true,
+					'cache_key' => ['cache_deception_armor' => true]
+				]
+			]
+		];
+
 		if (empty($fields['ruleset_rules_id']))
 		{
 			$rules = [];
@@ -326,26 +343,15 @@ class cloudflare
 			switch($type)
 			{
 				case 'firewall':
-					$data = [
-						'description' => 'phpbb:firewall',
-						'expression' => '(http.request.uri.path contains "ucp.php" and (http.request.uri.query contains "mode=login" or http.request.uri.query contains "mode=register" or http.request.uri.query contains "mode=resend_act")) or (http.request.uri.path contains "/user/forgot_password") or (http.request.uri.path contains "memberlist.php" and http.request.uri.query contains "mode=contactadmin") or (http.request.uri.path contains "posting.php" and (http.request.uri.query contains "mode=post" or http.request.uri.query contains "mode=edit" or http.request.uri.query contains "mode=quote" or http.request.uri.query contains "mode=reply")) or (http.request.uri.path contains "search.php")',
-						'action' => 'managed_challenge',
+					$data = array_merge($default_rules[$type], [
 						'position' => [
 							'index' => 1,
 						]
-					];
+					]);
 					break;
 
 				case 'cache':
-					$data = [
-						'description' => 'phpbb:cache',
-						'expression' => '(http.request.uri.path contains "file.php" and http.request.uri.query wildcard r"*avatar=*")',
-						'action' => 'set_cache_settings',
-						'action_parameters' => [
-							'cache' => true,
-							'cache_key' => ['cache_deception_armor' => true]
-						]
-					];
+					$data = $default_rules[$type];
 					break;
 			}
 
@@ -391,31 +397,7 @@ class cloudflare
 		}
 		else
 		{
-			$data = [];
-
-			switch($type)
-			{
-				case 'firewall':
-					$data = [
-						'description' => 'phpbb:firewall',
-						'expression' => '(http.request.uri.path contains "ucp.php" and (http.request.uri.query contains "mode=login" or http.request.uri.query "mode=register")) or (http.request.uri.path contains "memberlist.php" and http.request.uri.query "mode=contactadmin")',
-						'action' => 'managed_challenge',
-					];
-					break;
-
-				case 'cache':
-					$data = [
-						'description' => 'phpbb:cache',
-						'expression' => '(http.request.uri.path contains "file.php" and http.request.uri.query wildcard r"*avatar=*")',
-						'action' => 'set_cache_settings',
-						'action_parameters' => [
-							'cache' => true,
-							'cache_key' => ['cache_deception_armor' => true]
-						]
-					];
-					break;
-			}
-
+			$data = $default_rules[$type];
 			$rules = $this->client->update_ruleset_rules($fields['ruleset_id'], $fields['ruleset_rules_id'], $data);
 
 			if (!empty($rules['errors']))
