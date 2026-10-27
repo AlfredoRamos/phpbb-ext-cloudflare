@@ -19,6 +19,7 @@ use phpbb\log\log_interface;
 use alfredoramos\cloudflare\includes\helper;
 use alfredoramos\cloudflare\includes\http_trait;
 use GuzzleHttp\Exception\GuzzleException;
+use JsonException;
 
 class turnstile extends captcha_abstract
 {
@@ -308,7 +309,7 @@ class turnstile extends captcha_abstract
 	 */
 	public function get_template()
 	{
-		if ($this->is_solved())
+		if ($this->is_solved() && $this->type !== CONFIRM_REG)
 		{
 			return false;
 		}
@@ -328,6 +329,19 @@ class turnstile extends captcha_abstract
 		]);
 
 		return '@alfredoramos_cloudflare/captcha_turnstile.html';
+	}
+
+	public function get_hidden_fields()
+	{
+		$fields = parent::get_hidden_fields();
+
+		if ($this->type === CONFIRM_REG)
+		{
+			// A corrected registration form must obtain a fresh Turnstile token.
+			unset($fields['confirm_code']);
+		}
+
+		return $fields;
 	}
 
 	/**
@@ -357,6 +371,11 @@ class turnstile extends captcha_abstract
 	 */
 	public function validate()
 	{
+		if ($this->solved)
+		{
+			return false;
+		}
+
 		if (!parent::validate())
 		{
 			return false;
@@ -369,6 +388,12 @@ class turnstile extends captcha_abstract
 			return $this->language->lang('TURNSTILE_INCORRECT');
 		}
 
+		$this->solved = $this->verify_token($result);
+		return $this->solved ? false : $this->language->lang('TURNSTILE_INCORRECT');
+	}
+
+	private function verify_token(string $token): bool
+	{
 		$idempotency_key = $this->helper->uuid_v4();
 		$max_attempts = 3;
 
@@ -377,37 +402,45 @@ class turnstile extends captcha_abstract
 		{
 			try
 			{
-				$client = $this->get_client();
+				$client = $this->get_client([
+					'connect_timeout' => 5,
+					'timeout' => 10
+				]);
 
 				$response = $client->request('POST', self::VERIFY_ENDPOINT, [
 					'form_params' => [
 						'secret' => $this->config->offsetGet('turnstile_secret'),
-						'response' => $result,
+						'response' => $token,
 						'remoteip' => $this->user->ip,
 						'idempotency_key' => $idempotency_key
 					]
 				]);
 
-				$data = json_decode($response->getBody()->getContents(), null, 512, JSON_THROW_ON_ERROR);
+				$data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
 
-				if ($data->success === true)
+				if (($data['success'] ?? false) === true)
 				{
-					$this->solved = true;
-					return false;
+					return true;
 				}
+
+				return false;
 			}
-			catch (GuzzleException | JsonException $ex)
+			catch (JsonException $ex)
 			{
-				if (!$attempt === ($max_attempts - 1))
+				return false;
+			}
+			catch (GuzzleException $ex)
+			{
+				if ($attempt === ($max_attempts - 1))
 				{
-					return $this->language->lang('CLOUDFLARE_REQUEST_EXCEPTION', $ex->getMessage());
+					return false;
 				}
 
 				$this->helper->backoff_delay($attempt);
-			};
+			}
 		}
 
-		return $this->language->lang('TURNSTILE_INCORRECT');
+		return false;
 	}
 
 	/**

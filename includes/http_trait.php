@@ -38,8 +38,8 @@ trait http_trait
 
 		if ($this->client === null || $this->client_options !== $opts)
 		{
-			$this->client_opts = $opts;
-			$this->client = new GuzzleClient($this->client_opts);
+			$this->client_options = $opts;
+			$this->client = new GuzzleClient($this->client_options);
 		}
 
 		return $this->client;
